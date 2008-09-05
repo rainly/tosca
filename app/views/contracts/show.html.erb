@@ -60,7 +60,10 @@
             end %>
         </td><td>
          <% title = n_('Team','Teams', @teams.size ) %>
-         <%= show_list(@teams, title) { |t| link_to t.name, team_path(t) } %>
+         <%= show_list(@teams, title) do |t|
+		       out = link_to t.name, team_path(t)
+               out << ' (' << t.users.collect { |u| u.name }.join(', ') << ')'
+             end %>
         </td>
     </tr></table>
       </fieldset>

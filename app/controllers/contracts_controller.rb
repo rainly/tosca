@@ -19,6 +19,8 @@
 class ContractsController < ApplicationController
   helper :clients, :commitments, :ingenieurs, :versions
 
+  auto_complete_for :user, :name, :contract, :engineer_user, :conditions => { :client => false }
+
   def index
     @contract_pages, @contracts = paginate :contracts, :per_page => 25
   end

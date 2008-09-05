@@ -79,8 +79,9 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :competences
   map.resources :contracts,
     :collection => {
-      :ajax_choose => :post, :actives => :get, :ajax_add_software => :post, :add_software => :post },
-      :member => { :supported_software => :get }
+      :ajax_choose => :post, :actives => :get, :ajax_add_software => :post,
+      :add_software => :post, :auto_complete_for_user_name => :post },
+    :member => { :supported_software => :get }
   map.resources :contributions,
     :collection => { :admin => :any, :select => :get, :experts => :get, :ajax_list_versions => :post },
     :member => { :list => :get }
@@ -140,7 +141,10 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :severites
   map.resources :supports
   map.resources :tags
-  map.resources :teams, :collection => { :auto_complete_for_contract_name => :post }
+  map.resources :teams, :collection => {
+    :auto_complete_for_contract_name => :post,
+    :auto_complete_for_user_name => :post }
+
   map.resources :time_tickets
   map.resources :typecontributions
   map.resources :typedemandes
