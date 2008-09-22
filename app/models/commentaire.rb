@@ -35,16 +35,19 @@ class Commentaire < ActiveRecord::Base
     end
     if (request && request.new_record? != true &&
         request.first_comment_id != record.id &&
-        request.statut_id == record.statut_id)
+        request.statut_id == record.statut_id &&
+	record.new_record?)
       record.errors.add_to_base _('The status of this request has already been changed.')
     end
     if (record.statut_id && record.prive)
       record.errors.add_to_base _('You cannot privately change the status')
     end
   end
-  
+
   before_validation do |record|
-    if not Statut::NEED_COMMENT.include? record.statut_id and html2text(record.corps).strip.empty?
+    if record.statut &&
+        !Statut::NEED_COMMENT.include?(record.statut_id) &&
+        html2text(record.corps).strip.empty?
       record.corps = _("The request is now %s.") % record.statut.name
     end
   end

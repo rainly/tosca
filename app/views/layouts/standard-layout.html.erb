@@ -5,7 +5,7 @@
  <%# precomputing header for having 80 r/s instead of 55 (~63% of more speed) %>
  <% locale = Locale.get.language.intern %>
  <% user = session[:user] %>
- <% role_localised = :"#{locale}#{user.role_id}" if user %>
+ <% role_id = (user ? user.role_id : 6) %>
  <% @@public_menu ||= {}; @@public_links ||= {}; @@public_head ||= {}; @@menu ||= {} %>
  <% @@public_head[locale] =
       '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8;"/>' <<
@@ -41,13 +41,16 @@
  <title><%= @page_title || _(controller.controller_name)%></title>
 </head>
 <body>
-  <%# All the menu are built during first rendering or during login, in account controller %>
-  <% @@public_menu[locale] ||= build_simple_menu([
-       public_link_to_home,
-       public_link_to_software,
-       public_link_to_contributions,
-       public_link_to_about ]) %>
-  <% @@menu[role_localised] ||= build_simple_menu([
+  <%# TODO : formulaire de login en haut ? %>
+  <% @@public_links[locale] ||= build_simple_menu([
+        link_to_redbox(_('Log in'), 'login_box')], :class => 'account_menu') %>
+  <% cache("welcome/#{role_id}/header") do %>
+   <% public_menu = build_simple_menu([
+        public_link_to_home,
+        public_link_to_software,
+        public_link_to_contributions,
+        public_link_to_about ]) %>
+   <% user_menu = build_simple_menu([
         public_link_to_home,
         link_to_tobd_requests,
         link_to_all_requests,
@@ -55,29 +58,20 @@
         link_to_admin,
         public_link_to_about
        ], :form => true) if user %>
-  <%# TODO : formulaire de login en haut ? %>
-  <% @@public_links[locale] ||= build_simple_menu([
-        link_to_redbox(_('Log in'), 'login_box')], :class => 'account_menu') %>
-  <div id="header">
+   <% account_menu = build_simple_menu([
+        public_link_to(_("Logout"), logout_accounts_path),
+        link_to(_("My account"), edit_account_path(user))
+	   ], :class => 'account_menu') %>
+   <div id="header">
     <table>
       <tr valign="top">
-        <td valign="middle" width="145"><%= public_link_to StaticImage::logo_08000, welcome_url%>
-        </td>
-        <td><%= (user ? @@menu[role_localised] : @@public_menu[locale]) %></td>
-        <td align="right">
-          <% if user %>
-            <% infos = [
-                 public_link_to(_("Logout"), logout_accounts_path),
-                 link_to(_("My account"), edit_account_path(user))
-		       ] %>
-            <%= build_simple_menu(infos, :class => 'account_menu') %>
-          <% else %>
-            <%= @@public_links[locale] %>
-          <% end %>
-        </td>
+        <td valign="middle" width="145"><%= public_link_to StaticImage::logo_08000, welcome_url%></td>
+        <td><%= (user ? user_menu : public_menu) %></td>
+        <td align="right"> <%= user ? account_menu : @@public_links[locale] %></td>
       </tr>
     </table>
-  </div><!-- end of header -->
+   </div><!-- end of header -->
+  <% end %>
 
   <div id="content_div">
     <!-- Javascript starts to be used here : -->
