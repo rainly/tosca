@@ -58,21 +58,20 @@
         link_to_admin,
         public_link_to_about
        ], :form => true) if user %>
-   <% account_menu = build_simple_menu([
-        public_link_to(_("Logout"), logout_accounts_path),
-        link_to(_("My account"), edit_account_path(user))
-	   ], :class => 'account_menu') %>
-   <div id="header">
+  <div id="header">
     <table>
       <tr valign="top">
         <td valign="middle" width="145"><%= public_link_to StaticImage::logo_08000, welcome_url%></td>
         <td><%= (user ? user_menu : public_menu) %></td>
-        <td align="right"> <%= user ? account_menu : @@public_links[locale] %></td>
+  <% end %>
+       <% account_menu = build_simple_menu([
+            public_link_to(_("Logout"), logout_accounts_path),
+            link_to(_("My account"), edit_account_path(user))
+          ], :class => 'account_menu') %>
+       <td align="right"> <%= user ? account_menu : @@public_links[locale] %></td>
       </tr>
     </table>
    </div><!-- end of header -->
-  <% end %>
-
   <div id="content_div">
     <!-- Javascript starts to be used here : -->
     <%= javascript_include_tag('calendar', "calendar-#{locale}",
