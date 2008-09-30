@@ -1,0 +1,19 @@
+<h1><%= n_('Tag of the contract "%s"', 'Tags of the contract "%s"', @tags.size) % @contract.name %></h1>
+
+<style type="text/css">
+  .css1 { font-size: 1.0em; }
+  .css2 { font-size: 1.2em; }
+  .css3 { font-size: 1.4em; }
+  .css4 { font-size: 1.6em; }
+</style>
+
+<% tag_cloud @tags, %w(css1 css2 css3 css4) do |tag, css_class| %>
+  <%= link_to tag.name, tags_contract_url(@contract, :tag => tag.name), :class => css_class %>
+<% end %>
+
+<% if @issues %>
+  <br/><br/>
+  <h1><%= n_('Issue of this contract tagged with %s', 
+    'Issues of this contract tagged with %s', @issues.size) % @tag_with.join(_(" or ")) %></h1>
+  <%= render :partial => 'issues/lists/issues_table' %>
+<% end %>

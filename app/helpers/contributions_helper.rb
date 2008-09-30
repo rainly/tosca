@@ -36,17 +36,17 @@ module ContributionsHelper
     out << '</table></div>'
   end
 
-  # call it like : link_to_contribution_logiciel
-  def public_link_to_contribution_logiciel(logiciel, params = {})
-    return '-' unless logiciel
-    path = list_contribution_path(logiciel.id)
+  # call it like : link_to_contribution_software
+  def public_link_to_contribution_software(software, params = {})
+    return '-' unless software
+    path = list_contribution_path(software.id)
     client_id = params[:client_id]
     count = 0
     unless client_id.blank?
       path << "?client_id=#{params[:client_id]}"
-      options = { :conditions => { :logiciel_id => logiciel.id } }
+      options = { :conditions => { :software_id => software.id } }
       unless client_id == '1' # Main client, with the old portal
-        options[:include] = { :demande => :contract }
+        options[:include] = { :issue => :contract }
         options[:conditions].merge!({'contracts.client_id' => params[:client_id]})
       end
       # Dirty hack in order to show main client' contributions
@@ -57,9 +57,9 @@ module ContributionsHelper
         count = Contribution.count(:all,options)
       end
     else
-      count = logiciel.contributions.size
+      count = software.contributions.size
     end
-    public_link_to "#{logiciel.name} (#{count})", path
+    public_link_to "#{software.name} (#{count})", path
   end
 
   # call it like :
@@ -69,7 +69,7 @@ module ContributionsHelper
     if text
       link_to(text, options)
     else
-      link_to_no_hover image_create(_('a contribution')), options
+      link_to image_create(_('a contribution')), options
     end
   end
 
@@ -84,17 +84,4 @@ module ContributionsHelper
     return '-' unless c
     public_link_to(c.name, contribution_path(c))
   end
-
-  # une contribution peut être liée à une demande externe
-  # le "any" indique que la demande peut etre sur n'importe quel tracker
-  def link_to_any_demande(contribution)
-    return ' - ' if not contribution or not contribution.id_mantis
-    out = ''
-    if contribution.id_mantis
-      out << "<a href=\"http://www.08000linux.com/clients/minefi_SLL/mantis/view.php?id=#{contribution.id_mantis}\">
-       Mantis ##{contribution.id_mantis}</a>"
-    end
-    out
-  end
-
 end

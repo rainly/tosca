@@ -17,7 +17,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 class ContractsController < ApplicationController
-  helper :clients, :commitments, :ingenieurs, :versions
+  helper :clients, :commitments, :ingenieurs, :versions, :issues
 
   auto_complete_for :user, :name, :contract, :engineer_user, :conditions => { :client => false }
 
@@ -105,7 +105,7 @@ class ContractsController < ApplicationController
     if selected.blank? || !selected.has_key?(:software)
       return render(:nothing => true)
     end
-    @logiciel = Logiciel.find(selected[:software])
+    @software = Software.find(selected[:software])
     render(:update) { |page|
       page.insert_html(:before, "end", :partial => "software")
       page.visual_effect(:appear, @random_id)
@@ -115,7 +115,7 @@ class ContractsController < ApplicationController
   def supported_software
     @contract = Contract.find(params[:id]) unless @contract
     @versions = @contract.versions
-    @logiciels = Logiciel.find_select
+    @softwares = Software.find_select
   end
 
   def add_software
@@ -127,7 +127,7 @@ class ContractsController < ApplicationController
       s = s[1]
       next unless s.is_a? Hash
       # It's 2 lines but fast find_or_create call
-      version = Version.find(:first, :conditions => s, :include => :logiciel)
+      version = Version.find(:first, :conditions => s, :include => :software)
       version = Version.create(s) unless version
       versions << version if version.valid?
     end
@@ -136,6 +136,18 @@ class ContractsController < ApplicationController
       redirect_to contract_path(@contract)
     else
       supported_software and render :action => supported_software
+    end
+  end
+  
+  def tags
+    @contract = Contract.find(params[:id])
+    # We get the tags only for this contract
+    @tags = Issue.tag_counts(:conditions => { :contract_id => @contract.id })
+    if params[:tag] and not params[:tag].empty?
+      tags = params[:tag].split(",")
+      @issues = Issue.find_tagged_with(tags, 
+        :conditions => { :contract_id => @contract.id })
+      @tag_with = tags
     end
   end
 

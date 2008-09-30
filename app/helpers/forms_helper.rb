@@ -16,22 +16,23 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+
 # This module contains all the stuff related to forms.
 module FormsHelper
 
   PROMPT_SELECT = { :prompt => '» ' }
 
-  ### FORMULAIRES ##################################################
+  ### Forms ##################################################
 
   # Collection doit contenir des objects qui ont un 'id' et un 'name'
   # objectcollection contient le tableau des objects déjà présents
   # C'est la fonction to_s qui est utilisée pour le label
   # L'option :size permet une mise en colonne
-  # Ex : hbtm_check_box( @logiciel.competences, @competences, 'competence_ids')
+  # Ex : hbtm_check_box( @software.competences, @competences, 'competence_ids')
   def hbtm_check_box( objectcollection, collection, name , options={})
     return '' if collection.nil? || collection.empty?
     objectcollection = objectcollection.collect { |c| [ c.name, c.id ] }
-    out = '<table class="list"><tr>' and count = 1
+    out = '<table><tr>' and count = 1
     options_size = options[:size]
     length = collection.size
     name_w3c = name.gsub(/[^a-z1-9]+/i, '_')
@@ -135,15 +136,16 @@ module FormsHelper
   # Display a quick form field to go to a ticket
   # TODO : use yield to include what we want in the form
   # Call it like :
-  #  if session[:user] && session[:user].authorized?('demandes/index')
-  #    out << form_tag(demandes_path)
-  #    out <<  search_demande_field
+  #  if session[:user] && session[:user].authorized?('issues/index')
+  #    out << form_tag(issues_path)
+  #    out <<  search_issue_field
   #    out << end_form_tag
   #  end
-  def search_demande_field(options = {})
-    text_field('numero', '', 'size' => 3)
+  def search_issue_field
+    text_field('numero', '', :size => 3,
+      :title => _("Quick access to an issue : type the issue number here"))
   end
-  alias_method :search_demande, :search_demande_field
+  alias_method :search_issue, :search_issue_field
 
   # Create the original auto_complete field 
   def auto_complete(object, method, tag_options = {}, completion_options = {})
@@ -200,14 +202,14 @@ module FormsHelper
           page.insert_html :before, html_id_empty, :partial => 'applications/auto_complete_insert'
           page.visual_effect(:appear, @html_id)
         end << "} tosca_reset(\"#{@field}\")"
-      out = link_to_function(c.name, js_call, :class => :no_hover)
+      out = link_to_function(c.name, js_call)
       content_tag(:li, out)
     end )
   end
 
   # Apply a fade effect and delete the html element
   def delete_button(id)
-    link_to_function(StaticImage::delete, %Q{tosca_remove("#{id}")}, :class => :no_hover)
+    link_to_function(StaticImage::delete, %Q{tosca_remove("#{id}")})
   end
 
 end

@@ -1,0 +1,555 @@
+body {
+  margin: 0;
+  padding: 0;
+  color: #000;
+  /*background-color: #eaeafa;*/
+  font-size: 1em;
+  font-family: 'Lucida Grande', Geneva, Verdana, Arial, Helvetica, sans-serif;
+  font-size:   12px;
+  line-height: 18px;
+  background: #3b69ad none;
+}
+
+h1 {
+  padding: 0.5em 0 0.5em 0;
+}
+
+h2 {
+  padding: 0.3em 0 0.3em 0;
+}
+
+hr {
+  color: #114188;
+  clear: both;
+  padding: 0em;
+  margin: 0em;
+}
+
+fieldset legend { font-weight: bold; }
+
+input { -moz-border-radius: .5em .5em .5em .5em; }
+input:focus { background-color: #ffffcc; }
+textarea:focus { background-color: #ffffcc; }
+table { border-collapse: collapse; }
+
+.show tr td fieldset {
+  width: 35em;
+}
+
+div.info { width: 100%; }
+
+/* used mainly in show view, where we don't want 100% width */
+.info  {
+  width: 33%;
+  max-width: 45em;
+}
+
+#col3 input, #col3 select {
+  width: 95%;
+}
+
+p img {
+  vertical-align: middle;
+}
+
+label {
+  font-weight: bold;
+}
+
+ul { list-style-type: square; margin: 0 0 1em 0; }
+li img { vertical-align: middle; }
+
+a:focus, a:hover, a:active {
+  background-color: transparent;
+}
+
+.menu_title {
+  color: #fff;
+  background-color: #606060;
+  border-top: 1px solid #777;
+  border-bottom: 1px solid #777;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+#col3_content ul {
+  background-color: #aaa;
+  margin: 0;
+  padding: 0 0 1em;
+}
+
+ul { margin: 0 0 1em 0; }
+
+.aligned_picture { vertical-align: middle; }
+
+.datestamp div {
+    text-align: center;
+    line-height: 1.4em;
+    font-family: "Lucida Grande", "Lucida Sans Unicode", Arial, Sans-Serif;
+    padding: 1px;
+    width: 2.9em;
+    background-color: #f0f0ff;
+    border: 1px;
+    border-style: solid;
+    border-color: #007062;
+    float: left;
+    margin-right: 10px;
+}
+
+.datestamp {
+    display: inline;
+    padding: 1px;
+    margin-right: 1em;
+}
+
+.datestamp span {
+    display: block;
+}
+
+.show, .help, .info {
+  background-color: #e7e7e7;
+  -moz-border-radius: 1em;
+  vertical-align: top;
+  padding: 1em 1em 1em 1em;
+}
+
+.show {
+  margin: 2em 2em 2em 2em;
+}
+
+div.login_box, div.show, div.help, div.info {
+  border-left: 1px solid #ffffff;
+  border-top: 1px solid #ffffff;
+  border-right: 1px solid #999999;
+  border-bottom: 1px solid #999999;
+}
+
+/* used mainly in div.show box in order to nicely
+ * encapsulate a tinymce editing area*/
+div.tinymce { width: 36em; }
+.show th { background: none; text-align: left;}
+/* restore good color for "full" table within a show element */
+.full th { background-color: #444444; color: white; }
+.show { max-width: 90%;}
+
+/*************************
+  * Bloc with scrollbars *
+  ************************/
+div.bloc_scroll, div.long_bloc_scroll {
+  width: 99%;
+  height: auto;
+  max-height: 10em;
+  overflow: auto;
+  background-color: #f2fff2;
+}
+div.long_bloc_scroll { max-height: 31em; }
+div.redbox_scroll {
+  width: 100%;
+  max-height: 600px;
+  overflow: auto;
+}
+
+/*************************
+  * Comments	 *
+  ************************/
+div.software {
+  float: right;
+  margin: 10px;
+}
+div.comment-container {
+
+}
+div.collapsed div.comment-content {
+  display: none;
+}
+div.collapsed div.comment-header {
+  margin-top: -3px;
+}
+div.private {
+  background-color: #eee;
+}
+div.comment-header {
+  padding: 0 10px;
+  border: 1px solid #777;
+  border-bottom: none;
+  -moz-border-radius: 5px 5px 0 0;
+}
+div.comment-content {
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #777;
+  border-top: none;
+  -moz-border-radius: 0 0 5px 5px;
+}
+table.comment-table {
+  width: 100%;
+}
+table.comment-table td.infos {
+  width: 20%;
+  border-right: 1px solid #ccc;
+}
+table.comment-table td.text {
+  width: 80%;
+}
+
+/*************************
+  * Tabs in requestt	 *
+  ************************/
+
+.request_tabnav {
+  color: #000000;
+  margin: 12px 0px 0px 0px;
+  padding: 0px;
+  z-index: 2;
+  padding-left: 10px
+}
+
+.request_tabnav li {
+  display: inline;
+  overflow: hidden;
+  list-style-type: none;
+}
+
+.request_tabnav a, a.active {
+  color: #000000;
+  background:  #FFEBBF;
+  font: bold 1em "Trebuchet MS", Arial, sans-serif;
+  border: 2px solid #cfc8cf;
+  padding: 2px 5px 2px 5px;
+  margin: 0;
+  border-bottom: 0;
+  text-decoration: none;
+  -moz-border-radius: .5em .5em 0 0;
+}
+
+.request_tabnav a.active {
+  background: #cfc8cf;
+}
+
+.request_tabnav a:hover {
+  color: #FFFFFF;
+  background: #FFD880;
+}
+
+.request_tabnav a:visited {
+  color: black;
+}
+
+.request_tabnav a.active:hover {
+  background: #FFB000;
+  color: #FFEBBF;
+}
+
+.request_tab_content {
+  text-align: justify;
+  background: #DDDDDD;
+  padding: 0.5em;
+  margin: 0;
+  margin-top: 0px;
+  border: 1px solid #cfc8cf;
+  z-index: -1;
+}
+.request_tab_content p {
+  margin: 10px;
+}
+
+.request_tab_content td {
+  margin-right: 1em;
+  padding-right: 1em;
+}
+
+/* history */
+.request_tab_content .history {
+  font-size: 95%;
+  padding: 0.5em;
+}
+
+
+/******************************************
+ * Progress bars
+ ******************************************/
+
+.progress-border {
+  width: 70px;
+  height: 15px;
+  background: #fff;
+  border: 1px solid silver;
+  margin: 1px;
+  padding: 0px;
+  position: relative;
+  float: right;
+}
+.progress-correction {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background: #f2ab99;
+  float: left
+}
+.progress-restant {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: #b0d295;
+  float: left
+}
+.progress-workaround {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background-color:#e7e0c4;
+  float: left
+}
+
+a.nobackground {
+  background: none;
+  text-decoration: none;
+}
+
+/*
+ * Alternate color between table lines or cells
+ */
+
+.even { background-color: #f0f0f0; }
+.even:hover { background-color: #e2efe2; }
+.odd { background-color: #e0e0e0; }
+.odd:hover {	background-color: #e2efe2; }
+
+/***************************************
+ * Statut d'une request en couleur
+ ***************************************/
+
+/* enregistree */
+.request_1 	{background: #f03730; /*red;*/}
+.request_1:hover{background: #f03700;}
+
+/* priseencompte */
+.request_2 	{background: #ffa26e; /*orange;*/}
+.request_2:hover{background: #ffa23e; }
+
+/* suspendue */
+.request_3	{background: #ffffba; /*yellow;*/}
+.request_3:hover{background: #ffff88; }
+
+/* analysee */
+.request_4 	{background: #a0e0f0; /*cyan;*/}
+.request_4:hover{background: #a0e0c0;}
+
+/* contournee */
+.request_5 	{background: #90EEa0; /* lightgreen; */}
+.request_5:hover{background: #90EE70; }
+
+/* corrigee */
+.request_6 	{background: #67ccfd;}
+.request_6:hover{background: #67cccd;}
+
+/* cloturee */
+.request_7 	{background: #c9c9af; /*grey;*/}
+.request_7:hover{background: #c9c97f; }
+
+/* annulee */
+.request_8 	{background: #D3D3D3; /*lightgrey;*/}
+.request_8:hover{background: #D3D3a3;}
+
+/* all lines are clickable */
+#requests_list, #cns tr *:hover {
+	cursor: pointer;
+}
+
+/***************************************
+ *                severite
+ ***************************************/
+
+/* TODO : options du select severite en couleur  */
+option.severite_1 {
+ 	background-color: white;
+}
+option.severite_2 {
+ 	background-color: green;
+}
+option.severite_3 {
+ 	background-color: yellow;
+}
+option.severite_4 {
+ 	background-color: orange;
+}
+option.severite_5 {
+ 	background-color: red;
+}
+option.severite_6 {
+ 	background-color: black;
+}
+
+/******************** reporting *******************/
+
+table.report tr td {
+	text-align: center;
+}
+
+/* formulaire de saisie mois et ann� */
+.report_form {
+	background-color: #d2dfd2;
+	float:right;
+	padding: 1em;
+	margin-left: 2em;
+	border: 1px solid grey;
+}
+/* page de reporting */
+.report {
+	background-color: white;
+	padding: 3em;
+}
+/* tableaux statistiques */
+.report_item, .report_sommaire {
+	width: 100%;
+	margin-top: 10px;
+}
+.report_graph {
+	width: 40%;
+}
+.report_legend {
+	text-align: center;
+	text-align: center;
+	width: 20%;
+}
+.report_data {
+	/*background-color: #d2dfd2;*/
+	width: 40%;
+	vertical-align: top;
+}
+.report_data table tr td {
+	text-align: center;
+}
+
+
+/** titres du reporting **/
+
+h1.title {
+	font-size: 300%;
+	text-align: center;
+	line-height: normal;
+}
+
+h1.chapter {
+	font-size: 300%;
+	padding: 5pt;
+	line-height: normal;
+}
+
+h2.chapter {
+	font-size: 200%;
+	padding: 5pt;
+	line-height: normal;
+}
+
+h1.section {
+	font-size: 100%;
+	text-align: center;
+	padding: 20pt;
+	line-height: normal;
+}
+
+/** bandeau d'images du reporting **/
+
+.report_images {
+	margin: 2em;
+	text-align: center;
+}
+
+#left  {
+	margin: 2px;
+	float: left;
+	width: 40%;
+	text-align: center;
+}
+
+#right {
+	margin: 2px;
+	float: right;
+	width: 40%;
+	text-align: center;
+}
+
+#middle {
+	margin: 2px;
+	float: left;
+	width: 18%;
+	text-align: center;
+}
+
+/* progress bar in the CNS view */
+.percentImage {
+  background: url(../images/percentimage_back2.png) no-repeat;
+}
+
+.cal1 {
+  font-size: 1.5em;
+  letter-spacing: .2em;
+  padding-left: .2em
+}
+.cal1x {
+  letter-spacing: 0em;
+  padding-left: 0em
+}
+
+.cal2 {
+  font-weight: bold;
+  font-size: 2em;
+  line-height: .7em;
+}
+
+.cal3 {
+  font-size: .8em;
+  line-height: 1em;
+}
+
+/***************** aide et informations ***************/
+
+.help {
+  background-color: #FFFFFF;
+}
+
+/** Messages d'informations
+ * Tous les messages heritent de la classe .information
+ * Ainsi, tous les messages sont homogènes au niveau du style
+ * On précise *en plus* le type d'info concerné : error, notice ou rappel
+ * Surcharger les classe de type pour préciser la couleur par exemple
+ * Exemple : <div class="information notice"></div>
+ */
+.information {
+  position: fixed;
+  top: 20px;
+  font-weight: bold;
+  margin: 1em 0em 1em 0em;
+  padding: 1em;
+}
+.close_information {
+  float: right;
+  cursor: pointer;
+}
+.error {
+  background-color: #FFD9D9;
+  border: 1px solid Red;
+  color: red;
+}
+.notice {
+  background-color: #D9FFD9;
+  border: 1px solid Green;
+  color: green;
+}
+
+td.error div.title {
+  color : red;
+  font-size : 120%;
+  font-weight : bold;
+  background : white;
+}
+
+td.error div.link {
+  margin-top : 1em;
+}
+
+table.main td.error {
+  vertical-align : top;
+  padding : 150px 0 0 150px;
+}

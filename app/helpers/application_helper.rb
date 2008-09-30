@@ -24,13 +24,13 @@
 # - LISTS ET TABLES
 # - TIME
 
-
 module ApplicationHelper
   include PagesHelper
   include FormsHelper
   include LinksHelper
   include ImagesHelper
   include DatesHelper
+  include TagsHelper
 
   ### TEXT #####################################################################
   # indent text and escape HTML caracters
@@ -93,31 +93,20 @@ module ApplicationHelper
     # It can really be pretty ruby. We keep it under the hand
     # until yarv comes and so this code will be reasonabily fast
     # yield_or_default = proc {|e| (block_given? ? yield(e) : e) }
-
-    # TODO : remove this 'puce' option, change code using this options
-    # and use CSS class instead.
-    if options.has_key? :puce
-      puce = " #{options[:puce]} "
-      elements.each { |e|
-        elt = yield(e)
-        result << puce << elt << '<br />' unless elt.blank?
-      }
-    else
-      result << '<ul>'
-      edit = options[:edit]
-      edit_call, delete_call = "edit_#{edit}_path","#{edit}_path" if edit
-      elements.each { |e|
-        elt = yield(e)
-        unless elt.blank?
-          result << '<li>'
-          result << link_to_edit(send(edit_call, e)).to_s << ' ' if edit
-          result << elt
-          result << ' ' << link_to_delete(send(delete_call, e)).to_s if edit
-          result << '</li>'
-        end
-      }
-      result << '</ul>'
-    end
+    result << '<ul>'
+    edit = options[:edit]
+    edit_call, delete_call = "edit_#{edit}_path","#{edit}_path" if edit
+    elements.each { |e|
+      elt = yield(e)
+      unless elt.blank?
+        result << '<li>'
+        result << link_to_edit(send(edit_call, e)).to_s << ' ' if edit
+        result << elt
+        result << ' ' << link_to_delete(send(delete_call, e)).to_s if edit
+        result << '</li>'
+      end
+    }
+    result << '</ul>'
     result
   end
 
@@ -137,20 +126,20 @@ module ApplicationHelper
   #   :content_columns > active l'affichage des content_columns si positionné à true
   #   :add_lines > affiche à la fin le tableau de lignes passé [[line1],[line2]]
   # TODO : intégrer width et style dans une seule option
-  def show_table(elements, ar, titres, options = {})
-    return '<p>' << _('No %s  at the moment') % ar.table_name.singularize + '</p>' unless elements and elements.size > 0
+  def show_table(elements, ar, titles, options = {})
+    return '<p>' << _('No %s at the moment') % ar.table_name.singularize + '</p>' unless elements and elements.size > 0
     width = ( options[:width] ? "width=#{options[:width]}" : '' )
-    result = "<table #{width} class=\"show\">"
+    result = "<table #{width} class=\"full\">"
     content_columns = options.has_key?(:content_columns)
 
-    if titres.size > 0
-      result << '<tr>'
+    if titles
+      result << '<thead><tr>'
       if (content_columns)
         ar.content_columns.each{|c| result <<  "<th>#{c.human_name}</th>"}
       end
       #On doit mettre nowrap="nowrap" pour que ça soit valide XHTML
-      titres.each {|t| result << "<th nowrap=\"nowrap\">#{t}</th>" }
-      result << '</tr>'
+      titles.each {|t| result << "<th nowrap=\"nowrap\">#{t}</th>" }
+      result << '</tr></thead>'
     end
 
     elements.each_index { |i|
@@ -228,15 +217,13 @@ module ApplicationHelper
   def build_simple_menu(menu, options={})
     return unless menu.is_a? Array
     menu.compact!
-    class_name = options[:class] ||= 'simple_menu'
     out = ''
-    out << '<div class="'+ class_name +'">'
-    out << form_tag(demandes_path || '', :method => :get) if options.has_key? :form
+    out << form_tag(issues_path || '', :method => :get) if options.has_key? :form
     out << ' <ul>'
     menu.each { |e| out << "<li>#{e}</li>" }
     out << ' </ul>'
     out << '</form>' if options[:form]
-    out << '</div>'
+    #            <li id="current"><a href="#">Button 1</a></li>
   end
 
   # Build a menu from a hash of 2 arrays : titles and links

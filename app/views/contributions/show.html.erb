@@ -1,6 +1,6 @@
 <%= public_link_to _('Home'), welcome_path %> >
  <%= public_link_to _('Contributions'), contributions_path %> >
-  <%= public_link_to @contribution.logiciel.name, list_contribution_path(@contribution.logiciel_id) %> >
+  <%= public_link_to @contribution.software.name, list_contribution_path(@contribution.software_id) %> >
 
 <h2>
   <%= public_link_to_file @contribution, 'patch', :image => true, :else => '' %>
@@ -9,10 +9,6 @@
 </h2>
 <div class="info">
   <%= @contribution.description %>
-  <% if @contribution.id_mantis && @ingenieur %>
-     <p><b>Demande du portail v1 : </b>
-        <%=link_to_any_demande @contribution %></p>
-  <% end %>
 
   <%= link_to_new_urlreversement(@contribution.id) %>
   <% options = { :edit => 'urlreversement' } %>
@@ -36,8 +32,8 @@
       <%= _('This patch was not submitted to the community') %>
   <% end %><br />
 
-  <% if @ingenieur && @contribution.demande %>
-    <%= link_to_demande(@contribution.demande, :show_id => true, :icon_severite => true) %><br/>
+  <% if @ingenieur && @contribution.issue %>
+    <%= link_to_issue(@contribution.issue, :show_id => true, :icon_severite => true) %><br/>
   <% end %>
 </div>
 

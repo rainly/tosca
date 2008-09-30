@@ -114,7 +114,7 @@ class PhonecallsControllerTest < Test::Unit::TestCase
 
     assert flash.has_key?(:notice)
     assert_response :redirect
-    assert_redirected_to demande_path(assigns(:phonecall).demande)
+    assert_redirected_to issue_path(assigns(:phonecall).issue)
   end
 
   def test_destroy

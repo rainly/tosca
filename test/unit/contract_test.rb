@@ -47,21 +47,21 @@ class ContractTest < Test::Unit::TestCase
     assert_equal c.interval_in_seconds, interval * 1.hour
   end
 
-  def test_logiciels
-    Contract.find(:first).logiciels.each{ |l| assert l.is_a?(Logiciel)}
+  def test_softwares
+    Contract.find(:first).softwares.each{ |l| assert l.is_a?(Software)}
   end
 
-  def test_demandes
+  def test_issues
     c = Contract.find :first
-    c.demandes.each{ |d|
-      assert d.is_a?(Demande)
+    c.issues.each{ |d|
+      assert d.is_a?(Issue)
       assert_equal d.contract_id, c.id
     }
   end
 
-  def test_typedemandes
+  def test_typeissues
     Contract.find(:all).each do |c|
-      c.typedemandes.each{ |td| assert_kind_of Typedemande, td }
+      c.typeissues.each{ |td| assert_kind_of Typeissue, td }
     end
   end
 

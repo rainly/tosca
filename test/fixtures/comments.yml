@@ -1,0 +1,1443 @@
+comment_00001:
+  created_on: 2008-01-01 00:00:01 +01:00
+  text: "Bla Bla"
+  updated_on: 2008-04-07 11:18:02 +02:00
+  private: false
+  ingenieur_id: 1
+  issue_id: 1
+  id: 1
+  severite_id: 3
+  elapsed: 0
+  statut_id: 2
+  user_id: 4
+  attachment_id: 1
+comment_00002:
+  created_on: 2008-01-01 00:00:01 +01:00
+  text: "Bla Bla"
+  updated_on: 2008-04-07 11:18:02 +02:00
+  private: false
+  ingenieur_id: 2
+  issue_id: 2
+  id: 2
+  severite_id: 3
+  elapsed: 1
+  statut_id: 2
+  user_id: 4
+  attachment_id: 2
+comment_00003:
+  created_on: 2008-01-01 00:00:02 +01:00
+  text: "Bla Bla"
+  updated_on: 2008-01-01 00:00:02 +01:00
+  private: false
+  ingenieur_id: 2
+  issue_id: 2
+  id: 3
+  severite_id:
+  elapsed: 0
+  statut_id:
+  user_id: 5
+  attachment_id: 3
+comment_00004:
+  created_on: 2008-04-16 16:55:46
+  text: "Bla Bla"
+  updated_on: 2008-05-10 15:30:14
+  ingenieur_id: 2
+  private: "0"
+  issue_id: "4"
+  id: "7572"
+  elapsed: "0"
+  severite_id: "2"
+  statut_id: "1"
+  user_id: "187"
+  attachment_id:
+comment_00005:
+  created_on: 2008-04-16 16:56:22
+  text: "Bla Bla"
+  updated_on: 2008-05-10 15:30:14
+  ingenieur_id: "24"
+  private: "0"
+  issue_id: "4"
+  id: "7573"
+  elapsed: "1"
+  severite_id:
+  statut_id: "2"
+  user_id: "2"
+  attachment_id:
+comment_00006:
+  created_on: 2008-04-16 16:57:56
+  text: "Bla Bla"
+  updated_on: 2008-04-16 16:57:56
+  ingenieur_id:
+  private: "1"
+  issue_id: "4"
+  id: "7574"
+  elapsed: "0"
+  severite_id:
+  statut_id:
+  user_id: "2"
+  attachment_id:
+comment_00007:
+  created_on: 2008-04-16 18:10:36
+  text: "Bla Bla"
+  updated_on: 2008-04-16 18:10:36
+  ingenieur_id:
+  private: "1"
+  issue_id: "4"
+  id: "7581"
+  elapsed: "0"
+  severite_id:
+  statut_id:
+  user_id: "73"
+  attachment_id:
+comment_00008:
+  created_on: 2008-04-30 10:23:14
+  text: "Bla Bla"
+  updated_on: 2008-05-10 15:30:15
+  ingenieur_id: "18"
+  private: "0"
+  issue_id: "4"
+  id: "7853"
+  elapsed: "1"
+  severite_id:
+  statut_id: "3"
+  user_id: "73"
+  attachment_id:
+comment_00009:
+  created_on: 2008-05-13 12:21:27
+  text: "Bla Bla"
+  updated_on: 2008-05-13 12:21:27
+  ingenieur_id:
+  private: "0"
+  issue_id: "4"
+  id: "7976"
+  elapsed: "0"
+  severite_id:
+  statut_id:
+  user_id: "73"
+  attachment_id:
+comment_00010:
+  created_on: 2008-04-23 16:37:53
+  text: "Bla Bla"
+  updated_on: 2008-05-10 15:30:18
+  ingenieur_id:
+  private: "0"
+  issue_id: "7"
+  id: "7736"
+  elapsed: "0"
+  severite_id: "2"
+  statut_id: "1"
+  user_id: "232"
+  attachment_id:
+comment_00011:
+  created_on: 2008-04-23 16:41:21
+  text: "Bla Bla"
+  updated_on: 2008-05-10 15:30:18
+  ingenieur_id: "38"
+  private: "0"
+  issue_id: "7"
+  id: "7737"
+  elapsed: "208"
+  severite_id:
+  statut_id: "2"
+  user_id: "2"
+  attachment_id:
+comment_00012:
+  created_on: 2008-04-23 17:51:34
+  text: "Bla Bla"
+  updated_on: 2008-04-23 17:53:38
+  ingenieur_id:
+  private: "0"
+  issue_id: "7"
+  id: "7739"
+  elapsed: "0"
+  severite_id:
+  statut_id:
+  user_id: "152"
+  attachment_id:
+comment_00013:
+  created_on: 2008-04-24 13:12:25
+  text: "Bla Bla"
+  updated_on: 2008-04-24 13:12:25
+  ingenieur_id:
+  private: "0"
+  issue_id: "7"
+  id: "7757"
+  elapsed: "0"
+  severite_id:
+  statut_id:
+  user_id: "232"
+  attachment_id:
+comment_00014:
+  created_on: 2008-04-24 16:04:35
+  text: "Bla Bla"
+  updated_on: 2008-04-24 16:04:35
+  ingenieur_id:
+  private: "1"
+  issue_id: "7"
+  id: "7762"
+  elapsed: "0"
+  severite_id:
+  statut_id:
+  user_id: "2"
+  attachment_id:
+comment_00015:
+  created_on: 2008-04-24 16:15:56
+  text: "Bla Bla"
+  updated_on: 2008-04-24 16:15:56
+  ingenieur_id:
+  private: "1"
+  issue_id: "7"
+  id: "7763"
+  elapsed: "0"
+  severite_id:
+  statut_id:
+  user_id: "152"
+  attachment_id:
+comment_00016:
+  created_on: 2008-04-24 16:28:58
+  text: "Bla Bla"
+  updated_on: 2008-04-24 16:28:58
+  ingenieur_id:
+  private: "1"
+  issue_id: "7"
+  id: "7764"
+  elapsed: "0"
+  severite_id:
+  statut_id:
+  user_id: "152"
+  attachment_id:
+comment_00017:
+  created_on: 2008-04-25 16:34:53
+  text: "Bla Bla"
+  updated_on: 2008-04-25 16:34:53
+  ingenieur_id:
+  private: "0"
+  issue_id: "7"
+  id: "7784"
+  elapsed: "0"
+  severite_id:
+  statut_id:
+  user_id: "152"
+  attachment_id:
+comment_00018:
+  created_on: 2008-04-29 12:01:52
+  text: "Bla Bla"
+  updated_on: 2008-05-10 15:30:18
+  ingenieur_id:
+  private: "0"
+  issue_id: "7"
+  id: "7821"
+  elapsed: "112831"
+  severite_id:
+  statut_id: "3"
+  user_id: "152"
+  attachment_id:
+comment_00019:
+  created_on: 2008-04-29 16:47:34
+  text: "Bla Bla"
+  updated_on: 2008-04-29 16:47:34
+  ingenieur_id:
+  private: "0"
+  issue_id: "7"
+  id: "7834"
+  elapsed: "0"
+  severite_id:
+  statut_id:
+  user_id: "232"
+  attachment_id:
+comment_00020:
+  created_on: 2007-01-17 18:10:37
+  text: "Bla Bla"
+  updated_on: 2008-05-10 15:28:05
+  ingenieur_id: "3"
+  private: "0"
+  issue_id: "8"
+  id: "2212"
+  elapsed: "0"
+  severite_id: "3"
+  statut_id: "1"
+  user_id: "68"
+  attachment_id:
+comment_00021:
+  created_on: 2007-01-17 18:12:14
+  text: "Bla Bla"
+  updated_on: 2008-05-10 15:28:05
+  ingenieur_id: "3"
+  private: "0"
+  issue_id: "8"
+  id: "658"
+  elapsed: "97"
+  severite_id:
+  statut_id: "2"
+  user_id: "1"
+  attachment_id:
+comment_00022:
+  created_on: 2007-01-17 18:17:43
+  text: "Bla Bla"
+  updated_on: 2007-01-17 18:17:43
+  ingenieur_id:
+  private: "0"
+  issue_id: "8"
+  id: "659"
+  elapsed: "0"
+  severite_id:
+  statut_id:
+  user_id: "4"
+  attachment_id:
+comment_00023:
+  created_on: 2007-01-17 18:51:06
+  text: "Bla Bla"
+  updated_on: 2008-05-10 15:28:05
+  ingenieur_id: "14"
+  private: "0"
+  issue_id: "8"
+  id: "2213"
+  elapsed: "2332"
+  severite_id:
+  statut_id: "2"
+  user_id: "4"
+  attachment_id:
+comment_00024:
+  created_on: 2007-01-18 12:34:58
+  text: "Bla Bla"
+  updated_on: 2008-05-10 15:28:05
+  ingenieur_id:
+  private: "0"
+  issue_id: "8"
+  id: "5"
+  elapsed: "20632"
+  severite_id:
+  statut_id: "4"
+  user_id: "1"
+  attachment_id:
+comment_00025:
+  created_on: 2007-01-18 12:39:11
+  text: "Bla Bla"
+  updated_on: 2008-05-10 15:28:05
+  ingenieur_id:
+  private: "0"
+  issue_id: "8"
+  id: "665"
+  elapsed: "253"
+  severite_id:
+  statut_id: "3"
+  user_id: "1"
+  attachment_id:
+comment_00026:
+  created_on: 2007-01-18 12:39:51
+  text: "Bla Bla"
+  updated_on: 2008-05-10 15:28:05
+  ingenieur_id: "3"
+  private: "0"
+  issue_id: "8"
+  id: "2214"
+  elapsed: "0"
+  severite_id:
+  statut_id: "3"
+  user_id: "1"
+  attachment_id:
+comment_00027:
+  created_on: 2007-01-22 15:28:26
+  text: "Bla Bla"
+  updated_on: 2007-01-22 15:28:26
+  ingenieur_id:
+  private: "1"
+  issue_id: "8"
+  id: "668"
+  elapsed: "0"
+  severite_id:
+  statut_id:
+  user_id: "1"
+  attachment_id:
+comment_00028:
+  created_on: 2007-01-23 10:37:23
+  text: "Bla Bla"
+  updated_on: 2007-01-23 10:37:23
+  ingenieur_id:
+  private: "0"
+  issue_id: "8"
+  id: "670"
+  elapsed: "0"
+  severite_id:
+  statut_id:
+  user_id: "1"
+  attachment_id:
+comment_00029:
+  created_on: 2007-02-27 17:15:34
+  text: "Bla Bla"
+  updated_on: 2008-05-10 15:28:05
+  ingenieur_id:
+  private: "0"
+  issue_id: "8"
+  id: "799"
+  elapsed: "0"
+  severite_id:
+  statut_id: "6"
+  user_id: "1"
+  attachment_id:
+comment_00030:
+  created_on: 2007-02-27 17:16:55
+  text: "Bla Bla"
+  updated_on: 2008-05-10 15:28:05
+  ingenieur_id:
+  private: "0"
+  issue_id: "8"
+  id: "800"
+  elapsed: "0"
+  severite_id:
+  statut_id: "7"
+  user_id: "1"
+  attachment_id:
+comment_00031:
+  created_on: 2007-12-04 08:49:26
+  text: "Bla Bla"
+  updated_on: 2008-05-10 15:28:57
+  ingenieur_id:
+  private: "0"
+  issue_id: "5"
+  id: "4739"
+  elapsed: "0"
+  severite_id: "3"
+  statut_id: "1"
+  user_id: "232"
+  attachment_id:
+comment_00032:
+  created_on: 2007-12-04 08:50:43
+  text: "Bla Bla"
+  updated_on: 2008-05-10 15:28:57
+  ingenieur_id:
+  private: "0"
+  issue_id: "5"
+  id: "4740"
+  elapsed: "77"
+  severite_id:
+  statut_id: "2"
+  user_id: "1"
+  attachment_id:
+comment_00033:
+  created_on: 2007-12-04 08:52:10
+  text: "Bla Bla"
+  updated_on: 2007-12-04 08:52:10
+  ingenieur_id:
+  private: "0"
+  issue_id: "5"
+  id: "4741"
+  elapsed: "0"
+  severite_id:
+  statut_id:
+  user_id: "1"
+  attachment_id:
+comment_00034:
+  created_on: 2007-12-04 09:23:08
+  text: "Bla Bla"
+  updated_on: 2007-12-04 09:23:08
+  ingenieur_id: "31"
+  private: "0"
+  issue_id: "5"
+  id: "4743"
+  elapsed: "0"
+  severite_id:
+  statut_id:
+  user_id: "1"
+  attachment_id:
+comment_00035:
+  created_on: 2008-01-02 10:26:08
+  text: "Bla Bla"
+  updated_on: 2008-01-02 10:26:08
+  ingenieur_id: "38"
+  private: "0"
+  issue_id: "5"
+  id: "5299"
+  elapsed: "0"
+  severite_id:
+  statut_id:
+  user_id: "3"
+  attachment_id:
+comment_00036:
+  created_on: 2008-01-07 17:29:18
+  text: "Bla Bla"
+  updated_on: 2008-01-07 17:29:18
+  ingenieur_id:
+  private: "0"
+  issue_id: "5"
+  id: "5362"
+  elapsed: "0"
+  severite_id:
+  statut_id:
+  user_id: "152"
+  attachment_id:
+comment_00037:
+  created_on: 2008-01-07 18:18:03
+  text: "Bla Bla"
+  updated_on: 2008-01-07 18:18:03
+  ingenieur_id:
+  private: "0"
+  issue_id: "5"
+  id: "5364"
+  elapsed: "0"
+  severite_id:
+  statut_id:
+  user_id: "152"
+  attachment_id:
+comment_00038:
+  created_on: 2008-02-07 14:18:23
+  text: "Bla Bla"
+  updated_on: 2008-02-07 14:18:23
+  ingenieur_id:
+  private: "0"
+  issue_id: "5"
+  id: "6193"
+  elapsed: "0"
+  severite_id:
+  statut_id:
+  user_id: "11"
+  attachment_id:
+comment_00039:
+  created_on: 2008-02-07 16:51:30
+  text: "Bla Bla"
+  updated_on: 2008-02-07 16:51:30
+  ingenieur_id:
+  private: "0"
+  issue_id: "5"
+  id: "6209"
+  elapsed: "0"
+  severite_id:
+  statut_id:
+  user_id: "232"
+  attachment_id:
+comment_00040:
+  created_on: 2008-03-27 14:42:51
+  text: "Bla Bla"
+  updated_on: 2008-05-10 15:28:58
+  ingenieur_id:
+  private: "0"
+  issue_id: "5"
+  id: "7130"
+  elapsed: "2580728"
+  severite_id:
+  statut_id: "3"
+  user_id: "152"
+  attachment_id:
+comment_00041:
+  created_on: 2008-04-18 11:25:53
+  text: "Bla Bla"
+  updated_on: 2008-04-18 11:25:53
+  ingenieur_id:
+  private: "0"
+  issue_id: "5"
+  id: "7651"
+  elapsed: "0"
+  severite_id:
+  statut_id:
+  user_id: "152"
+  attachment_id:
+comment_00042:
+  created_on: 2008-05-07 15:02:42
+  text: "Bla Bla"
+  updated_on: 2008-05-07 15:02:42
+  ingenieur_id:
+  private: "0"
+  issue_id: "5"
+  id: "7943"
+  elapsed: "0"
+  severite_id:
+  statut_id:
+  user_id: "265"
+  attachment_id:
+comment_00043:
+  created_on: 2008-02-18 10:26:04
+  text: "Bla Bla"
+  updated_on: 2008-05-10 15:29:52
+  ingenieur_id:
+  private: "0"
+  issue_id: "6"
+  id: "6406"
+  elapsed: "0"
+  severite_id: "3"
+  statut_id: "1"
+  user_id: "214"
+  attachment_id:
+comment_00044:
+  created_on: 2008-02-18 10:28:03
+  text: "Bla Bla"
+  updated_on: 2008-05-10 15:29:52
+  ingenieur_id:
+  private: "0"
+  issue_id: "6"
+  id: "6407"
+  elapsed: "119"
+  severite_id:
+  statut_id: "2"
+  user_id: "273"
+  attachment_id:
+comment_00045:
+  created_on: 2008-02-18 15:14:17
+  text: "Bla Bla"
+  updated_on: 2008-02-18 15:14:17
+  ingenieur_id:
+  private: "1"
+  issue_id: "6"
+  id: "6446"
+  elapsed: "0"
+  severite_id:
+  statut_id:
+  user_id: "4"
+  attachment_id:
+comment_00046:
+  created_on: 2008-04-07 20:30:48
+  text: "Bla Bla"
+  updated_on: 2008-04-07 20:30:48
+  ingenieur_id:
+  private: "0"
+  issue_id: "6"
+  id: "7359"
+  elapsed: "0"
+  severite_id:
+  statut_id:
+  user_id: "273"
+  attachment_id:
+comment_00047:
+  created_on: 2008-04-07 20:32:31
+  text: "Bla Bla"
+  updated_on: 2008-05-10 15:29:52
+  ingenieur_id:
+  private: "0"
+  issue_id: "6"
+  id: "7360"
+  elapsed: "1137868"
+  severite_id:
+  statut_id: "3"
+  user_id: "273"
+  attachment_id:
+comment_00048:
+  created_on: 2007-01-11 15:22:23
+  text: "Bla Bla"
+  updated_on: 2008-05-10 15:28:04
+  ingenieur_id: "17"
+  private: "0"
+  issue_id: "9"
+  id: "2208"
+  elapsed: "0"
+  severite_id: "2"
+  statut_id: "2"
+  user_id: "71"
+  attachment_id:
+comment_00049:
+  created_on: 2007-01-11 15:37:27
+  text: "Bla Bla"
+  updated_on: 2007-01-11 15:37:27
+  ingenieur_id:
+  private: "0"
+  issue_id: "9"
+  id: "644"
+  elapsed: "0"
+  severite_id:
+  statut_id:
+  user_id: "71"
+  attachment_id: "57"
+comment_00050:
+  created_on: 2007-01-11 15:39:04
+  text: "Bla Bla"
+  updated_on: 2007-01-11 15:39:04
+  ingenieur_id:
+  private: "0"
+  issue_id: "9"
+  id: "645"
+  elapsed: "0"
+  severite_id:
+  statut_id:
+  user_id: "71"
+  attachment_id: "58"
+comment_00051:
+  created_on: 2007-01-15 12:05:20
+  text: "Bla Bla"
+  updated_on: 2007-01-15 12:05:20
+  ingenieur_id:
+  private: "0"
+  issue_id: "9"
+  id: "647"
+  elapsed: "0"
+  severite_id:
+  statut_id:
+  user_id: "72"
+  attachment_id: "59"
+comment_00052:
+  created_on: 2007-01-15 15:07:55
+  text: "Bla Bla"
+  updated_on: 2007-01-15 15:07:55
+  ingenieur_id:
+  private: "0"
+  issue_id: "9"
+  id: "649"
+  elapsed: "0"
+  severite_id:
+  statut_id:
+  user_id: "2"
+  attachment_id:
+comment_00053:
+  created_on: 2007-01-19 11:55:11
+  text: "Bla Bla"
+  updated_on: 2007-01-19 11:55:11
+  ingenieur_id:
+  private: "0"
+  issue_id: "9"
+  id: "666"
+  elapsed: "0"
+  severite_id:
+  statut_id:
+  user_id: "2"
+  attachment_id:
+comment_00054:
+  created_on: 2007-01-22 13:42:50
+  text: "Bla Bla"
+  updated_on: 2007-01-22 13:42:50
+  ingenieur_id:
+  private: "0"
+  issue_id: "9"
+  id: "667"
+  elapsed: "0"
+  severite_id:
+  statut_id:
+  user_id: "2"
+  attachment_id:
+comment_00055:
+  created_on: 2007-01-23 11:34:52
+  text: "Bla Bla"
+  updated_on: 2007-01-23 11:34:52
+  ingenieur_id:
+  private: "0"
+  issue_id: "9"
+  id: "672"
+  elapsed: "0"
+  severite_id:
+  statut_id:
+  user_id: "2"
+  attachment_id:
+comment_00056:
+  created_on: 2007-01-23 17:31:06
+  text: "Bla Bla"
+  updated_on: 2007-01-23 17:31:06
+  ingenieur_id:
+  private: "0"
+  issue_id: "9"
+  id: "673"
+  elapsed: "0"
+  severite_id:
+  statut_id:
+  user_id: "2"
+  attachment_id:
+comment_00057:
+  created_on: 2007-01-23 18:58:29
+  text: "Bla Bla"
+  updated_on: 2007-01-23 18:58:29
+  ingenieur_id:
+  private: "0"
+  issue_id: "9"
+  id: "674"
+  elapsed: "0"
+  severite_id:
+  statut_id:
+  user_id: "2"
+  attachment_id: "60"
+comment_00058:
+  created_on: 2007-01-24 11:03:40
+  text: "Bla Bla"
+  updated_on: 2007-01-24 11:03:40
+  ingenieur_id:
+  private: "0"
+  issue_id: "9"
+  id: "675"
+  elapsed: "0"
+  severite_id:
+  statut_id:
+  user_id: "72"
+  attachment_id:
+comment_00059:
+  created_on: 2007-01-24 19:03:37
+  text: "Bla Bla"
+  updated_on: 2007-01-24 19:03:37
+  ingenieur_id:
+  private: "0"
+  issue_id: "9"
+  id: "676"
+  elapsed: "0"
+  severite_id:
+  statut_id:
+  user_id: "2"
+  attachment_id: "61"
+comment_00060:
+  created_on: 2007-01-24 19:05:34
+  text: "Bla Bla"
+  updated_on: 2007-01-24 19:05:34
+  ingenieur_id:
+  private: "0"
+  issue_id: "9"
+  id: "677"
+  elapsed: "0"
+  severite_id:
+  statut_id:
+  user_id: "2"
+  attachment_id:
+comment_00061:
+  created_on: 2007-01-25 10:24:57
+  text: "Bla Bla"
+  updated_on: 2008-05-10 15:28:04
+  ingenieur_id:
+  private: "0"
+  issue_id: "9"
+  id: "678"
+  elapsed: "1"
+  severite_id:
+  statut_id: "4"
+  user_id: "2"
+  attachment_id: "62"
+comment_00062:
+  created_on: 2007-01-25 10:28:22
+  text: "Bla Bla"
+  updated_on: 2008-05-10 15:28:04
+  ingenieur_id:
+  private: "0"
+  issue_id: "9"
+  id: "679"
+  elapsed: "1"
+  severite_id:
+  statut_id: "3"
+  user_id: "2"
+  attachment_id:
+comment_00063:
+  created_on: 2007-01-26 09:52:39
+  text: "Bla Bla"
+  updated_on: 2007-01-26 09:52:39
+  ingenieur_id:
+  private: "0"
+  issue_id: "9"
+  id: "682"
+  elapsed: "0"
+  severite_id:
+  statut_id:
+  user_id: "72"
+  attachment_id:
+comment_00064:
+  created_on: 2007-01-26 10:31:38
+  text: "Bla Bla"
+  updated_on: 2007-01-26 10:31:38
+  ingenieur_id:
+  private: "0"
+  issue_id: "9"
+  id: "683"
+  elapsed: "0"
+  severite_id:
+  statut_id:
+  user_id: "72"
+  attachment_id:
+comment_00065:
+  created_on: 2007-01-26 11:25:58
+  text: "Bla Bla"
+  updated_on: 2008-05-10 15:28:04
+  ingenieur_id:
+  private: "0"
+  issue_id: "9"
+  id: "684"
+  elapsed: "0"
+  severite_id:
+  statut_id: "2"
+  user_id: "2"
+  attachment_id:
+comment_00066:
+  created_on: 2007-01-26 13:38:35
+  text: "Bla Bla"
+  updated_on: 2008-05-10 15:28:04
+  ingenieur_id:
+  private: "0"
+  issue_id: "9"
+  id: "685"
+  elapsed: "1"
+  severite_id:
+  statut_id: "4"
+  user_id: "2"
+  attachment_id:
+comment_00067:
+  created_on: 2007-01-26 14:29:00
+  text: "Bla Bla"
+  updated_on: 2007-01-26 14:29:00
+  ingenieur_id:
+  private: "0"
+  issue_id: "9"
+  id: "686"
+  elapsed: "0"
+  severite_id:
+  statut_id:
+  user_id: "2"
+  attachment_id: "63"
+comment_00068:
+  created_on: 2007-01-26 14:29:31
+  text: "Bla Bla"
+  updated_on: 2007-01-26 14:29:31
+  ingenieur_id:
+  private: "0"
+  issue_id: "9"
+  id: "687"
+  elapsed: "0"
+  severite_id:
+  statut_id:
+  user_id: "2"
+  attachment_id: "64"
+comment_00069:
+  created_on: 2007-01-26 14:30:15
+  text: "Bla Bla"
+  updated_on: 2008-05-10 15:28:04
+  ingenieur_id:
+  private: "0"
+  issue_id: "9"
+  id: "688"
+  elapsed: "1"
+  severite_id:
+  statut_id: "3"
+  user_id: "2"
+  attachment_id:
+comment_00080:
+  created_on: 2007-01-29 08:25:15
+  text: "Bla Bla"
+  updated_on: 2007-01-29 08:25:15
+  ingenieur_id:
+  private: "0"
+  issue_id: "9"
+  id: "690"
+  elapsed: "0"
+  severite_id:
+  statut_id:
+  user_id: "2"
+  attachment_id:
+comment_00081:
+  created_on: 2007-01-29 08:26:42
+  text: "Bla Bla"
+  updated_on: 2007-01-29 08:26:42
+  ingenieur_id:
+  private: "0"
+  issue_id: "9"
+  id: "691"
+  elapsed: "0"
+  severite_id:
+  statut_id:
+  user_id: "2"
+  attachment_id: "65"
+comment_00082:
+  created_on: 2007-01-29 08:28:01
+  text: "Bla Bla"
+  updated_on: 2007-01-29 08:28:01
+  ingenieur_id:
+  private: "0"
+  issue_id: "9"
+  id: "692"
+  elapsed: "0"
+  severite_id:
+  statut_id:
+  user_id: "2"
+  attachment_id: "66"
+comment_00083:
+  created_on: 2007-03-08 18:09:16
+  text: "Bla Bla"
+  updated_on: 2007-03-08 18:09:16
+  ingenieur_id:
+  private: "0"
+  issue_id: "9"
+  id: "852"
+  elapsed: "0"
+  severite_id:
+  statut_id:
+  user_id: "72"
+  attachment_id: "98"
+comment_00084:
+  created_on: 2007-03-08 18:10:09
+  text: "Bla Bla"
+  updated_on: 2007-03-08 18:10:09
+  ingenieur_id:
+  private: "0"
+  issue_id: "9"
+  id: "853"
+  elapsed: "0"
+  severite_id:
+  statut_id:
+  user_id: "72"
+  attachment_id: "99"
+comment_00085:
+  created_on: 2007-03-08 18:10:54
+  text: "Bla Bla"
+  updated_on: 2007-03-08 18:10:54
+  ingenieur_id:
+  private: "0"
+  issue_id: "9"
+  id: "854"
+  elapsed: "0"
+  severite_id:
+  statut_id:
+  user_id: "72"
+  attachment_id: "100"
+comment_00086:
+  created_on: 2007-03-09 12:07:11
+  text: "Bla Bla"
+  updated_on: 2007-03-09 12:07:11
+  ingenieur_id:
+  private: "0"
+  issue_id: "9"
+  id: "859"
+  elapsed: "0"
+  severite_id:
+  statut_id:
+  user_id: "2"
+  attachment_id: "101"
+comment_00087:
+  created_on: 2007-03-09 12:08:20
+  text: "Bla Bla"
+  updated_on: 2007-03-09 12:08:20
+  ingenieur_id:
+  private: "0"
+  issue_id: "9"
+  id: "860"
+  elapsed: "0"
+  severite_id:
+  statut_id:
+  user_id: "2"
+  attachment_id: "102"
+comment_00088:
+  created_on: 2007-03-09 12:14:00
+  text: "Bla Bla"
+  updated_on: 2007-03-09 12:24:48
+  ingenieur_id:
+  private: "0"
+  issue_id: "9"
+  id: "861"
+  elapsed: "0"
+  severite_id:
+  statut_id:
+  user_id: "2"
+  attachment_id:
+comment_00089:
+  created_on: 2007-03-09 17:09:27
+  text: "Bla Bla"
+  updated_on: 2007-03-09 17:09:27
+  ingenieur_id:
+  private: "0"
+  issue_id: "9"
+  id: "869"
+  elapsed: "0"
+  severite_id:
+  statut_id:
+  user_id: "72"
+  attachment_id:
+comment_00090:
+  created_on: 2007-03-09 18:33:17
+  text: "Bla Bla"
+  updated_on: 2007-03-09 18:33:17
+  ingenieur_id:
+  private: "0"
+  issue_id: "9"
+  id: "873"
+  elapsed: "0"
+  severite_id:
+  statut_id:
+  user_id: "2"
+  attachment_id:
+comment_00091:
+  created_on: 2007-03-12 09:56:42
+  text: "Bla Bla"
+  updated_on: 2007-03-12 09:56:42
+  ingenieur_id:
+  private: "0"
+  issue_id: "9"
+  id: "877"
+  elapsed: "0"
+  severite_id:
+  statut_id:
+  user_id: "72"
+  attachment_id:
+comment_00092:
+  created_on: 2007-03-12 10:08:50
+  text: "Bla Bla"
+  updated_on: 2007-03-12 10:08:50
+  ingenieur_id:
+  private: "0"
+  issue_id: "9"
+  id: "878"
+  elapsed: "0"
+  severite_id:
+  statut_id:
+  user_id: "72"
+  attachment_id:
+comment_00093:
+  created_on: 2007-03-12 10:12:18
+  text: "Bla Bla"
+  updated_on: 2007-03-12 10:12:18
+  ingenieur_id:
+  private: "0"
+  issue_id: "9"
+  id: "879"
+  elapsed: "0"
+  severite_id:
+  statut_id:
+  user_id: "2"
+  attachment_id: "107"
+comment_00094:
+  created_on: 2007-03-12 10:12:37
+  text: "Bla Bla"
+  updated_on: 2008-05-10 15:28:04
+  ingenieur_id: "1"
+  private: "0"
+  issue_id: "9"
+  id: "2209"
+  elapsed: "0"
+  severite_id:
+  statut_id: "3"
+  user_id: "2"
+  attachment_id:
+comment_00095:
+  created_on: 2007-03-12 10:19:17
+  text: "Bla Bla"
+  updated_on: 2007-03-12 10:19:17
+  ingenieur_id:
+  private: "0"
+  issue_id: "9"
+  id: "880"
+  elapsed: "0"
+  severite_id:
+  statut_id:
+  user_id: "2"
+  attachment_id: "108"
+comment_00096:
+  created_on: 2007-03-12 14:52:05
+  text: "Bla Bla"
+  updated_on: 2007-03-12 14:52:05
+  ingenieur_id:
+  private: "0"
+  issue_id: "9"
+  id: "883"
+  elapsed: "0"
+  severite_id:
+  statut_id:
+  user_id: "72"
+  attachment_id:
+comment_00097:
+  created_on: 2007-03-12 15:55:15
+  text: "Bla Bla"
+  updated_on: 2007-03-12 15:55:15
+  ingenieur_id:
+  private: "0"
+  issue_id: "9"
+  id: "884"
+  elapsed: "0"
+  severite_id:
+  statut_id:
+  user_id: "2"
+  attachment_id: "109"
+comment_00098:
+  created_on: 2007-03-12 15:56:05
+  text: "Bla Bla"
+  updated_on: 2007-03-12 15:56:05
+  ingenieur_id:
+  private: "0"
+  issue_id: "9"
+  id: "885"
+  elapsed: "0"
+  severite_id:
+  statut_id:
+  user_id: "2"
+  attachment_id: "110"
+comment_00099:
+  created_on: 2007-03-12 15:57:12
+  text: "Bla Bla"
+  updated_on: 2007-03-12 15:57:12
+  ingenieur_id:
+  private: "0"
+  issue_id: "9"
+  id: "886"
+  elapsed: "0"
+  severite_id:
+  statut_id:
+  user_id: "2"
+  attachment_id:
+comment_00100:
+  created_on: 2007-03-12 17:22:03
+  text: "Bla Bla"
+  updated_on: 2007-03-12 17:22:03
+  ingenieur_id:
+  private: "0"
+  issue_id: "9"
+  id: "889"
+  elapsed: "0"
+  severite_id:
+  statut_id:
+  user_id: "72"
+  attachment_id:
+comment_00101:
+  created_on: 2007-03-13 09:30:49
+  text: "Bla Bla"
+  updated_on: 2007-03-13 09:30:49
+  ingenieur_id:
+  private: "0"
+  issue_id: "9"
+  id: "892"
+  elapsed: "0"
+  severite_id:
+  statut_id:
+  user_id: "2"
+  attachment_id: "111"
+comment_00102:
+  created_on: 2007-03-13 09:41:03
+  text: "Bla Bla"
+  updated_on: 2007-03-13 09:41:03
+  ingenieur_id:
+  private: "0"
+  issue_id: "9"
+  id: "893"
+  elapsed: "0"
+  severite_id:
+  statut_id:
+  user_id: "2"
+  attachment_id: "112"
+comment_00103:
+  created_on: 2007-03-13 10:50:02
+  text: "Bla Bla"
+  updated_on: 2007-03-13 10:50:02
+  ingenieur_id:
+  private: "0"
+  issue_id: "9"
+  id: "895"
+  elapsed: "0"
+  severite_id:
+  statut_id:
+  user_id: "72"
+  attachment_id:
+comment_00104:
+  created_on: 2007-03-13 14:59:46
+  text: "Bla Bla"
+  updated_on: 2008-05-10 15:28:04
+  ingenieur_id:
+  private: "0"
+  issue_id: "9"
+  id: "896"
+  elapsed: "0"
+  severite_id:
+  statut_id: "6"
+  user_id: "2"
+  attachment_id:
+comment_00105:
+  created_on: 2007-03-13 15:00:03
+  text: "Bla Bla"
+  updated_on: 2008-05-10 15:28:04
+  ingenieur_id:
+  private: "0"
+  issue_id: "9"
+  id: "897"
+  elapsed: "0"
+  severite_id:
+  statut_id: "7"
+  user_id: "2"
+  attachment_id:
+comment_00106:
+  created_on: 2007-06-18 15:11:09
+  text: "Bla Bla"
+  updated_on: 2008-05-10 15:28:22
+  ingenieur_id:
+  private: "0"
+  issue_id: "10"
+  id: "2391"
+  elapsed: "0"
+  severite_id: "2"
+  statut_id: "1"
+  user_id: "111"
+  attachment_id:
+comment_00107:
+  created_on: 2007-06-18 15:11:55
+  text: "Bla Bla"
+  updated_on: 2008-05-10 15:28:22
+  ingenieur_id: "1"
+  private: "0"
+  issue_id: "10"
+  id: "1286"
+  elapsed: "1"
+  severite_id:
+  statut_id: "2"
+  user_id: "2"
+  attachment_id:
+comment_00108:
+  created_on: 2007-06-18 15:11:59
+  text: "Bla Bla"
+  updated_on: 2008-05-10 15:28:22
+  ingenieur_id: "30"
+  private: "0"
+  issue_id: "10"
+  id: "2392"
+  elapsed: "4"
+  severite_id:
+  statut_id: "2"
+  user_id: "109"
+  attachment_id:
+comment_00109:
+  created_on: 2007-06-20 12:45:02
+  text: "Bla Bla"
+  updated_on: 2008-05-10 15:28:22
+  ingenieur_id:
+  private: "0"
+  issue_id: "10"
+  id: "1324"
+  elapsed: "1"
+  severite_id:
+  statut_id: "3"
+  user_id: "152"
+  attachment_id:
+comment_00110:
+  created_on: 2007-06-25 10:43:14
+  text: "Bla Bla"
+  updated_on: 2007-06-25 10:43:14
+  ingenieur_id:
+  private: "0"
+  issue_id: "10"
+  id: "1415"
+  elapsed: "0"
+  severite_id:
+  statut_id:
+  user_id: "111"
+  attachment_id:
+comment_00111:
+  created_on: 2007-11-02 17:15:35
+  text: "Bla Bla"
+  updated_on: 2007-11-02 17:15:35
+  ingenieur_id:
+  private: "0"
+  issue_id: "10"
+  id: "4016"
+  elapsed: "0"
+  severite_id:
+  statut_id:
+  user_id: "159"
+  attachment_id:
+comment_00112:
+  created_on: 2007-11-15 16:10:20
+  text: "Bla Bla"
+  updated_on: 2007-11-15 16:10:20
+  ingenieur_id: "1"
+  private: "0"
+  issue_id: "10"
+  id: "4269"
+  elapsed: "0"
+  severite_id:
+  statut_id:
+  user_id: "2"
+  attachment_id:
+comment_00113:
+  created_on: 2007-11-16 18:17:32
+  text: "Bla Bla"
+  updated_on: 2008-05-10 15:28:22
+  ingenieur_id:
+  private: "0"
+  issue_id: "10"
+  id: "4301"
+  elapsed: "0"
+  severite_id:
+  statut_id: "7"
+  user_id: "159"
+  attachment_id:
+comment_00114:
+  created_on: 2007-11-16 18:21:07
+  text: "Bla Bla"
+  updated_on: 2007-11-16 18:21:07
+  ingenieur_id:
+  private: "0"
+  issue_id: "10"
+  id: "4305"
+  elapsed: "0"
+  severite_id:
+  statut_id:
+  user_id: "159"
+  attachment_id:
+comment_00115:
+  created_on: 2007-11-16 19:24:40
+  text: "Bla Bla"
+  updated_on: 2008-05-10 15:28:22
+  ingenieur_id:
+  private: "0"
+  issue_id: "10"
+  id: "4307"
+  elapsed: "0"
+  severite_id:
+  statut_id: "2"
+  user_id: "2"
+  attachment_id:
+comment_00116:
+  created_on: 2007-11-16 23:24:03
+  text: "Bla Bla"
+  updated_on: 2007-11-16 23:24:03
+  ingenieur_id:
+  private: "0"
+  issue_id: "10"
+  id: "4309"
+  elapsed: "0"
+  severite_id:
+  statut_id:
+  user_id: "159"
+  attachment_id:
+comment_00117:
+  created_on: 2007-12-14 15:41:45
+  text: "Bla Bla"
+  updated_on: 2007-12-14 15:41:45
+  ingenieur_id: "38"
+  private: "0"
+  issue_id: "10"
+  id: "5002"
+  elapsed: "0"
+  severite_id:
+  statut_id:
+  user_id: "2"
+  attachment_id:
+comment_00118:
+  created_on: 2007-12-14 15:42:12
+  text: "Bla Bla"
+  updated_on: 2007-12-14 15:42:12
+  ingenieur_id:
+  private: "1"
+  issue_id: "10"
+  id: "5003"
+  elapsed: "0"
+  severite_id:
+  statut_id:
+  user_id: "2"
+  attachment_id:
+comment_00119:
+  created_on: 2008-01-28 19:48:54
+  text: "Bla Bla"
+  updated_on: 2008-05-10 15:28:22
+  ingenieur_id:
+  private: "0"
+  issue_id: "10"
+  id: "5994"
+  elapsed: "1"
+  severite_id:
+  statut_id: "4"
+  user_id: "152"
+  attachment_id:
+comment_00120:
+  created_on: 2008-01-28 19:49:14
+  text: "Bla Bla"
+  updated_on: 2008-05-10 15:28:22
+  ingenieur_id:
+  private: "0"
+  issue_id: "10"
+  id: "5995"
+  elapsed: "0"
+  severite_id:
+  statut_id: "3"
+  user_id: "152"
+  attachment_id:
+comment_00121:
+  created_on: 2008-01-28 19:49:43
+  text: "Bla Bla"
+  updated_on: 2008-05-10 15:28:22
+  ingenieur_id:
+  private: "0"
+  issue_id: "10"
+  id: "5996"
+  elapsed: "0"
+  severite_id:
+  statut_id: "6"
+  user_id: "152"
+  attachment_id:

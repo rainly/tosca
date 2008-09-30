@@ -35,15 +35,22 @@ require 'utils'
 
 path = File.join RAILS_ROOT, 'config', 'database.yml'
 Utils.check_files(path, 'Your database is not configured')
-path = File.join RAILS_ROOT, 'lib', 'config.rb'
-Utils.check_files(path, 'Your mail server is not configured')
+path = File.join RAILS_ROOT, 'config', 'config.rb'
+Utils.check_files(path, 'The configuration of the application is not done')
 
 cache_path = File.join RAILS_ROOT, 'tmp', 'cache'
 page_cache_path = File.join RAILS_ROOT, 'public', 'cache'
 
 # Used to have extension
 # See http://github.com/pivotal/desert/tree/master for more info
-require 'desert'
+begin
+  require 'desert'
+rescue
+  # It cannot be loaded in config.gem, so we need this hack for freezed version
+  desert_path = File.join(RAILS_ROOT, 'vendor', 'gems', 'desert-0.2.1', 'lib')
+  $LOAD_PATH.unshift desert_path
+  require 'desert'
+end
 
 Rails::Initializer.run do |config|
   # Settings in config/environments/* take precedence those specified here
@@ -67,7 +74,7 @@ Rails::Initializer.run do |config|
 
   # Used to generate graphs of activity report & resize some pictures
   # We keep 1.15.10 version, coz debian makes an old & staging distribution
-  config.gem 'rmagick', :lib => 'RMagick', :version => '1.15.10'
+  config.gem 'rmagick', :version => '1.15.15', :lib => "RMagick"
   # Used to load the extension mechanism
   config.gem 'desert', :version => '0.2.1'
 

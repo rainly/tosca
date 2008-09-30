@@ -51,7 +51,7 @@ class Test::Unit::TestCase
 
   # Add more helper methods to be used by all tests here...
 
-  def login login, password
+  def login(login, password)
     controller = @controller
     @controller = AccountController.new
     post :login, :user_login => login, :user_password => password,
@@ -90,11 +90,10 @@ class Test::Unit::TestCase
     uploaded_file(path, 'image/gif', filename)
   end
 
-
   # Call it like this :
-  #   check_ajax_filter :severite_id, 2, :demandes
+  #   check_ajax_filter :severite_id, 2, :requests
   # For testing an ajax filters for "severite_id" field on
-  # assigns(:demandes) collection, with a value of 2 for each of'em
+  # assigns(:requests) collection, with a value of 2 for each of'em
   def check_ajax_filter(attribute, value, collection_index)
     xhr :get, :index, :filters => { attribute => value }
     assert_response :success
@@ -110,7 +109,6 @@ class Test::Unit::TestCase
       assert klass.find(i)
     }
   end
-
 
   # List of all common methods used on an ActiveRecord to display (a part) of it
   StringMethods = [ :to_s, :name, :to_param, :name_clean,
@@ -145,7 +143,7 @@ class Test::Unit::TestCase
   ArrayMethods = [ :content_columns ] unless defined? ArrayMethods
   # Will call all common methods involved with arrays
   # You can add specific methods.
-  # Ex : check_strings(Demande, :remanent_fields)
+  # Ex : check_strings(Request, :remanent_fields)
   # => will call all ArrayMethods and the additionnal remanent_fields
   # Note : All test methods are instance ones.
   def check_arrays(klass, *methods)

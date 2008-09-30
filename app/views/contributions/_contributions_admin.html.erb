@@ -1,22 +1,21 @@
-<h1><%= _('List of contributions') << StaticImage::spinner %></h1>
+<h1><%= _('List of contributions') + StaticImage::spinner %></h1>
 
 <% links = show_pages_links(@contribution_pages, _('a contribution'),
                             :url => admin_contributions_path) %>
 <%= links %>
 
-<% titres = [_('Software'), _('Patch'), _('Request'), _('State'), _('Name'),
+<% titres = [_('Software'), _('Patch'), _('Issue'), _('State'), _('Name'),
              _('Submitted on'), _('Closed on'), _('Delay'), _('Updated on')]%>
 <% form_tag(contributions_path) do %>
 <%= show_table(@contributions, Contribution, titres) { |c|
   result = ''
   # tache = c.todo(max_jours)
   versions = nil # c.versions.collect{|p| p.version } * ', '
-  result << "<td>#{public_link_to_logiciel c.logiciel}"
+  result << "<td>#{public_link_to_software c.software}"
   result << " (#{versions})" unless versions.blank?
   result << " </td>"
   result << "<td>#{link_to_file c, 'patch', :image => true}</td>"
-  result << "<td nowrap=\"nowrap\">#{link_to_any_demande c}</td>"
-  # result << "<td " + (tache ? "style='background-color:orange'>#{tache}" : ">") +"</td>"
+  result << "<td nowrap=\"nowrap\">#{link_to_issue(c.issue) if c.issue}</td>"
   result << "<td>#{c.etatreversement.name if c.etatreversement}</td>"
   result << "<td>#{link_to_contribution c}</td>"
   result << "<td style='color:green'><span class=\"date\">#{c.contributed_on_formatted}</span></td>"

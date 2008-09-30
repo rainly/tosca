@@ -36,7 +36,7 @@ ActionController::Routing::Routes.draw do |map|
   map.without_orm('welcome', %w(admin plan about deroulement
     index natures statut suggestions declaration))
   map.without_orm('welcome', %w(suggestions), :post)
-  map.without_orm('reporting', %w(configuration flux general digest digest_resultat))
+  map.without_orm('reporting', %w(configuration flux general digest digest_resultat calendar))
   map.without_orm('access', %w(denied))
   map.without_orm('alerts', %w(on_submit index))
   map.without_orm('alerts', %w(ajax_on_submit), :post)
@@ -73,7 +73,7 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :archives
   map.resources :changelogs
   map.resources :clients, :collection => { :stats => :get }
-  map.resources :commentaires, :member => {
+  map.resources :comments, :member => {
      :change_state => :post,
      :comment => :post }
   map.resources :competences
@@ -81,25 +81,10 @@ ActionController::Routing::Routes.draw do |map|
     :collection => {
       :ajax_choose => :post, :actives => :get, :ajax_add_software => :post,
       :add_software => :post, :auto_complete_for_user_name => :post },
-    :member => { :supported_software => :get }
+      :member => { :supported_software => :get, :tags => :get }
   map.resources :contributions,
     :collection => { :admin => :any, :select => :get, :experts => :get, :ajax_list_versions => :post },
     :member => { :list => :get }
-  map.resources :demandes,
-    :collection => { :pending => :get,
-      :ajax_renew => :post, # in pending view
-      :ajax_display_commitment => :post, # in new/edit form
-      :ajax_display_version => :post, # in new/edit form
-      :ajax_display_contract => :post }, # in new/edit form
-    :member => { :print => :get, # All members are in show view
-      :link_contribution => :post,
-      :unlink_contribution => :post,
-      :ajax_description => :get,
-      :ajax_comments => :get,
-      :ajax_history => :get,
-      :ajax_attachments => :get,
-      :ajax_appels => :get,
-      :ajax_cns => :get }
   map.resources :distributeurs
   map.resources :documents,
     :collection => { :select => :get },
@@ -114,7 +99,7 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :images, :singular => 'img'
   map.resources :knowledges
   map.resources :licenses
-  map.resources :logiciels,
+  map.resources :softwares,
     :collection => {:ajax_update_tags => :get}
   map.resources :machines
   map.resources :mainteneurs
@@ -127,6 +112,24 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :phonecalls,  :collection => { :ajax_recipients => :get }
   map.resources :attachments
   map.resources :releases
+  map.resources :issues,
+    :collection => { :pending => :get,
+      :ajax_renew => :post, # in pending view
+      :ajax_display_commitment => :post, # in new/edit form
+      :ajax_display_version => :post, # in new/edit form
+      :ajax_display_contract => :post }, # in new/edit form
+    :member => { :print => :get, # All members are in show view
+      :link_contribution => :post,
+      :unlink_contribution => :post,
+      :tag => :get,
+      :ajax_description => :get,
+      :ajax_comments => :get,
+      :ajax_history => :get,
+      :ajax_attachments => :get,
+      :ajax_phonecalls => :get,
+      :ajax_cns => :get,
+      :ajax_untag => :delete,
+      :ajax_add_tag => :post }
   map.resources :reporting, :collection => { :flux => :get }
   map.resources :roles
 
@@ -147,10 +150,10 @@ ActionController::Routing::Routes.draw do |map|
 
   map.resources :time_tickets
   map.resources :typecontributions
-  map.resources :typedemandes
+  map.resources :typeissues
   map.resources :typedocuments
   map.resources :typeurls
-  map.resources :urllogiciels
+  map.resources :urlsoftwares
   map.resources :urlreversements
   map.resources :versions
 

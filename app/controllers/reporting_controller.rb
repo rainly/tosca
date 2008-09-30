@@ -17,7 +17,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 class ReportingController < ApplicationController
-  helper :demandes, :export
+  helper :issues, :export
   include WeeklyReporting
   include DigestReporting
 
@@ -45,6 +45,29 @@ class ReportingController < ApplicationController
     _titles()
     @contracts = (@recipient ? @recipient.client.contracts :
                  Contract.find(:all, Contract::OPTIONS))
+  end
+
+  # To display new issues by months
+  def calendar
+    #Get the parameters
+    month = Time.today.month
+    month = params[:month] if params.has_key? :month
+    year = Time.today.year
+    year = params[:year] if params.has_key? :year
+    @time = Time.mktime(year, month)
+
+    conditions = [ 'created_on BETWEEN ? AND ?',
+      @time.end_of_month, @time.beginning_of_month ]
+
+    issues = Issue.find(:all, :conditions => conditions)
+    @number_issues = issues.size
+
+    #We build a hash of { number_day => [new issues of the day]}
+    @issues = {}
+    issues.each do |r|
+      @issues[r.created_on.day] ||= Array.new
+      @issues[r.created_on.day].push(r)
+    end
   end
 
   def digest
@@ -109,13 +132,13 @@ class ReportingController < ApplicationController
       write3graph(:evolution, Gruff::Line)
       write3graph(:annulation, Gruff::Bar)
 
-      write3graph(:temps_de_rappel, Gruff::Line)
-      write3graph(:temps_de_contournement, Gruff::Line)
-      write3graph(:temps_de_correction, Gruff::Line)
+      write3graph(:callback_time, Gruff::Line)
+      write3graph(:workaround_time, Gruff::Line)
+      write3graph(:correction_time, Gruff::Line)
     end
 
-    #     write_graph(:top5_demandes, Gruff::Pie)
-    #     write_graph(:top5_logiciels, Gruff::Pie)
+    #     write_graph(:top5_issues, Gruff::Pie)
+    #     write_graph(:top5_softwares, Gruff::Pie)
     # on nettoie
     @first_col.each { |c| c.gsub!('\n','') }
   end
@@ -181,16 +204,16 @@ class ReportingController < ApplicationController
     @data[:resolution] =
      [ [:'contournées'], [:'corrigées'], [:'cloturées'], [:'annulées'], [:en_cours] ]
     @data[:evolution] =
-     [ [:'bénéficiaires'], [:logiciels], [:contributions] ] # TODO : [:interactions]
+     [ [:'bénéficiaires'], [:softwares], [:contributions] ] # TODO : [:interactions]
     @data[:annulation] =
      [ [:informations], [:anomalies], [:'évolutions'] ]
 
     # calcul des délais
-    @data[:temps_de_rappel] =
+    @data[:callback_time] =
      [ [:'délais_respectés'], [:'hors_délai'] ]
-    @data[:temps_de_contournement] =
+    @data[:workaround_time] =
      [ [:'délais_respectés'], [:'hors_délai'] ]
-    @data[:temps_de_correction] =
+    @data[:correction_time] =
      [ [:'délais_respectés'], [:'hors_délai'] ]
 
 
@@ -230,15 +253,15 @@ class ReportingController < ApplicationController
     start_date = @report[:start_date]
     end_date = @report[:end_date]
 
-    demandes = [ 'demandes.created_on BETWEEN ? AND ? AND demandes.contract_id = ?',
+    issues = [ 'issues.created_on BETWEEN ? AND ? AND issues.contract_id = ?',
                  nil, nil, @contract.id ]
     until (start_date > end_date) do
       infdate = "#{start_date.strftime('%y-%m')}-01"
       start_date = start_date.advance(:months => 1)
       supdate = "#{start_date.strftime('%y-%m')}-01"
 
-      demandes[1], demandes[2] = infdate, supdate
-      Demande.send(:with_scope, { :find => { :conditions => demandes } }) do
+      issues[1], issues[2] = infdate, supdate
+      Issue.send(:with_scope, { :find => { :conditions => issues } }) do
         compute_repartition @data[:repartition]
         compute_severite @data[:severite]
         compute_resolution @data[:resolution]
@@ -256,9 +279,9 @@ class ReportingController < ApplicationController
     @data.update(middle_report)
     @data.update(total_report)
     #TODO : se débarrasser de cet héritage legacy
-    #       compute_top5_logiciels @data[:top5_logiciels]
-    #       Commentaire.with_scope({ :find => { :conditions => @conditions } }) do
-    #         compute_top5_demandes @data[:top5_demandes]
+    #       compute_top5_softwares @data[:top5_softwares]
+    #       Comment.with_scope({ :find => { :conditions => @conditions } }) do
+    #         compute_top5_issues @data[:top5_issues]
     #       end
     #     end
   end
@@ -268,10 +291,10 @@ class ReportingController < ApplicationController
   # Calcul un tableaux du respect des délais
   # pour les 3 étapes : prise en compte, contournée, corrigée
   def compute_temps(data)
-    demandes = Demande.find(:all)
-    rappels = data[:temps_de_rappel]
-    workarounds = data[:temps_de_contournement]
-    corrections = data[:temps_de_correction]
+    issues = Issue.find(:all)
+    rappels = data[:callback_time]
+    workarounds = data[:workaround_time]
+    corrections = data[:correction_time]
     last_index = rappels[0].size
     2.times {|i|
       rappels[i].push 0.0
@@ -280,7 +303,7 @@ class ReportingController < ApplicationController
     }
 
     size = 0
-    demandes.each do |d|
+    issues.each do |d|
       c = d.commitment
       interval = d.contract.interval.hours
       next unless c
@@ -316,27 +339,27 @@ class ReportingController < ApplicationController
 
 
   ##
-  # TODO : le faire marcher si y a moins de 5 logiciels
-  # Sort les 5 logiciels qui ont eu le plus de demandes
-  def compute_top5_logiciels(report)
-    logiciels = Demande.count(:group => "logiciel_id")
-    logiciels = logiciels.sort {|a,b| a[1]<=>b[1]}
+  # TODO : le faire marcher si y a moins de 5 softwares
+  # Sort les 5 softwares qui ont eu le plus de issues
+  def compute_top5_softwares(report)
+    softwares = Issue.count(:group => "software_id")
+    softwares = softwares.sort {|a,b| a[1]<=>b[1]}
     5.times do |i|
-      values = logiciels.pop
-      name = Logiciel.find(values[0]).name
+      values = softwares.pop
+      name = Software.find(values[0]).name
       report.push [ name.intern ]
       report[i].push values[1]
     end
   end
 
   ##
-  # TODO : le faire marcher si y a moins de 5 demandes
-  # Sort les 5 demandes les plus commentées de l'année
-  def compute_top5_demandes(report)
-    commentaires = Commentaire.count(:group => 'demande_id')
-    commentaires = commentaires.sort {|a,b| a[1]<=>b[1]}
+  # TODO : le faire marcher si y a moins de 5 issues
+  # Sort les 5 issues les plus commentées de l'année
+  def compute_top5_issues(report)
+    comments = Comment.count(:group => 'issue_id')
+    comments = comments.sort {|a,b| a[1]<=>b[1]}
     5.times do |i|
-      values = commentaires.pop
+      values = comments.pop
       name = values[0].to_s # "##{values[0]} (#{values[1]})"
       report.push [ name.intern ]
       report[i].push values[1]
@@ -344,42 +367,42 @@ class ReportingController < ApplicationController
   end
 
   ##
-  # Compte les demandes annulées selon leur type
+  # Compte les issues annulées selon leur type
   def compute_annulation(report)
     # TODO : faire des requêtes paramètrées, avec des ?
-    informations = { :conditions => [ 'statut_id = 8 AND typedemande_id = ?', 1 ] }
-    anomalies = { :conditions => [ 'statut_id = 8 AND typedemande_id = ?', 2 ] }
-    evolutions = { :conditions => [ 'statut_id = 8 AND typedemande_id = ?', 5 ] }
+    informations = { :conditions => [ 'statut_id = 8 AND typeissue_id = ?', 1 ] }
+    anomalies = { :conditions => [ 'statut_id = 8 AND typeissue_id = ?', 2 ] }
+    evolutions = { :conditions => [ 'statut_id = 8 AND typeissue_id = ?', 5 ] }
 
-    report[0].push Demande.count(informations)
-    report[1].push Demande.count(anomalies)
-    report[2].push Demande.count(evolutions)
+    report[0].push Issue.count(informations)
+    report[1].push Issue.count(anomalies)
+    report[2].push Issue.count(evolutions)
   end
 
 
   ##
-  # Compte les demandes selon leur nature
+  # Compte les issues selon leur nature
   def compute_repartition(report)
     # TODO : faire des requêtes paramètrées, avec des ?
-    informations = { :conditions => "typedemande_id = 1" }
-    anomalies = { :conditions => "typedemande_id = 2" }
-    evolutions = { :conditions => "typedemande_id = 5" }
+    informations = { :conditions => "typeissue_id = 1" }
+    anomalies = { :conditions => "typeissue_id = 2" }
+    evolutions = { :conditions => "typeissue_id = 5" }
 
-    Demande.send(:with_scope, { :find => { :conditions => Demande::TERMINEES } }) do
-      report[0].push Demande.count(informations)
-      report[1].push Demande.count(anomalies)
-      report[2].push Demande.count(evolutions)
+    Issue.send(:with_scope, { :find => { :conditions => Issue::TERMINEES } }) do
+      report[0].push Issue.count(informations)
+      report[1].push Issue.count(anomalies)
+      report[2].push Issue.count(evolutions)
     end
 
-    Demande.send(:with_scope, { :find => { :conditions => Demande::EN_COURS } }) do
-      report[3].push Demande.count(informations)
-      report[4].push Demande.count(anomalies)
-      report[5].push Demande.count(evolutions)
+    Issue.send(:with_scope, { :find => { :conditions => Issue::EN_COURS } }) do
+      report[3].push Issue.count(informations)
+      report[4].push Issue.count(anomalies)
+      report[5].push Issue.count(evolutions)
     end
   end
 
   ##
-  # Compte les demandes par sévérités
+  # Compte les issues par sévérités
   def compute_severite(report)
     severites = []
     # TODO : requête paramètréé, avec ?
@@ -387,42 +410,42 @@ class ReportingController < ApplicationController
       severites.concat [ { :conditions => "severite_id = #{i}" } ]
     end
 
-    Demande.send(:with_scope, { :find => { :conditions => Demande::TERMINEES } }) do
+    Issue.send(:with_scope, { :find => { :conditions => Issue::TERMINEES } }) do
       4.times do |t|
-        report[t].push Demande.count(severites[t])
+        report[t].push Issue.count(severites[t])
       end
     end
-    Demande.send(:with_scope, { :find => { :conditions => Demande::EN_COURS } }) do
+    Issue.send(:with_scope, { :find => { :conditions => Issue::EN_COURS } }) do
       4.times do |t|
-        report[t+4].push Demande.count(severites[t])
+        report[t+4].push Issue.count(severites[t])
       end
     end
   end
 
   ##
-  # Compte le nombre de demande Annulée, Cloturée ou en cours de traitement
+  # Compte le nombre de issue Annulée, Cloturée ou en cours de traitement
   def compute_resolution(report)
-    condition = 'demandes.statut_id = ?'
+    condition = 'issues.statut_id = ?'
     contournee = { :conditions => [condition, 5] }
     corrigee = { :conditions => [condition, 6] }
     cloturee = { :conditions => [condition, 7] }
     annulee = { :conditions => [condition, 8] }
     en_cours = { :conditions => 'statut_id NOT IN (5,6,7,8)' }
 
-    report[0].push Demande.count(contournee)
-    report[1].push Demande.count(corrigee)
-    report[2].push Demande.count(cloturee)
-    report[3].push Demande.count(annulee)
-    report[4].push Demande.count(en_cours)
+    report[0].push Issue.count(contournee)
+    report[1].push Issue.count(corrigee)
+    report[2].push Issue.count(cloturee)
+    report[3].push Issue.count(annulee)
+    report[4].push Issue.count(en_cours)
   end
 
 
   ##
-  # Calcule le nombre de recipient, de logiciel et contribution distinct par mois
+  # Calcule le nombre de recipient, de software et contribution distinct par mois
   def compute_evolution(report)
-    report[0].push Demande.count('recipient_id', :distinct => true)
-    report[1].push Demande.count('logiciel_id', :distinct => true)
-    report[2].push Demande.count('contribution_id', :distinct => true)
+    report[0].push Issue.count('recipient_id', :distinct => true)
+    report[1].push Issue.count('software_id', :distinct => true)
+    report[2].push Issue.count('contribution_id', :distinct => true)
   end
 
 
@@ -469,23 +492,23 @@ class ReportingController < ApplicationController
   # todo : une variable de classe localise (@@titles[locale])
   def _titles
     @@titles = {
-      :repartition => _('Distribution of your requests'),
-      :repartition_cumulee => _('Distribution of requests'),
-      :severite => _('Severity of your requests'),
-      :severite_cumulee => _('Severity of your requests'),
-      :resolution => _('Resolution of your requests'),
-      :resolution_cumulee => _('Resolution of your requests'),
+      :repartition => _('Distribution of your issues'),
+      :repartition_cumulee => _('Distribution of issues'),
+      :severite => _('Severity of your issues'),
+      :severite_cumulee => _('Severity of your issues'),
+      :resolution => _('Resolution of your issues'),
+      :resolution_cumulee => _('Resolution of your issues'),
 
-      :annulation => _('Cancelled requests'),
+      :annulation => _('Cancelled issues'),
       :evolution => _('Evolution of the activity volume'),
 
-      :top5_demandes => _('Top 5 of the most discussed requests'),
-      :top5_logiciels => _('Top 5 of the most discussed software'),
+      :top5_issues => _('Top 5 of the most discussed issues'),
+      :top5_softwares => _('Top 5 of the most discussed software'),
 
       :processing_time => _('Processing time'),
-      :temps_de_rappel => _('Response time'),
-      :temps_de_contournement => _('Workaround time'),
-      :temps_de_correction => _('Correction time')
+      :callback_time => _('Response time'),
+      :workaround_time => _('Workaround time'),
+      :correction_time => _('Correction time')
     }
   end
 

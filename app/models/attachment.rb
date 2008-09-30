@@ -24,9 +24,9 @@ class Attachment < ActiveRecord::Base
       }
     }
 
-  has_one :commentaire
+  has_one :comment
 
-  validates_presence_of :file, :commentaire
+  validates_presence_of :file, :comment
 
   def name
     return file[/[._ \-a-zA-Z0-9]*$/]
@@ -36,9 +36,9 @@ class Attachment < ActiveRecord::Base
   # see FilesController
   def self.set_scope(client_id)
     joins = ''
-    joins << 'LEFT OUTER JOIN commentaires ON commentaires.attachment_id = attachments.id '
-    joins << 'LEFT OUTER JOIN demandes ON demandes.id = commentaires.demande_id '
-    joins << 'LEFT OUTER JOIN recipients ON recipients.id = demandes.recipient_id '
+    joins << 'LEFT OUTER JOIN comments ON comments.attachment_id = attachments.id '
+    joins << 'LEFT OUTER JOIN issues ON issues.id = comments.issue_id '
+    joins << 'LEFT OUTER JOIN recipients ON recipients.id = issues.recipient_id '
     self.scoped_methods << { :find => {
        :conditions => [ 'recipients.client_id = ?', client_id ],
        :joins => joins }

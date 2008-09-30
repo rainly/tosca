@@ -29,27 +29,27 @@ module PagesHelper
 
   # 2 ways of use it
   # First, within the good controller :
-  #   <%= link_to_show(@request) %>
+  #   <%= link_to_show(@issue) %>
   # Second, with an other controller :
-  #   <%= link_to_show(edit_request_path(@request))%>
+  #   <%= link_to_show(edit_issue_path(@issue))%>
   def link_to_show(ar)
     return nil unless ar
     url = (ar.is_a?(String) ? ar : { :action => 'show', :id => ar })
-    link_to StaticImage::view, url, { :class => 'nobackground' }
+    link_to StaticImage::view, url
   end
 
   # same behaviour as link_to_show
   def link_to_edit(ar)
     return nil unless ar
     url = (ar.is_a?(String) ? ar : { :action => 'edit', :id => ar })
-    link_to StaticImage::edit, url, { :class => 'nobackground' }
+    link_to StaticImage::edit, url
   end
 
   # same behaviour as link_to_show
   def link_to_delete(ar)
     return nil unless ar
     url = (ar.is_a?(String) ? ar : { :action => 'destroy', :id => ar })
-    link_to StaticImage::delete,  url, :class => 'nobackground', :method => :delete,
+    link_to StaticImage::delete,  url, :method => :delete,
         :confirm => _('Do you really want to destroy this object ?')
   end
 
@@ -66,9 +66,8 @@ module PagesHelper
     [ link_to_show(ar), link_to_back ].compact.join('|')
   end
 
-
-  # link_to_actions_table(demande)
-  def link_to_actions_table(ar, options = {})
+  # link_to_actions_table(issue)
+  def link_to_actions_table(ar)
     return '' unless ar
     actions = [ link_to_show(ar), link_to_edit(ar), link_to_delete(ar) ]
     actions.compact!
@@ -80,26 +79,26 @@ module PagesHelper
     :success => "Element.hide('spinner')" }
 
   AJAX_OPTIONS =
-    SPINNER_OPTIONS.dup.update(:update => 'content', :method => :get,
+    SPINNER_OPTIONS.dup.update(:update => 'col1_content', :method => :get,
       :with => "Form.serialize(document.forms['filters'])"
     )
 
 =begin
  call it like this :
- <%= show_pages_links @demande_pages, 'déposer une nouvelle demande' %>
+ <%= show_pages_links @issue_pages, 'déposer une nouvelle issue' %>
  if you want ajax links, you must specificy the remote function this way :
- <%= show_pages_links @demande_pages, 'déposer une demande',
-       :url => '/demandes/update_list' %>
+ <%= show_pages_links @issue_pages, 'déposer une issue',
+       :url => '/issues/update_list' %>
  (!) you will need an StaticImage::spinner too (!)
  If you want to display a list of objects in a distant controller,
- e. g. : displaying the flow requests in reporting controller, then you
+ e. g. : displaying the flow issues in reporting controller, then you
  need to precise the controller like this :
- <%= show_pages_links @demande_pages, 'déposer une demande',
-       :controller => 'demandes' %>
+ <%= show_pages_links @issue_pages, 'déposer une issue',
+       :controller => 'issues' %>
   You have 2 parameters in options :
       :url : for ajaxified page links
       :no_new_links : avoid '+' links to create new one
-        (used in 'to be done' request, for isntance).
+        (used in 'to be done' issue, for isntance).
 =end
   def show_pages_links(pages, message, options = {} )
     if options.has_key? :url
@@ -108,17 +107,17 @@ module PagesHelper
       options.delete :url
     end
 
-    result = '<table class="pages"><tr>'
+    result = '<table><tr>'
     unless options.has_key? :no_new_links
       result << "<td>#{link_to_new(message, options)}</td>"
     end
     return "<td>#{result}</td></tr></table>" unless pages.length > 0
 
     if pages.current.previous
-      link = link_to_page(pages, pages.first, _('First page'),
+      link = link_to_page(pages.first, _('First page'),
                           StaticImage::first_page, ajax_call)
       result << "<td>#{link}</td>"
-      link = link_to_page(pages, pages.current.previous, _('Previous page'),
+      link = link_to_page(pages.current.previous, _('Previous page'),
                           StaticImage::previous_page, ajax_call)
       result << "<td>#{link}</td>"
     end
@@ -128,10 +127,10 @@ module PagesHelper
       result << _('&nbsp; on ') << pages.last.last_item.to_s << '&nbsp;</small></td>'
     end
     if pages.current.next
-      link = link_to_page(pages, pages.current.next, _('Next page'),
+      link = link_to_page(pages.current.next, _('Next page'),
                           StaticImage::next_page, ajax_call)
       result << "<td>#{link}</td>"
-      link = link_to_page(pages, pages.last, _('Last page'),
+      link = link_to_page(pages.last, _('Last page'),
                           StaticImage::last_page,ajax_call)
       result << "<td>#{link}</td>"
     end
@@ -142,29 +141,40 @@ module PagesHelper
   #Call it like this : toggle("my_id")
   #You just need a html element with an id="my_id"
   def toggle(id)
-    images = image_tag("navigation_expand.gif", :id => "show_#{id}") + image_tag("navigation_hide.gif", :id => "hide_#{id}", :style => "display: none")
-    link_to_function(images, nil, :class => "no_hover") do |page|
+    images = image_tag("icons/navigation_expand.gif", :id => "show_#{id}") +
+      image_tag("icons/navigation_hide.gif", :id => "hide_#{id}", :style => "display: none")
+    link_to_function(images, nil) do |page|
       page[:"hide_#{id}"].toggle
       page[:"show_#{id}"].toggle
       page[:"#{id}"].toggle
     end
   end
-  
-  def div_toogle(value, id, options = {})
+
+  #To have a nice div to click on to toggle on other tag
+  #Call it like this :
+  #<%= div_toggle("Some text", "id") %>
+  #<ul id="id">
+  #</ul>
+  #Options :
+  #Any reguler html_options (like :class, etc)
+  #hide : The toggle tag is hiden by default
+  def div_toggle(value, id, options = {})
     options[:onclick] = update_page do |page|
       page[:"hide_#{id}"].toggle
       page[:"show_#{id}"].toggle
       page.visual_effect :toggle_blind, id, :duration => 0.5
     end
-    
+
     style_hide, style_show = "", ""
     style_hide = "display: none" unless options.has_key?(:hide)
-    style_show = "display: none" if options[:hide] 
+    style_show = "display: none" if options[:hide]
     options.delete(:hide)
-    
+
     result = tag('div', options, true)
-    result << image_tag("navigation_hide.gif", :id => "show_#{id}", :style => style_show)
-    result << image_tag("navigation_expand.gif", :id => "hide_#{id}", :style => style_hide)
+    result << image_tag("icons/navigation_hide.gif",
+      :id => "show_#{id}", :style => style_show)
+    result << image_tag("icons/navigation_expand.gif",
+      :id => "hide_#{id}", :style => style_hide)
     result << "&nbsp;#{value}"
     result << '</div>'
   end
@@ -172,7 +182,7 @@ module PagesHelper
   private
   ## intern functions
   # used in show_page_links
-  def link_to_page(pages, page, title, image, ajax_call)
+  def link_to_page(page, title, image, ajax_call)
     html_options = {:title => title }
     if ajax_call
       page = "document.forms['filters'].page.value=#{page.number}; #{ajax_call}"
@@ -182,5 +192,5 @@ module PagesHelper
       public_link_to(image, page, html_options)
     end
   end
-  
+
 end

@@ -1,0 +1,9 @@
+<h1><%= "#{@issue.pretty_id} #{@issue.resume}" %></h1>
+
+<%= render :partial => "issues/tabs/description" %>
+
+<%= render :partial => "issues/tabs/comment", :locals =>
+         { :comment => @comment } %>
+
+<%= link_to 'Modifier', edit_comment_path(@comment) %> |
+<%= link_to_issue @comment.issue, :text => _('Return to the issue') %>

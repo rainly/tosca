@@ -30,7 +30,7 @@ class Client < ActiveRecord::Base
   has_and_belongs_to_many :socles, :uniq => true
 
   has_many :versions, :through => :contracts
-  has_many :demandes, :through => :recipients # , :source => :demandes
+  has_many :issues, :through => :recipients # , :source => :issues
 
   belongs_to :creator, :class_name => 'User'
 
@@ -93,42 +93,42 @@ class Client < ActiveRecord::Base
     Ingenieur.find(:all, options)
   end
 
-  def logiciels
+  def softwares
     return [] if contracts.empty?
-    return contracts.first.logiciels if contracts.size == 1
+    return contracts.first.softwares if contracts.size == 1
     # speedier if there is one openbar contract
-    contracts.each { |c| return Logiciel.find(:all) if c.rule.max == -1 }
+    contracts.each { |c| return Software.find(:all) if c.rule.max == -1 }
 
     # default case, when there is an association with releases.
-    conditions = [ 'logiciels.id IN (SELECT DISTINCT versions.logiciel_id ' +
+    conditions = [ 'softwares.id IN (SELECT DISTINCT versions.software_id ' +
                    ' FROM versions WHERE versions.contract_id IN (?)) ',
                    contracts.collect{ |c| c.id } ]
-    Logiciel.find(:all, :conditions => conditions, :order => 'logiciels.name')
+    Software.find(:all, :conditions => conditions, :order => 'softwares.name')
   end
 
   def contributions
-    return [] if demandes.empty?
+    return [] if issues.empty?
     Contribution.find(:all,
                    :conditions => "contributions.id IN (" +
-                     "SELECT DISTINCT demandes.contribution_id FROM demandes " +
-                     "WHERE demandes.recipient_id IN (" +
+                     "SELECT DISTINCT issues.contribution_id FROM issues " +
+                     "WHERE issues.recipient_id IN (" +
                      recipients.collect{|c| c.id}.join(',') + "))"
                    )
   end
 
-  def typedemandes
-    joins = 'INNER JOIN commitments ON commitments.typedemande_id = typedemandes.id '
+  def typeissues
+    joins = 'INNER JOIN commitments ON commitments.typeissue_id = typeissues.id '
     joins << 'INNER JOIN commitments_contracts ON commitments.id = commitments_contracts.commitment_id'
     conditions = [ 'commitments_contracts.contract_id IN (' +
         'SELECT contracts.id FROM contracts WHERE contracts.client_id = ?)', id ]
-    Typedemande.find(:all,
-                     :select => "DISTINCT typedemandes.*",
+    Typeissue.find(:all,
+                     :select => "DISTINCT typeissues.*",
                      :conditions => conditions,
                      :joins => joins)
   end
 
   # TODO : à revoir, on pourrait envisager de moduler les sévérités selon
-  # les type de demandes
+  # les type de issues
   def severites
     Severite.find(:all)
   end
