@@ -19,7 +19,8 @@
 class ContractsController < ApplicationController
   helper :clients, :commitments, :ingenieurs, :versions, :issues
 
-  auto_complete_for :user, :name, :contract, :engineer_user, :conditions => { :client => false }
+  auto_complete_for :user, :name, :contract, :engineer_user,
+                    :conditions => { :client => false }
 
   def index
     @contract_pages, @contracts = paginate :contracts, :per_page => 25
@@ -138,14 +139,14 @@ class ContractsController < ApplicationController
       supported_software and render :action => supported_software
     end
   end
-  
+
   def tags
     @contract = Contract.find(params[:id])
     # We get the tags only for this contract
     @tags = Issue.tag_counts(:conditions => { :contract_id => @contract.id })
     if params[:tag] and not params[:tag].empty?
       tags = params[:tag].split(",")
-      @issues = Issue.find_tagged_with(tags, 
+      @issues = Issue.find_tagged_with(tags,
         :conditions => { :contract_id => @contract.id })
       @tag_with = tags
     end
