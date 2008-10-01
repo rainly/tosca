@@ -151,12 +151,4 @@ class Contract < ActiveRecord::Base
     total
   end
 
-  def total_elapsed
-    total = 0
-    self.demandes.each do |r|
-      total += r.elapsed.until_now
-    end
-    total
-  end
-
 end
