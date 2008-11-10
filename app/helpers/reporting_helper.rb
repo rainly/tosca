@@ -21,31 +21,24 @@ module ReportingHelper
   # Renvoit les titres du tableau
   # Data contient les entêtes. Les options applicable sont :
   # :without_firstcol => permet de ne pas afficher la première colonne
-  # :divise => spécifie si on prends en compte les issues vivantes
+  # :separated => spécifie si on prends en compte les issues vivantes
   # :with2rows => affichera les entêtes sur 2 lignes, il <b>contient</b> l'intitulé
   # TODO : renommer with2rows en title
   def fill_titles(data, options)
-    size = (options[:divise] ? data.size / 2 : data.size)
+    size = (options[:separated] ? data.size / 2 : data.size)
     result = ''
     return result unless size > 0
     result << '<tr>'
-    first = _('Period')
+    first = (options.has_key?(:distribution) ? _('Status') : _('Period'))
     if options[:with2rows]
-      result << "<th rowspan=\"2\">#{first}</th>"  unless options[:without_firstcol]
-      result << "<th nowrap colspan=\"#{size}\"><center>#{options[:with2rows]}</center></th>"
+      result << %Q{<th rowspan="2">#{first}</th>} unless options[:without_firstcol]
+      result << %Q[<th nowrap="nowrap" colspan="#{size}"><div style="text-align: center">#{options[:with2rows]}</div></th>]
       result << '</tr><tr>'
-      size.times do |t|
-        result << '<th nowrap>'
-        result << data[t][0].to_s.gsub(/_(terminees|en_cours)/, '').gsub('_','&nbsp;').capitalize
-        result << '</th>'
-      end
     else
-      titres = []
-      titres.push first unless options[:without_firstcol]
-      size.times do |t|
-        titres.push data[t][0].to_s.gsub('_', '&nbsp;').capitalize
-      end
-      titres.each {|t| result << "<th nowrap>#{t}</th>" }
+      result << '<th></th>'
+    end
+    size.times do |t|
+      result << %Q{<th nowrap="nowrap">#{data[t][0]}</th>}
     end
     result << '</tr>'
   end
@@ -54,32 +47,24 @@ module ReportingHelper
   # options : one_row, muli_row et titre
   def report_evolution(name, options={})
     data = @data[name]
-    if (not data.empty? and data[0].to_s =~ /_(terminees|en_cours)/)
-      options.update(:divise => true)
-    end
+    @first_col = @months_col
     table = ''
-#    table << '<div id="left">'
-    table << '<table width="100%">'
+    table << '<table style="width: 100%">'
     table << ' <tr>'
 
     # cellule contenant le graphique
     table << '  <td class="report_graph">'
-    table <<    report_graph(name, options) unless name.to_s =~ /^temps/
+    table <<    report_graph(name, options) unless name.to_s =~ /time/
     table << '  </td>'
-#    table << '</div>'
 
     # cellule avec la légende
-#    table << '<div id="middle">'
-    table << '  <td class="report_legend">'
-    table <<    report_legend(name)
-    table << '  </td>'
-#    table << '</div>'
+    table << '  <td class="report_legend"><div align="center">'
+    table <<    report_legend(name, options)
+    table << '  </div></td>'
     # cellule contenant le tableau de données
-#    table << '<div id="right">'
-    table << '  <td class="report_data">'
+    table << '  <td class="report_data"><div align="center">'
     table <<    report_data(name, options)
-    table << '  </td>'
-#    table << '</div>'
+    table << '  </div></td>'
 
     table << ' </tr>'
     table << '</table>'
@@ -91,10 +76,11 @@ module ReportingHelper
   # - l'un concernant la periode considérée (à gauche)
   # - l'autre concernant la totalité depuis le début du contract
   # TODO : style : center report_item tr td
-  def report_repartition(name, options= {})
+  def report_distribution(name, options= {})
     data = @data[name]
-    if (not data.empty? and data[0].to_s =~ /_(terminees|en_cours)/)
-      options.update(:divise => true)
+    options[:distribution] = true
+    if options.has_key? :separated
+      @first_col = [ _('Running'), _('Finished') ]
     end
     middle = :"#{name}_middle"
     total = :"#{name}_total"
@@ -107,9 +93,9 @@ module ReportingHelper
     table <<    report_graph(middle, options)
     table << '  </td>'
     # cellule avec la légende
-    table << '  <td class="report_legend">'
-    table <<    report_legend(name)
-    table << '  </td>'
+    table << '  <td class="report_legend"><div align="center">'
+    table <<    report_legend(name, options)
+    table << '  </div></td>'
     # cellule contenant le graphique depuis le début
     table << '  <td class="report_data" align="center">'
     table << '  ' + _('Since the begining of your contract')
@@ -117,10 +103,8 @@ module ReportingHelper
     table << '  </td>'
     table << ' </tr>'
 
-    # pas de deuxieme partie pour les calculs des delais
-    # (% affichés dans la première)
-    unless (name.to_s =~ /^temps/)
-      options.update(:without_firstcol => true)
+    # there's not 2nd part in *_time stuff
+    if options.has_key? :with_table
       table << ' <tr>'
       # cellule contenant le graphique
       table << '  <td class="report_data" align="center">'
@@ -138,14 +122,17 @@ module ReportingHelper
     table
   end
 
-  def report_legend(name)
+  # Draws the legend graph, according to the <tt>name</tt> index.
+  # Options in use :
+  # * :separated : used to know if there are double or simple data lines
+  def report_legend(name, options)
     out = ''
-    data = @data[name].sort{|x,y| x[0].to_s <=> y[0].to_s}
+    data = @data[name] # .sort{|x,y| x[0].to_s <=> y[0].to_s}
     colors = @colors[name]
     return out unless colors and colors.size > 0
 
     out << '<table align="center">'
-    if (not data.empty? and data[0].to_s =~ /_(terminees|en_cours)/)
+    if options.has_key?(:separated)
       twolines = true
       size = data.size / 2
     else
@@ -158,8 +145,7 @@ module ReportingHelper
     relative_url_root = "#{Static::ActionView.relative_url_root}reporting/"
     size.times do |i|
       index = (twolines ? i*2 : i)
-      name = data[index][0].to_s
-      head = name.gsub(/_(terminees|en_cours)/, '').gsub('_','&nbsp;').capitalize
+      head = data[index][0].to_s
       out << "<tr><th #{'colspan="2"' if twolines}>#{head}</th></tr>"
       out << "<tr><th>#{_('Running')}</th><th>#{_('Finished')}</th></tr>" if twolines
       out << '<tr>'
@@ -208,33 +194,46 @@ module ReportingHelper
   # Print reporting tables
   # options are :
   # :without_firstcol : disabled the column with the dates
-  # :divise : display only half of the columns
+  # :separated : display only half of the columns
   # :width : force the width
   # TODO : first_col, options[:without_firstcol] : needs more love
-  def show_report_table(first_col, name, titres, options = {})
+  def show_report_table(first_col, name, titles, options = {})
     elements = @data[name]
     return 'aucune donnée' unless elements and elements.size > 0
-    width = ( options[:width] ? "width=#{options[:width]}" : '' )
+    width = ( options[:width] ? %Q{width="#{options[:width]}"} : '' )
     result = "<table #{width}>"
-    result << titres
+    result << titles
 
-    size = (options[:divise] ? (elements.size / 2) : elements.size)
+    separated = options.has_key? :separated
+    size = (separated ? (elements.size / 2) : elements.size)
 
     first_col.each_index { |i|
       result << "<tr class=\"#{cycle('even', 'odd')}\">"
-      result << "<td>#{first_col[i]}</td>"  unless options[:without_firstcol]
+      result << "<td>#{first_col[i]}</td>" # unless options[:without_firstcol]
 
-      size.times do |c|
-        en_cours = (options[:divise] ? elements[c+size][i + 1] : 0)
-        total = elements[c][i + 1] + en_cours
-        if (total.is_a? Float)
-            total = (total==0.0 ? '-' : "#{total.round}\%")
+      if options[:with_table]
+        size.times do |c|
+          pos = (separated ? c+i*size : c)
+          result << "<td>#{elements[pos].last}</td>"
         end
-        result << "<td>#{total}"
-        result << " (#{en_cours})" if en_cours != 0
-        result << "</td>"
+      else
+        size.times do |c|
+          running, total = 0, 0
+          if separated
+            running = elements[c][i + 1]
+            total = elements[c+size][i + 1]
+          else
+            total = elements[c][i + 1]
+          end
+          if (total.is_a? Float)
+            total = (total==0.0 ? '-' : "#{total.round}\%")
+          end
+          result << "<td>#{total}"
+          result << " (#{running})" if running != 0
+          result << "</td>"
+        end
+        i += 1
       end
-      i += 1
       result << '</tr>'
     }
     result << '</table>'

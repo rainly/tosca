@@ -40,7 +40,7 @@ module App
   ServiceName = "Tosca"
   ServiceFullName = "Tosca bugtracking".gsub(' ','&nbsp;')
   # Logos of service, put them in public/image/
-  ServiceImage = 'logo_08000.gif'
+  ServiceImage = 'logo_08000.gif' # should not excede 25px in height
   ServiceImageSmall = 'logo_08000_small.gif'
 
   CompanyName = "Linagora"
@@ -56,6 +56,9 @@ module App
 
   ContactPhone = PhonePrefix + " " + PhoneCode
   ContactMail = "tosca@tosca-project.com"
+
+  #From http://www.freesound.org/samplesViewSingle.php?id=30988
+  AlertFile = "30988__UncleSigmund__ahhh.mp3"
 
   module Help
     NewIssueUrl = "http://redmine.tosca-project.net/wiki/tosca/NewIssue"

@@ -9,6 +9,7 @@ body {
 }
 
 h1 {
+  font-size: 180%;
   padding: 0.5em 0 0.5em 0;
 }
 
@@ -25,7 +26,6 @@ hr {
 
 fieldset legend { font-weight: bold; }
 
-input { -moz-border-radius: .5em .5em .5em .5em; }
 input:focus { background-color: #ffffcc; }
 textarea:focus { background-color: #ffffcc; }
 table { border-collapse: collapse; }
@@ -35,6 +35,7 @@ table { border-collapse: collapse; }
 }
 
 div.info { width: 100%; }
+table.full { width: 100%; }
 
 /* used mainly in show view, where we don't want 100% width */
 .info  {
@@ -50,20 +51,13 @@ div.info { width: 100%; }
   color: #fff;
 }
 
-p img {
-  vertical-align: middle;
-}
-
-label {
-  font-weight: bold;
-}
-
+p img { vertical-align: middle; }
+label { font-weight: bold; }
 ul { list-style-type: square; margin: 0 0 1em 0; }
 li img { vertical-align: middle; }
+a:focus, a:hover, a:active { background-color: transparent; }
+a { font-weight: bold; }
 
-a:focus, a:hover, a:active {
-  background-color: transparent;
-}
 
 .menu_title {
   color: #fff;
@@ -159,7 +153,6 @@ div.software {
   margin: 10px;
 }
 div.comment-container {
-
 }
 div.collapsed div.comment-content {
   display: none;
@@ -171,10 +164,12 @@ div.private {
   background-color: #eee;
 }
 div.comment-header {
-  padding: 0 10px;
+  padding: 0px 10px;
   border: 1px solid #777;
   border-bottom: none;
+  cursor: pointer;
   -moz-border-radius: 5px 5px 0 0;
+  -webkit-border-radius: 5px 5px 0 0;
 }
 div.comment-content {
   padding: 10px;
@@ -182,9 +177,10 @@ div.comment-content {
   border: 1px solid #777;
   border-top: none;
   -moz-border-radius: 0 0 5px 5px;
+  -webkit-border-radius: 0 0 5px 5px;
 }
 table.comment-table {
-  width: 100%;
+  width: 99%;
 }
 table.comment-table td.infos {
   width: 20%;
@@ -195,10 +191,10 @@ table.comment-table td.text {
 }
 
 /*************************
-  * Tabs in requestt	 *
+  * Tabs in issuet	 *
   ************************/
 
-.request_tabnav {
+.issue_tabnav {
   color: #000000;
   margin: 12px 0px 0px 0px;
   padding: 0px;
@@ -206,13 +202,13 @@ table.comment-table td.text {
   padding-left: 10px
 }
 
-.request_tabnav li {
+.issue_tabnav li {
   display: inline;
   overflow: hidden;
   list-style-type: none;
 }
 
-.request_tabnav a, a.active {
+.issue_tabnav a, a.active {
   color: #000000;
   background:  #FFEBBF;
   font: bold 1em "Trebuchet MS", Arial, sans-serif;
@@ -224,25 +220,25 @@ table.comment-table td.text {
   -moz-border-radius: .5em .5em 0 0;
 }
 
-.request_tabnav a.active {
+.issue_tabnav a.active {
   background: #cfc8cf;
 }
 
-.request_tabnav a:hover {
+.issue_tabnav a:hover {
   color: #FFFFFF;
   background: #FFD880;
 }
 
-.request_tabnav a:visited {
+.issue_tabnav a:visited {
   color: black;
 }
 
-.request_tabnav a.active:hover {
+.issue_tabnav a.active:hover {
   background: #FFB000;
   color: #FFEBBF;
 }
 
-.request_tab_content {
+.issue_tab_content {
   text-align: justify;
   background: #DDDDDD;
   padding: 0.5em;
@@ -251,20 +247,72 @@ table.comment-table td.text {
   border: 1px solid #cfc8cf;
   z-index: -1;
 }
-.request_tab_content p {
+.issue_tab_content p {
   margin: 10px;
 }
 
-.request_tab_content td {
+.issue_tab_content td {
   margin-right: 1em;
   padding-right: 1em;
 }
 
 /* history */
-.request_tab_content .history {
+.issue_tab_content .history {
   font-size: 95%;
   padding: 0.5em;
 }
+
+
+
+/******************************
+ * Red Box for error messages *
+ *****************************/
+#errorExplanation {
+  width: 400px;
+  border: 2px solid red;
+  padding: 7px;
+  padding-bottom: 12px;
+  margin-bottom: 20px;
+  background-color: #f0f0f0;
+}
+
+#errorExplanation h2 {
+  text-align: left;
+  font-weight: bold;
+  padding: 5px 5px 5px 15px;
+  font-size: 12px;
+  margin: -7px;
+  background-color: #c00;
+  color: #fff;
+}
+
+#errorExplanation p {
+  color: #333;
+  margin-bottom: 0;
+  padding: 5px;
+}
+
+#errorExplanation ul li {
+  font-size: 12px;
+  list-style: square;
+}
+td.error div.title {
+	color : red;
+	font-size : 120%;
+	font-weight : bold;
+	background : white;
+}
+td.error div.message {
+
+}
+td.error div.link {
+	margin-top : 1em;
+}
+.fieldWithErrors {
+  padding: 2px;
+  background-color: red;
+}
+
 
 
 /******************************************
@@ -318,43 +366,43 @@ a.nobackground {
 .odd:hover {	background-color: #e2efe2; }
 
 /***************************************
- * Statut d'une request en couleur
+ * Statut d'une issue en couleur
  ***************************************/
 
 /* enregistree */
-.request_1 	{background: #f03730; /*red;*/}
-.request_1:hover{background: #f03700;}
+.issue_1 	{background: #f03730; /*red;*/}
+.issue_1:hover{background: #f03700;}
 
 /* priseencompte */
-.request_2 	{background: #ffa26e; /*orange;*/}
-.request_2:hover{background: #ffa23e; }
+.issue_2 	{background: #ffa26e; /*orange;*/}
+.issue_2:hover{background: #ffa23e; }
 
 /* suspendue */
-.request_3	{background: #ffffba; /*yellow;*/}
-.request_3:hover{background: #ffff88; }
+.issue_3	{background: #ffffba; /*yellow;*/}
+.issue_3:hover{background: #ffff88; }
 
 /* analysee */
-.request_4 	{background: #a0e0f0; /*cyan;*/}
-.request_4:hover{background: #a0e0c0;}
+.issue_4 	{background: #a0e0f0; /*cyan;*/}
+.issue_4:hover{background: #a0e0c0;}
 
 /* contournee */
-.request_5 	{background: #90EEa0; /* lightgreen; */}
-.request_5:hover{background: #90EE70; }
+.issue_5 	{background: #90EEa0; /* lightgreen; */}
+.issue_5:hover{background: #90EE70; }
 
 /* corrigee */
-.request_6 	{background: #67ccfd;}
-.request_6:hover{background: #67cccd;}
+.issue_6 	{background: #67ccfd;}
+.issue_6:hover{background: #67cccd;}
 
 /* cloturee */
-.request_7 	{background: #c9c9af; /*grey;*/}
-.request_7:hover{background: #c9c97f; }
+.issue_7 	{background: #c9c9af; /*grey;*/}
+.issue_7:hover{background: #c9c97f; }
 
 /* annulee */
-.request_8 	{background: #D3D3D3; /*lightgrey;*/}
-.request_8:hover{background: #D3D3a3;}
+.issue_8 	{background: #D3D3D3; /*lightgrey;*/}
+.issue_8:hover{background: #D3D3a3;}
 
 /* all lines are clickable */
-#requests_list, #cns tr *:hover {
+#issues_list, #cns tr *:hover {
 	cursor: pointer;
 }
 
@@ -388,7 +436,7 @@ table.report tr td {
 	text-align: center;
 }
 
-/* formulaire de saisie mois et ann� */
+/* reporting class' */
 .report_form {
 	background-color: #d2dfd2;
 	float:right;
@@ -411,11 +459,11 @@ table.report tr td {
 }
 .report_legend {
 	text-align: center;
-	text-align: center;
 	width: 20%;
 }
+.report_legend th { background-color: white; }
+.report_data th { background-color: white; }
 .report_data {
-	/*background-color: #d2dfd2;*/
 	width: 40%;
 	vertical-align: top;
 }

@@ -21,7 +21,7 @@ class Comment < ActiveRecord::Base
   belongs_to :user
   belongs_to :attachment
   belongs_to :statut
-  belongs_to :severite
+  belongs_to :severity
   belongs_to :ingenieur
 
   validates_length_of :text, :minimum => 5,
@@ -33,6 +33,8 @@ class Comment < ActiveRecord::Base
     if record.issue.nil?
       record.errors.add_to_base _('You must indicate a valid issue')
     end
+    #We check if we are trying to change the status of the request, 
+    #but it has already the same status
     if (issue && issue.new_record? != true &&
         issue.first_comment_id != record.id &&
         issue.statut_id == record.statut_id &&
@@ -43,15 +45,20 @@ class Comment < ActiveRecord::Base
       record.errors.add_to_base _('You cannot privately change the status')
     end
   end
-  
+
   before_validation do |record|
-    if record.statut and not Statut::NEED_COMMENT.include? record.statut_id and html2text(record.text).strip.empty?
-      record.text = _("The issue is now %s.") % record.statut.name
+    #If the status was changed and we do not specify a text, we generate a default text
+    text = html2text(record.text).strip
+    if record.statut and not Statut::NEED_COMMENT.include? record.statut_id and text.empty?
+      record.text << ( _("The issue is now %s.<br/>") % _(record.statut.name) )
+    end
+    if record.ingenieur and text.empty?
+      record.text << ( _("The issue is now managed by %s.<br/>") % _(record.ingenieur.name))
     end
   end
 
   # State in words of the comment (private or public)
-  def etat
+  def state
     ( private ? _("private") : _("public") )
   end
 
@@ -120,7 +127,7 @@ class Comment < ActiveRecord::Base
   # update issue attributes, when creating a comment
   after_create :update_issue
   def update_issue
-    fields = %w(statut_id ingenieur_id severite_id)
+    fields = %w(statut_id ingenieur_id severity_id)
     issue = self.issue
 
     # Update all attributes

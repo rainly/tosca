@@ -33,12 +33,12 @@ ActionController::Routing::Routes.draw do |map|
                  :conditions => { :method => :get } }
   map.welcome '/', sweet_home
 
-  map.without_orm('welcome', %w(admin plan about deroulement
-    index natures statut suggestions declaration))
-  map.without_orm('welcome', %w(suggestions), :post)
+  map.without_orm('welcome', %w(admin plan about index suggestions theme))
+  map.without_orm('welcome', %w(suggestions theme), :post)
   map.without_orm('reporting', %w(configuration flux general digest digest_resultat calendar))
   map.without_orm('access', %w(denied))
-  map.without_orm('alerts', %w(on_submit index))
+  map.without_orm('alerts', %w(index show))
+  map.without_orm('alerts', %w(update), :put)
   map.without_orm('alerts', %w(ajax_on_submit), :post)
 
   # routing files to prevent download from public access
@@ -66,7 +66,8 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :accounts,
     :controller => "account",
     :member => { :become => :post, :ajax_contracts => :post },
-    :collection => { :logout => :any, :login => :any, :lemon => :any },
+    :collection => { :logout => :any, :login => :any,
+                     :lemon => :any, :forgotten_password => :any },
     :new => { :signup => :any, # TODO : reactive it :multiple_signup => :any,
       :ajax_place => :post, :ajax_contracts => :post }
   map.resources :arches
@@ -141,7 +142,7 @@ ActionController::Routing::Routes.draw do |map|
 
   map.resources :socles
   map.resources :statuts, :member => { :help => :get }
-  map.resources :severites
+  map.resources :severities
   map.resources :supports
   map.resources :tags
   map.resources :teams, :collection => {

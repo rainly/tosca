@@ -19,23 +19,25 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class ReportingControllerTest < ActionController::TestCase
+  fixtures :all
 
   def setup
     login 'admin', 'admin'
   end
 
-=begin
-  # deactivated for now
-
-  def test_comex_cns
-    get :comex_resultat, {
-      :results => { :week_num => 33 },
-      :clients => ['all'],
-      :cns => 'Voir l\'avancement du CNS'
-    }
+  def test_reporting
+    get :configuration
     assert_response :success
-    assert_template 'comex_resultat'
+    assert_template 'configuration'
+    assert_not_nil assigns(:contracts)
+
+    form = select_form 'main_form'
+    form.reporting.contract_ids = [ '1', '2' ]
+    form.submit
+
+    assert_response :success
+    assert_template 'general'
+    assert_not_nil assigns(:contracts)
   end
-=end
 
 end

@@ -33,18 +33,16 @@ class ReportingController < ApplicationController
     "#22a4ff", "#0082dd", # blue
   ]
   # Array starts at 0, but Gruff need a start at 1
-  @@couleurs_degradees = ( [nil] << colors ).flatten
-  @@couleurs = ( [nil] << colors.values_at(1, 3, 5, 7, 9) ).flatten
+  @@dark_colors = ( [nil] << colors ).flatten
+  @@colors = ( [nil] << colors.values_at(1, 3, 5, 7, 9) ).flatten
   # Subset for specific graphs
-  @@couleurs_delais = ( [nil] << colors.values_at(7, 1) ).flatten
-  @@couleurs_types = ( [nil] << colors.values_at(3, 7, 9) ).flatten
-  @@couleurs_types_degradees = ( [nil] << colors.values_at(2, 3, 6, 7, 8, 9) ).flatten
+  @@sla_colors = ( [nil] << colors.values_at(7, 1) ).flatten
+  @@colors_types = ( [nil] << colors.values_at(3, 7, 9) ).flatten
+  @@dark_colors_types = ( [nil] << colors.values_at(2, 3, 6, 7, 8, 9) ).flatten
 
   # allows to launch activity report
   def configuration
-    _titles()
-    @contracts = (@recipient ? @recipient.client.contracts :
-                 Contract.find(:all, Contract::OPTIONS))
+    @contracts = session[:user].contracts
   end
 
   # To display new issues by months
@@ -85,36 +83,11 @@ class ReportingController < ApplicationController
 
     init_class_var(params)
     redirect_to configuration_reporting_path and return unless
-      @contract and (@report[:start_date] < @report[:end_date])
+      @contracts and (@report[:start_date] < @report[:end_date])
     init_data_general
     fill_data_general
 
-    # TODO : trouver un bon moyen de faire un cache
-    @data.each_pair do |name, data| # each_key do |name|
-      #sha1 = Digest::SHA1.hexdigest("-#{qui}-#{name}-")
-      @path[name] = "reporting/#{name}.png"
-      size = data.size
-      if (not data.empty? and data[0].to_s =~ /_(terminees|en_cours)/)
-        # cas d'une légende à deux colonnes : degradé obligatoire
-        if name.to_s =~ /^severite/
-          @colors[name] = @@couleurs_degradees[1..size]
-        elsif name.to_s =~ /^repartition/
-          @colors[name] = @@couleurs_types_degradees[1..size]
-        else
-          @colors[name] = @@couleurs_degradees[1..size]
-        end
-      else
-        # cas d'une légende à une colonne : pas de degradé
-        if name.to_s =~ /^temps/
-          @colors[name] = @@couleurs_delais[1..size]
-        elsif name.to_s =~ /^annulation/
-          @colors[name] = @@couleurs_types[1..size]
-        else
-          @colors[name] = @@couleurs[1..size]
-        end
-      end
-    end
-
+    init_colors
 
     #on nettoie
     # TODO retravailler le nettoyage
@@ -122,15 +95,16 @@ class ReportingController < ApplicationController
     # rmtree(reporting)
     # Dir.mkdir(reporting)
 
-    # on remplit
+    # writing graph on disk
     i_want_to_draw_graphs = true
     if (i_want_to_draw_graphs)
-      write3graph(:repartition, Gruff::StackedBar)
-      write3graph(:severite, Gruff::StackedBar)
-      write3graph(:resolution, Gruff::StackedBar)
+      write3graph(:by_type, Gruff::StackedBar)
+      write3graph(:by_severity, Gruff::StackedBar)
+      write3graph(:by_status, Gruff::StackedBar)
+      write3graph(:by_software, Gruff::StackedBar)
 
       write3graph(:evolution, Gruff::Line)
-      write3graph(:annulation, Gruff::Bar)
+      write3graph(:cancelled, Gruff::Bar)
 
       write3graph(:callback_time, Gruff::Line)
       write3graph(:workaround_time, Gruff::Line)
@@ -138,37 +112,35 @@ class ReportingController < ApplicationController
     end
 
     #     write_graph(:top5_issues, Gruff::Pie)
-    #     write_graph(:top5_softwares, Gruff::Pie)
     # on nettoie
-    @first_col.each { |c| c.gsub!('\n','') }
+    @months_col.each { |c| c.gsub!('\n','') }
   end
 
   private
 
   # initialise toutes les variables de classes nécessaire
   # path stocke les chemins d'accès, @données les données
-  # @first_col contient la première colonne et @contract le contract
+  # @months_col contient la première colonne et @contract le contract
   # sélectionné
   def init_class_var(params)
     period =  params[:reporting][:period].to_i
     return unless period > 0
-    @contract = Contract.find(params[:reporting][:contract_id].to_i)
+    @contracts = Contract.find(params[:reporting][:contract_ids].each(&:to_i))
     @data, @path, @report, @colors = {}, {}, {}, {}
-    @titles = @@titles
-    @report[:start_date] = [ @contract.start_date.beginning_of_month,
-                             Time.now ].min
-    @report[:end_date] = [ calendar2time(params[:end_date]),
-                           @contract.end_date.beginning_of_month].min
-    @first_col = []
+    dates = @contracts.collect {|c| c.start_date.beginning_of_month}
+    @report[:start_date] = (dates << Time.now).min
+    dates = @contracts.collect {|c| c.end_date.beginning_of_month}
+    @report[:end_date] = (dates << calendar2time(params[:end_date])).min
+    @months_col = []
     current_month = @report[:start_date]
     end_date = @report[:end_date]
     while (current_month <= end_date) do
-      @first_col.push current_month.strftime('%b \n%Y')
+      @months_col.push current_month.strftime('%b \n%Y')
       current_month = current_month.advance(:months => 1)
     end
     @labels = {}
     i = 0
-    @first_col.each do |c|
+    @months_col.each do |c|
       @labels[i] = c if ((i % 2) == 0)
       i += 1
     end
@@ -180,43 +152,12 @@ class ReportingController < ApplicationController
       @report[:total_report] = compute_nb_month(start_date, end_date)
     else
       flash.now[:warn] = _('incorrect parameters')
-      # condition de sortie
-      @contract = nil
+      # out condition
+      @contracts = nil
     end
   rescue
     flash.now[:warn] = _('incorrect parameters')
-    @contract = nil
-  end
-
-  # initialisation de @data
-  def init_data_general
-    # Répartions par mois (StackedBar)
-    # _terminees doit être en premier
-    @data[:repartition]  =
-     [ [:informations_terminees], [:anomalies_terminees],
-     [:evolutions_terminees], [:informations_en_cours],
-     [:anomalies_en_cours], [:evolutions_en_cours] ]
-    @data[:severite] =
-     [ [:bloquantes_terminees], [:majeures_terminees],
-     [:mineures_terminees], [:sans_objet_terminees],
-     [:bloquantes_en_cours], [:majeures_en_cours],
-     [:mineures_en_cours], [:sans_objet_en_cours] ]
-    @data[:resolution] =
-     [ [:'contournées'], [:'corrigées'], [:'cloturées'], [:'annulées'], [:en_cours] ]
-    @data[:evolution] =
-     [ [:'bénéficiaires'], [:softwares], [:contributions] ] # TODO : [:interactions]
-    @data[:annulation] =
-     [ [:informations], [:anomalies], [:'évolutions'] ]
-
-    # calcul des délais
-    @data[:callback_time] =
-     [ [:'délais_respectés'], [:'hors_délai'] ]
-    @data[:workaround_time] =
-     [ [:'délais_respectés'], [:'hors_délai'] ]
-    @data[:correction_time] =
-     [ [:'délais_respectés'], [:'hors_délai'] ]
-
-
+    @contracts = nil
   end
 
   # It's damn hard to compute a difference of month
@@ -233,7 +174,7 @@ class ReportingController < ApplicationController
     @data.each_key do |key|
       mykey = :"#{key}_#{period}"
       data[mykey] = []
-      ponderation = (key.to_s =~ /^temps/) ? true : false
+      ponderation = (key.to_s =~ /^time/) ? true : false
       @data[key].each do |value|
         result = []
         result.push value[0]
@@ -253,8 +194,10 @@ class ReportingController < ApplicationController
     start_date = @report[:start_date]
     end_date = @report[:end_date]
 
-    issues = [ 'issues.created_on BETWEEN ? AND ? AND issues.contract_id = ?',
-                 nil, nil, @contract.id ]
+    # We cannot know in advance what are the most important software
+    init_compute_by_software(@data[:by_software])
+    issues = [ 'issues.created_on BETWEEN ? AND ? AND issues.contract_id IN (?)',
+                 nil, nil, @contracts.collect(&:id) ]
     until (start_date > end_date) do
       infdate = "#{start_date.strftime('%y-%m')}-01"
       start_date = start_date.advance(:months => 1)
@@ -262,14 +205,16 @@ class ReportingController < ApplicationController
 
       issues[1], issues[2] = infdate, supdate
       Issue.send(:with_scope, { :find => { :conditions => issues } }) do
-        compute_repartition @data[:repartition]
-        compute_severite @data[:severite]
-        compute_resolution @data[:resolution]
-        compute_annulation @data[:annulation]
-        compute_temps @data
+        compute_by_type @data[:by_type]
+        compute_by_severity @data[:by_severity]
+        compute_by_status @data[:by_status]
+        compute_by_software @data[:by_software]
+        compute_cancelled @data[:cancelled]
+        compute_time @data
         compute_evolution @data[:evolution]
       end
     end
+
     # on fais bien attention à ne merger avec @data
     # qu'APRES avoir calculé toutes les sommes
     middle_report = compute_data_period('middle', @report[:middle_report] + 1)
@@ -290,14 +235,14 @@ class ReportingController < ApplicationController
   ##
   # Calcul un tableaux du respect des délais
   # pour les 3 étapes : prise en compte, contournée, corrigée
-  def compute_temps(data)
+  def compute_time(data)
     issues = Issue.find(:all)
-    rappels = data[:callback_time]
+    phonecalls = data[:callback_time]
     workarounds = data[:workaround_time]
     corrections = data[:correction_time]
-    last_index = rappels[0].size
+    last_index = phonecalls[0].size
     2.times {|i|
-      rappels[i].push 0.0
+      phonecalls[i].push 0.0
       workarounds[i].push 0.0
       corrections[i].push 0.0
     }
@@ -309,7 +254,7 @@ class ReportingController < ApplicationController
       next unless c
 
       elapsed = d.elapsed
-      fill_one_report(rappels, elapsed.taken_into_account,
+      fill_one_report(phonecalls, elapsed.taken_into_account,
                       1.hour, last_index)
       fill_one_report(workarounds, elapsed.workaround,
                       c.workaround * interval, last_index)
@@ -318,13 +263,12 @@ class ReportingController < ApplicationController
       size += 1
     end
 
-    if size > 0
-      size = size.to_f
-      2.times {|i|
-        rappels[i][last_index] = (rappels[i][last_index].to_f / size) * 100
-        workarounds[i][last_index] = (workarounds[i][last_index].to_f / size) * 100
-        corrections[i][last_index] = (corrections[i][last_index].to_f / size) * 100
-      }
+    size = size.to_f
+    return unless size > 0
+    2.times do |i|
+      phonecalls[i][last_index] = (phonecalls[i][last_index].to_f / size) * 100
+      workarounds[i][last_index] = (workarounds[i][last_index].to_f / size) * 100
+      corrections[i][last_index] = (corrections[i][last_index].to_f / size) * 100
     end
   end
 
@@ -338,18 +282,43 @@ class ReportingController < ApplicationController
   end
 
 
-  ##
-  # TODO : le faire marcher si y a moins de 5 softwares
-  # Sort les 5 softwares qui ont eu le plus de issues
-  def compute_top5_softwares(report)
-    softwares = Issue.count(:group => "software_id")
-    softwares = softwares.sort {|a,b| a[1]<=>b[1]}
-    5.times do |i|
-      values = softwares.pop
-      name = Software.find(values[0]).name
-      report.push [ name.intern ]
-      report[i].push values[1]
+  def init_compute_by_software(report)
+    software = Issue.count(:group => "software_id", :conditions =>
+                           { :contract_id => @contracts.collect(&:id) })
+    software = software.sort {|a,b| a[1]<=>b[1]}
+    @software_ids = []
+
+    [ software.size, 8].min.times do |i|
+      software_id = software.pop[0]
+      next if software_id.nil?
+      @software_ids << software_id
+      name = Software.find(software_id).name
+      report.push [ name ]
     end
+    report.push [_('Unknown')]
+    report.push [_('Others')]
+  end
+
+  ##
+  #  Compute for each month which issues where on the top5 software
+  def compute_by_software(report)
+    index, total = 0, 0
+    @software_ids.each do |i|
+      count = Issue.count(:conditions => { :software_id => i})
+      report[index].push count
+      total += count
+      index += 1
+    end
+
+    # Unknown software
+    count = Issue.count(:conditions => { :software_id => nil })
+    report[index].push count
+    total += count
+    index += 1
+
+    # Others issues
+    count = Issue.count
+    report[index].push(count - total)
   end
 
   ##
@@ -368,7 +337,7 @@ class ReportingController < ApplicationController
 
   ##
   # Compte les issues annulées selon leur type
-  def compute_annulation(report)
+  def compute_cancelled(report)
     # TODO : faire des requêtes paramètrées, avec des ?
     informations = { :conditions => [ 'statut_id = 8 AND typeissue_id = ?', 1 ] }
     anomalies = { :conditions => [ 'statut_id = 8 AND typeissue_id = ?', 2 ] }
@@ -382,61 +351,63 @@ class ReportingController < ApplicationController
 
   ##
   # Compte les issues selon leur nature
-  def compute_repartition(report)
+  def compute_by_type(report)
     # TODO : faire des requêtes paramètrées, avec des ?
     informations = { :conditions => "typeissue_id = 1" }
     anomalies = { :conditions => "typeissue_id = 2" }
     evolutions = { :conditions => "typeissue_id = 5" }
 
-    Issue.send(:with_scope, { :find => { :conditions => Issue::TERMINEES } }) do
+    Issue.send(:with_scope, { :find => { :conditions => Issue::OPENED } }) do
       report[0].push Issue.count(informations)
       report[1].push Issue.count(anomalies)
       report[2].push Issue.count(evolutions)
     end
 
-    Issue.send(:with_scope, { :find => { :conditions => Issue::EN_COURS } }) do
+    Issue.send(:with_scope, { :find => { :conditions => Issue::CLOSED } }) do
       report[3].push Issue.count(informations)
       report[4].push Issue.count(anomalies)
       report[5].push Issue.count(evolutions)
     end
+
   end
 
   ##
   # Compte les issues par sévérités
-  def compute_severite(report)
-    severites = []
+  def compute_by_severity(report)
+    severities = []
     # TODO : requête paramètréé, avec ?
      (1..4).each do |i|
-      severites.concat [ { :conditions => "severite_id = #{i}" } ]
+      severities.concat [ { :conditions => "severity_id = #{i}" } ]
     end
 
-    Issue.send(:with_scope, { :find => { :conditions => Issue::TERMINEES } }) do
+    Issue.send(:with_scope, { :find => { :conditions => Issue::OPENED } }) do
       4.times do |t|
-        report[t].push Issue.count(severites[t])
+        report[t+4].push Issue.count(severities[t])
       end
     end
-    Issue.send(:with_scope, { :find => { :conditions => Issue::EN_COURS } }) do
+
+    Issue.send(:with_scope, { :find => { :conditions => Issue::CLOSED } }) do
       4.times do |t|
-        report[t+4].push Issue.count(severites[t])
+        report[t].push Issue.count(severities[t])
       end
     end
   end
 
   ##
   # Compte le nombre de issue Annulée, Cloturée ou en cours de traitement
-  def compute_resolution(report)
+  def compute_by_status(report)
     condition = 'issues.statut_id = ?'
-    contournee = { :conditions => [condition, 5] }
-    corrigee = { :conditions => [condition, 6] }
-    cloturee = { :conditions => [condition, 7] }
-    annulee = { :conditions => [condition, 8] }
-    en_cours = { :conditions => 'statut_id NOT IN (5,6,7,8)' }
+    bypassed = { :conditions => [condition, 5] }
+    fixed = { :conditions => [condition, 6] }
+    closed = { :conditions => [condition, 7] }
+    cancelled = { :conditions => [condition, 8] }
+    active = { :conditions => 'statut_id NOT IN (5,6,7,8)' }
 
-    report[0].push Issue.count(contournee)
-    report[1].push Issue.count(corrigee)
-    report[2].push Issue.count(cloturee)
-    report[3].push Issue.count(annulee)
-    report[4].push Issue.count(en_cours)
+    report[0].push Issue.count(cancelled)
+    report[1].push Issue.count(bypassed)
+    report[2].push Issue.count(fixed)
+    report[3].push Issue.count(closed)
+    report[4].push Issue.count(active)
   end
 
 
@@ -476,7 +447,7 @@ class ReportingController < ApplicationController
     }
     g.sort = false
 
-    data = @data[name].sort{|x,y| x[0].to_s <=> y[0].to_s}
+    data = @data[name] # .sort{|x,y| x[0].to_s <=> y[0].to_s}
     data.each {|value| g.data(value[0], value[1..-1]) }
     g.labels = @labels
     g.hide_dots = true if g.respond_to? :hide_dots
@@ -489,17 +460,69 @@ class ReportingController < ApplicationController
   end
 
 
-  # todo : une variable de classe localise (@@titles[locale])
-  def _titles
-    @@titles = {
-      :repartition => _('Distribution of your issues'),
-      :repartition_cumulee => _('Distribution of issues'),
-      :severite => _('Severity of your issues'),
-      :severite_cumulee => _('Severity of your issues'),
-      :resolution => _('Resolution of your issues'),
-      :resolution_cumulee => _('Resolution of your issues'),
+  # 3 initialisations are needed : titles, colors & datas.
+  def init_data_general
+    # [:empty] are needed for helpers, which always consider that first column is a title one.
+    @data[:by_type]  =
+     [ [_('Informations')], [_('Bugs')], [_('Evolution')],
+       [:empty], [:empty], [:empty] ]
+    @data[:by_severity] =
+      [ [_('Blocking')], [_('Major')], [_('Minor')], [_('None')],
+        [:empty], [:empty], [:empty], [:empty] ]
+    @data[:by_status] =
+     [ [_('Cancelled')], [_('Bypassed')], [_('Fixed')], [_('Closed')], [_('Active')] ]
+    @data[:by_status] =
+     [ [_('Cancelled')], [_('Bypassed')], [_('Fixed')], [_('Closed')], [_('Active')] ]
+    @data[:by_software] = []
 
-      :annulation => _('Cancelled issues'),
+    @data[:evolution] =
+     [ [_('Recipients')], [_('Softwares')], [_('Contributions')] ] # TODO : [:interactions]
+    @data[:cancelled] =
+     [ [_('Informations')], [_('Bugs')], [_('Evolutions')] ]
+
+    # calcul des délais
+    @data[:callback_time] =
+     [ [_('In time')], [_('Out of time')] ]
+    @data[:workaround_time] =
+     [ [_('In time')], [_('Out of time')] ]
+    @data[:correction_time] =
+     [ [_('In time')], [_('Out of time')] ]
+
+  end
+
+  # 3 initialisations are needed : titles, colors & datas.
+  def init_colors
+    @data.each_pair do |name, data|
+      # sha1 = Digest::SHA1.hexdigest("-#{qui}-#{name}-")
+      # TODO : it's not safe to store it that way
+      @path[name] = "reporting/#{name}.png"
+      size = data.size
+      case name.to_s
+      when /(by_type|by_status|by_software)/
+        @colors[name] = @@dark_colors_types[1..size]
+      when /by_severity/
+        @colors[name] = @@dark_colors[1..size]
+      when /^cancelled/
+        @colors[name] = @@colors_types[1..size]
+      when /time/
+        @colors[name] = @@sla_colors[1..size]
+      else
+        @colors[name] = @@colors[1..size]
+      end
+    end
+  end
+
+
+  # 3 initialisations are needed : titles, colors & datas.
+  def _titles
+    @titles = {
+      :distribution => _('Distribution of your issues'),
+      :by_type => _('By types'),
+      :by_severity => _('By severities'),
+      :by_status => _('By status'),
+      :by_software => _('By software'),
+
+      :cancelled => _('Cancelled issues'),
       :evolution => _('Evolution of the activity volume'),
 
       :top5_issues => _('Top 5 of the most discussed issues'),

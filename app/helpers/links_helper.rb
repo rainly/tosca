@@ -126,8 +126,8 @@ EOS
   end
 
   def link_to_all_issues
-    link_to(_('All the issues'), issues_path, :title =>
-            _('Consult all the issues'))
+    link_to(_('All issues'), issues_path, :title =>
+            _('Consult all issues'))
   end
 
   def link_to_tobd_issues
@@ -145,10 +145,13 @@ EOS
                    :title => _('Access to the list of contributions.'))
   end
 
-  # About page
   def public_link_to_about()
     public_link_to('?', about_welcome_path,
                    :title => _("About %s") % App::Name)
+  end
+
+  def public_link_to_forgotten_pwd
+    public_link_to(_('Forgotten password ?'), forgotten_password_accounts_path)
   end
 
   # No cache for this one. It's not a public link /!\

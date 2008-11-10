@@ -62,8 +62,12 @@ module Filters
     extend Shared
   end
 
+  class Contracts < Struct.new('Contracts', :text)
+    extend Shared
+  end
+
   class Issues < Struct.new('Issues', :text, :contract_id, :ingenieur_id,
-                              :typeissue_id, :severite_id, :statut_id,
+                              :typeissue_id, :severity_id, :statut_id,
                               :active, :limit)
     extend Shared
   end

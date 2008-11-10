@@ -21,7 +21,7 @@ module IssuesHelper
   # Display a link to an issue
   # Options
   #  * :show_id display the id
-  #  * :icon_severite display severity icon
+  #  * :icon_severity display severity icon
   #  * :limit display only :limit caracters
   def link_to_issue(issue, options = {})
     return '-' unless issue
@@ -30,14 +30,14 @@ module IssuesHelper
       limit = options[:limit] || 50
       text = ''
       text << "##{issue.id} " if options.has_key? :show_id
-      text << "#{StaticImage::severite(issue)} " if options.has_key? :icon_severite #TODO
+      text << "#{StaticImage::severity(issue)} " if options.has_key? :icon_severity #TODO
       text << truncate(issue.resume, limit)
     end
     link_to text, issue_path(issue)
   end
 
   def public_link_to_status_legend
-    public_link_to(_("Legend of statutes"), statuts_path, NEW_WINDOW)
+    public_link_to(_("Status legend"), statuts_path, NEW_WINDOW)
   end
 
   # Display a link to the software or version or release
@@ -166,7 +166,7 @@ module IssuesHelper
   def remote_link_to_all_issue
     ajax_call =  PagesHelper::AJAX_OPTIONS.dup.update(:url => issues_path)
     js_call = "document.forms['filters'].elements['filters[active]'].value=0; #{remote_function(ajax_call)}"
-    link_to_function(_('All the issues'), js_call,
+    link_to_function(_('All issues'), js_call,
                      _('show all the issues'))
   end
 
@@ -238,7 +238,7 @@ module IssuesHelper
   end
 
   def public_link_to_status_legend
-    public_link_to(_("Legend of statutes"), statuts_path, NEW_WINDOW)
+    public_link_to(_("Status legend"), statuts_path, NEW_WINDOW)
   end
 
 end
