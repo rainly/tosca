@@ -3,8 +3,7 @@
 <% role_id = (user ? user.role_id : 6) %>
 <% locale = Locale.get.language.intern %>
 <% role_localised = :"#{locale}#{user.role_id}" if user %>
-<% #We use '-' and the end not to generate new lines
-  cache("layout/#{role_id}/head") do -%>
+<% cache("layout/#{role_id}/head") do %>
  <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
  <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<%=Locale.get%>" lang="<%=Locale.get%>">
  <head>
@@ -76,10 +75,11 @@
           <ul class="nav_user">
           <% if user %>
             <% infos = [ link_to(_('My account'), edit_account_path(user)),
-                         link_to_remote_redbox('D', :url => theme_welcome_path, :method => :get, :update => 'theme_box'),
+			             public_link_to_remote_theme,
                          public_link_to(image_disconnect, logout_accounts_path, :class => "disconnect") ] %>
             <li><%= infos.join('</li><li>') %></li>
           <% else %>
+            <li><%= public_link_to_remote_theme %></li>
             <li><%= link_to_redbox(image_connect, 'login_box', :class => "connect") %></li>
           <% end %>
           <li><%= public_link_to_about %></li>
