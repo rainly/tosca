@@ -33,11 +33,12 @@ class ReportingController < ApplicationController
     "#22a4ff", "#0082dd", # blue
   ]
   # Array starts at 0, but Gruff need a start at 1
-  @@light_colors = ( [nil] << colors.values_at(0, 2, 4, 6, 8) ).flatten
-  @@colors = ( [nil] << colors.values_at(0, 2, 4, 6, 8, 1, 3, 5, 7, 9) ).flatten
+  @@distinct_colors = ( [nil] << %w(#330065 #343397 #3399fe #339898 #339833 #99cb33
+      #fefe33 #fecb33 #fe9933 #fc3301 #fc3365 #970264) ).flatten
+  @@colors = ( [nil] << colors.values_at(2,3, 4,5, 6,7, 8,9, 0,1) ).flatten
   # Subset for specific graphs
   @@sla_colors = ( [nil] << colors.values_at(7, 1) ).flatten
-  @@severity_colors = ( [nil] << colors.values_at(0,2,4,6,1,3,5,7) ).flatten
+  @@severity_colors = ( [nil] << colors.values_at(0,1, 2,3, 4,5, 6,7) ).flatten
   @@colors_types = ( [nil] << colors.values_at(3, 7, 9) ).flatten
   @@type_colors = ( [nil] << colors.values_at(2, 6, 8, 3, 7, 9) ).flatten
 
@@ -203,6 +204,7 @@ class ReportingController < ApplicationController
     # We cannot know in advance what are the most important software
     init_compute_by_software(@data[:by_software])
     severites_filter = init_compute_by_severity
+    init_compute_by_type
     issues = [ 'issues.created_on BETWEEN ? AND ? AND issues.contract_id IN (?)',
                  nil, nil, @contracts.collect(&:id) ]
     until (start_date > end_date) do
@@ -295,7 +297,7 @@ class ReportingController < ApplicationController
     software = software.sort {|a,b| a[1]<=>b[1]}
     @software_ids = []
 
-    [ software.size, 8].min.times do |i|
+    [ software.size, 10].min.times do |i|
       software_id = software.pop[0]
       next if software_id.nil?
       @software_ids << software_id
@@ -356,34 +358,36 @@ class ReportingController < ApplicationController
   end
 
 
+  def init_compute_by_type
+    @types = Array.new
+    @contracts.each do |c|
+      @types.concat(c.client.typeissues)
+    end
+    @types.uniq!
+  end
+
   ##
   # Compte les issues selon leur nature
   def compute_by_type(report)
-    types = Array.new
-    @contracts.each do |c|
-      types.concat(c.client.typeissues)
-    end
-    types.uniq!
-
     # 1st time, we have to fill dynamically labels
     # There's 2 lines, since we diffentiate opened and closed issues.
     if report.empty?
-      types.each { |type| report << [_(type.name)] }
-      types.each { |type| report << [:empty] }
+      @types.each { |type| report << [_(type.name)] }
+      @types.each { |type| report << [:empty] }
     end
 
     Issue.send(:with_scope, { :find => { :conditions => Issue::OPENED } }) do
-      types.each_with_index do |type, i|
+      @types.each_with_index do |type, i|
         conditions = { :conditions => { :typeissue_id => type.id } }
-        report[i].push Issue.count(conditions)
+        report[i*2].push Issue.count(conditions)
       end
     end
 
-    size = types.size
+    size = @types.size
     Issue.send(:with_scope, { :find => { :conditions => Issue::CLOSED } }) do
-      types.each_with_index do |type, i|
+      @types.each_with_index do |type, i|
         conditions = { :conditions => { :typeissue_id => type.id } }
-        report[i+size].push Issue.count(conditions)
+        report[i*2+1].push Issue.count(conditions)
       end
     end
 
@@ -411,13 +415,13 @@ class ReportingController < ApplicationController
     size = filters.size
     Issue.send(:with_scope, { :find => { :conditions => Issue::OPENED } }) do
       size.times do |t|
-        report[t].push Issue.count(filters[t])
+        report[t*2].push Issue.count(filters[t])
       end
     end
 
     Issue.send(:with_scope, { :find => { :conditions => Issue::CLOSED } }) do
       size.times do |t|
-        report[t+size].push Issue.count(filters[t])
+        report[t*2+1].push Issue.count(filters[t])
       end
     end
   end
@@ -523,14 +527,14 @@ class ReportingController < ApplicationController
       @path[name] = "reporting/#{name}.png"
       size = data.size
       case name.to_s
-      when /(by_type|by_software)/
-        @colors[name] = @@type_colors[1..size]
+      when /by_type/
+        @colors[name] = @@colors[1..@types.size*2]
       when /by_software/
-        @colors[name] = @@colors[1..size]
+        @colors[name] = @@distinct_colors[1..size]
       when /by_severity/
         @colors[name] = @@severity_colors[1..size]
       when /by_status/
-        @colors[name] = @@light_colors[1..size]
+        @colors[name] = @@distinct_colors[1..size]
       when /^cancelled/
         @colors[name] = @@colors_types[1..size]
       when /time/
