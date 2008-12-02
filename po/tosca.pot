@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: tosca 0.7.5\n"
-"POT-Creation-Date: 2008-12-02 09:15+0100\n"
+"POT-Creation-Date: 2008-12-02 10:53+0100\n"
 "PO-Revision-Date: 2008-05-22 15:28+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -1354,6 +1354,10 @@ msgstr ""
 msgid "arch"
 msgstr ""
 
+#: app/models/arch.rb:-
+msgid "Arch|Name"
+msgstr ""
+
 #: app/models/archive.rb:-
 msgid "Archive|File"
 msgstr ""
@@ -1711,7 +1715,7 @@ msgid "knowledge"
 msgstr ""
 
 #: app/models/knowledge.rb:-
-msgid "Knowledge|Competence"
+msgid "Knowledge|skill"
 msgstr ""
 
 #: app/models/knowledge.rb:-

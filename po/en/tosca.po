@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: tosca 0.7.5\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-12-02 09:15+0100\n"
+"POT-Creation-Date: 2008-12-02 10:53+0100\n"
 "PO-Revision-Date: 2008-12-02 09:21+0100\n"
 "Last-Translator: Jonathan Clarke <jclarke@linagora.com>\n"
 "Language-Team: English\n"
@@ -1348,15 +1348,19 @@ msgstr ""
 
 #: app/models/alert.rb:-
 msgid "Alert|Created at"
-msgstr ""
+msgstr "Created on"
 
 #: app/models/alert.rb:-
 msgid "Alert|Updated at"
-msgstr ""
+msgstr "Updated on"
 
 #: app/models/arch.rb:-
 msgid "arch"
 msgstr ""
+
+#: app/models/arch.rb:-
+msgid "Arch|Name"
+msgstr "Name"
 
 #: app/models/archive.rb:-
 msgid "Archive|File"
@@ -1715,8 +1719,8 @@ msgid "knowledge"
 msgstr ""
 
 #: app/models/knowledge.rb:-
-msgid "Knowledge|Competence"
-msgstr "skill"
+msgid "Knowledge|skill"
+msgstr ""
 
 #: app/models/knowledge.rb:-
 msgid "Knowledge|Software"
@@ -5051,3 +5055,4 @@ msgid "%d month"
 msgid_plural "%d months"
 msgstr[0] ""
 msgstr[1] ""
+
