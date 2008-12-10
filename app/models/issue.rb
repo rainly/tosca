@@ -138,7 +138,7 @@ class Issue < ActiveRecord::Base
       self.softwares_name
     elsif self.software
       self.software.name
-    else 
+    else
       "-"
     end
   end
@@ -241,6 +241,12 @@ class Issue < ActiveRecord::Base
   def client
     @client ||= ( recipient ? recipient.client : nil )
   end
+
+   # TODO : remove for versions > 0.7.5
+  def expert_name
+    (ingenieur ? ingenieur.user.name : '-')
+  end
+
 
   # Returns the state of an issue at date t
   # The result is a READ ONLY clone with the 3 indicators
@@ -352,7 +358,7 @@ class Issue < ActiveRecord::Base
     res << ingenieur.user.email if ingenieur
     res.join(',')
   end
-  
+
   #Find the pending requests of a user
   def self.find_pending_user(user)
     options, conditions = build_conditions_pending
@@ -371,7 +377,7 @@ class Issue < ActiveRecord::Base
     conditions << [ own_id ]
     Issue.find(:all, options)
   end
-  
+
   #Find the pending requests from a list of contracts
   def self.find_pending_contracts(contract_ids)
     options, conditions = build_conditions_pending
@@ -386,7 +392,7 @@ class Issue < ActiveRecord::Base
 
 
   private
-  
+
   def self.build_conditions_pending
     options = { :order => 'updated_on DESC',
       :select => Issue::SELECT_LIST, :joins => Issue::JOINS_LIST }
@@ -397,10 +403,10 @@ class Issue < ActiveRecord::Base
     conditions.first << 'issues.statut_id IN (?)'
     conditions << Statut::OPENED
     conditions.first << '(issues.expected_on < NOW() OR issues.expected_on IS NULL)'
-    
+
     [ options, conditions ]
   end
-  
+
   def create_first_comment
     self.first_comment = Comment.new do |c|
       #We use id's because it's quicker
