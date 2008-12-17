@@ -233,11 +233,24 @@ class Notifier < ActionMailer::Base
     headers[HEADER_MESSAGE_ID] = message_id(comment.mail_id)
     #Refers to the issue
     headers[HEADER_REFERENCES] = headers[HEADER_IN_REPLY_TO] = message_id(issue.first_comment.mail_id)
-    headers[HEADER_XSOFTWARE]  = issue.software.to_s if issue.software
-    headers[HEADER_XCONTRACT]  = issue.contract.to_s
-    headers[HEADER_XCLIENT]    = issue.client.to_s
-    headers[HEADER_XASSIGNEE]  = issue.ingenieur.name if issue.ingenieur
+    # asciify is used in order to not having email tagged as spam,
+    # coz of utf-8 letters like à or é
+    headers[HEADER_XSOFTWARE]  = asciify(issue.software.name) if issue.software
+    headers[HEADER_XCONTRACT]  = asciify!(issue.contract.to_s)
+    headers[HEADER_XCLIENT]    = asciify(issue.client.name)
+    headers[HEADER_XASSIGNEE]  = asciify(issue.ingenieur.name) if issue.ingenieur
     return headers
+  end
+
+  # Helpers method to clean non-ascii chars
+  # TODO : move it to active support extension ?
+  # TODO : submit upstream ?
+  def asciify(str)
+    str.gsub(/[^a-z1-9]+/i, '-')
+  end
+
+  def asciify!(str)
+    str.gsub!(/[^a-z1-9]+/i, '-')
   end
 
   # Used for outgoing mails, in order to get a Tree of messages
