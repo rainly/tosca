@@ -70,7 +70,7 @@ class CommentsController < ApplicationController
       url_attachment = render_to_string(:layout => false, :template => '/attachment')
       options = { :issue => issue, :comment => @comment,
         :name => user.name, :modifications => changed,
-        :url_issue => issue_url(issue),
+        :url_issue => issue_url(issue), :user => session[:user],
         :url_attachment => url_attachment
       }
       Notifier::deliver_issue_new_comment(options, flash)

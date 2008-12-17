@@ -23,11 +23,14 @@ class Notifier < ActionMailer::Base
   TEXT_CONTENT = 'text/plain'
 
   #Header for mails
-  HEADER_MESSAGE_ID = "Message-Id"
-  HEADER_REFERENCES = "References"
-  HEADER_IN_REPLY_TO = "In-Reply-To"
-  HEADER_LIST_ID = "List-Id"
-
+  HEADER_MESSAGE_ID     = "Message-Id"
+  HEADER_REFERENCES     = "References"
+  HEADER_IN_REPLY_TO    = "In-Reply-To"
+  HEADER_LIST_ID        = "List-Id"
+  HEADER_XSOFTWARE      = "X-Tosca-Software"
+  HEADER_XCONTRACT      = "X-Tosca-Contract"
+  HEADER_XCLIENT        = "X-Tosca-Client"
+  HEADER_XASSIGNEE      = "X-Tosca-Assignee"
 
   # To send a text and html mail it's simple
   # fill the recipients, from, subject, cc, bcc of your mail
@@ -38,7 +41,7 @@ class Notifier < ActionMailer::Base
   def error_message(exception, trace, session, params, env)
     @recipients = App::DeveloppersEmail
     @cc = App::MaintenerEmail
-    @from = App::FromEmail
+    @from = App::NoReplyEmail
     @content_type = HTML_CONTENT
     @subject = "Time to fix this one : #{env['REQUEST_URI']}"
     user = "Nobody"
@@ -59,7 +62,8 @@ class Notifier < ActionMailer::Base
   #   :user, :controller, :password
   def user_signup(options, flash = nil)
     recipients  options[:user].email
-    from        App::FromEmail
+    from        options[:session_user].email
+    reply_to    App::NoReplyEmail
     subject     "Accès au Support Logiciel Libre"
 
     html_and_text_body(options);
@@ -73,14 +77,7 @@ class Notifier < ActionMailer::Base
   #   :issue, :url_issue
   #   :name => user.name, :url_attachment
   def issue_new(options, flash = nil)
-    issue =  options[:issue]
-
-    recipients  compute_recipients(issue)
-    cc          compute_copy(issue)
-    from        App::FromEmail
-    subject     "[#{App::ServiceName}##{issue.id}] : #{issue.resume}"
-    headers     headers_mail_issue(issue.first_comment)
-
+    _common_issue_headers(options[:issue], issue.first_comment, options[:user])
     html_and_text_body(options);
 
     if flash and flash[:notice]
@@ -98,14 +95,7 @@ class Notifier < ActionMailer::Base
     # for instance, send mail to the correct engineer
     # when reaffecting an issue
     issue.reload
-    comment = options[:comment]
-
-    recipients compute_recipients(issue, comment.private)
-    cc         compute_copy(issue, comment.private)
-    from       App::FromEmail
-    subject    "[#{App::ServiceName}:##{issue.id}] : #{issue.resume}"
-    headers    headers_mail_issue(comment)
-
+    _common_issue_headers(issue, options[:comment], options[:user])
     html_and_text_body(options)
 
     if flash and flash[:notice]
@@ -122,7 +112,8 @@ class Notifier < ActionMailer::Base
       else
         recipients App::MaintenerEmail
     end
-    from    App::FromEmail
+    from        from.email
+    reply_to    App::NoReplyEmail
     subject "[Suggestion] => #{to}"
 
     options = Hash.new
@@ -133,8 +124,9 @@ class Notifier < ActionMailer::Base
   end
 
   def reporting_digest(user, data, mode, now)
-    from       App::FromEmail
-    recipients user.email
+    from        App::TeamEmail
+    reply_to    App::NoReplyEmail
+    recipients  user.email
 
     case mode.to_sym
     when :day
@@ -225,6 +217,35 @@ class Notifier < ActionMailer::Base
   end
 
   private
+
+  def _common_issue_headers(issue, comment, user)
+    recipients  []
+    cc          []
+    bcc         compute_copy(issue, comment.private).concat(compute_recipients(issue, comment.private))
+    from        user.email
+    reply_to    App::NoReplyEmail
+    subject     "[#{issue.id}] #{issue.resume}"
+    headers     _headers_mail_issue(issue, comment)
+  end
+
+  #For mail headers : http://www.expita.com/header1.html
+  def _headers_mail_issue(issue, comment)
+    headers = Hash.new
+    headers[HEADER_MESSAGE_ID] = message_id(comment.mail_id)
+    #Refers to the issue
+    headers[HEADER_REFERENCES] = headers[HEADER_IN_REPLY_TO] = message_id(issue.first_comment.mail_id)
+    headers[HEADER_XSOFTWARE]  = issue.software.to_s if issue.software
+    headers[HEADER_XCONTRACT]  = issue.contract.to_s
+    headers[HEADER_XCLIENT]    = issue.client.to_s
+    headers[HEADER_XASSIGNEE]  = issue.ingenieur.name if issue.ingenieur
+    return headers
+  end
+
+  # Used for outgoing mails, in order to get a Tree of messages
+  # in mail software
+  def message_id(id)
+    "<#{id}@#{App::Name}.#{App::InternetAddress}>"
+  end
 
   def get_text_from_email(part)
     content_type = part.sub_type
@@ -344,20 +365,6 @@ class Notifier < ActionMailer::Base
       :body => message_html
   end
 
-  #For mail headers : http://www.expita.com/header1.html
-  def headers_mail_issue(comment)
-    headers = Hash.new
-    headers[HEADER_MESSAGE_ID] = message_id(comment.mail_id)
-    #Refers to the issue
-    headers[HEADER_REFERENCES] = headers[HEADER_IN_REPLY_TO] = message_id(comment.issue.first_comment.mail_id)
-    return headers
-  end
-
-  # Used for outgoing mails, in order to get a Tree of messages
-  # in mail software
-  def message_id(id)
-    "<#{id}@#{App::Name}.#{App::InternetAddress}>"
-  end
 
   #Extracts the issue number from a header
   def extract_issue_id(string)

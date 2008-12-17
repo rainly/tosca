@@ -26,13 +26,13 @@ class IssuesController < ApplicationController
   def pending
     user = session[:user]
     @own_issues = Issue.find_pending_user(user)
-    
+
     @manager_issues = []
     unless user.client?
       @manager_issues = Issue.find_pending_contracts(user.managed_contract_ids)
       @manager_issues = @manager_issues - @own_issues
     end
-    
+
     @team_issues = Issue.find_pending_contracts(user.contracts)
     @team_issues = @team_issues - @manager_issues - @own_issues
 
@@ -144,7 +144,7 @@ class IssuesController < ApplicationController
       @issue.first_comment.issue.reload
       url_attachment = render_to_string(:layout => false,
                                         :template => '/attachment')
-      options = { :issue => @issue,
+      options = { :issue => @issue, :user => session[:user],
         :url_issue => issue_url(@issue),
         :name => user.name, :url_attachment => url_attachment }
 
