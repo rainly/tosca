@@ -246,11 +246,11 @@ class Notifier < ActionMailer::Base
   # TODO : move it to active support extension ?
   # TODO : submit upstream ?
   def asciify(str)
-    str.gsub(/[^a-z1-9]+/i, '-')
+    str.gsub(/[^a-z1-9 ]+/i, '-')
   end
 
   def asciify!(str)
-    str.gsub!(/[^a-z1-9]+/i, '-')
+    str.gsub!(/[^a-z1-9 ]+/i, '-')
   end
 
   # Used for outgoing mails, in order to get a Tree of messages
