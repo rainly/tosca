@@ -89,7 +89,7 @@ class AccountController < ApplicationController
         connection.begin_db_transaction
         if @user.save
           associate_user!
-          Notifier::deliver_user_signup({:user => @user}, flash)
+          Notifier::deliver_user_signup({:user => @user, :session_user => session[:user]}, flash)
           # The commit has to be after sending email, not before
           connection.commit_db_transaction
           flash[:notice] = _("Account successfully created.")
@@ -230,7 +230,7 @@ class AccountController < ApplicationController
       if @user.generate_password and @user.save
         flash[:warn] = nil
         flash[:notice] = _('Your new password has been generated.')
-        Notifier::deliver_user_signup({:user => @user}, flash)
+        Notifier::deliver_user_signup({:user => @user, :session_user => session[:user]}, flash)
       end
     end
   end
