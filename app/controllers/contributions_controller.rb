@@ -177,7 +177,7 @@ private
     if @contribution.software_id
       @versions = @contribution.software.versions.find_select
     else
-      @versions = Version.all.find_select # collect { |v| [v.full_software_name, v.id] }
+      @versions = []
     end
   end
 
