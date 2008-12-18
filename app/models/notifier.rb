@@ -77,7 +77,8 @@ class Notifier < ActionMailer::Base
   #   :issue, :url_issue
   #   :name => user.name, :url_attachment
   def issue_new(options, flash = nil)
-    _common_issue_headers(options[:issue], issue.first_comment, options[:user])
+    issue = options[:issue]
+    _common_issue_headers(issue, issue.first_comment, options[:user])
     html_and_text_body(options);
 
     if flash and flash[:notice]
