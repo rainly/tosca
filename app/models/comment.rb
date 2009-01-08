@@ -85,12 +85,6 @@ class Comment < ActiveRecord::Base
   end
 
 
-  # Elapsed can NOT be null, it's used for lots of computation.
-  def elapsed=(value)
-    write_attribute(:elapsed, value || 0)
-  end
-
-
   private
 
   # We destroy a few things, if appropriate

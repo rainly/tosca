@@ -57,14 +57,13 @@ class CommentsController < ApplicationController
         the <b>status</b> or in the <b>severity</b>")
     end
 
-    @comment = Comment.new(comment) do |c|
+   @comment = Comment.new(comment) do |c|
       c.issue, c.user = issue, user
       c.add_attachment(params)
+      c.elapsed ||= 0 # Nil is not allowed for a heavily-used for computation value
     end
-
     issue.update_attribute :expected_on, Time.now if user.client?
 
-    #We verify and send an email
     if @comment.save
       flash[:notice] = _("Your comment was successfully added.")
       url_attachment = render_to_string(:layout => false, :template => '/attachment')
