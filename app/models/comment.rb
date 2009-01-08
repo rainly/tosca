@@ -33,7 +33,7 @@ class Comment < ActiveRecord::Base
     if record.issue.nil?
       record.errors.add_to_base _('You must indicate a valid issue')
     end
-    #We check if we are trying to change the status of the request, 
+    #We check if we are trying to change the status of the request,
     #but it has already the same status
     if (issue && issue.new_record? != true &&
         issue.first_comment_id != record.id &&
@@ -83,6 +83,13 @@ class Comment < ActiveRecord::Base
   def fragments
     [ ]
   end
+
+
+  # Elapsed can NOT be null, it's used for lots of computation.
+  def elapsed=(value)
+    write_attribute(:elapsed, value || 0)
+  end
+
 
   private
 
