@@ -61,7 +61,7 @@ class NotifierTest < Test::Unit::TestCase
     issue = Issue.find(:first)
     comment = issue.first_comment
     options = { :issue => issue, :name => issue.submitter.name,
-      :user => Issue.first,
+      :user => User.first,
       :url_issue => "www.issue.com", :url_attachment => "www.attachment.com",
       :modifications => {:statut_id => true, :ingenieur_id => true, :severity_id => true},
       :comment => comment }
