@@ -47,6 +47,7 @@ class NotifierTest < Test::Unit::TestCase
   def test_issue_new
     issue = Issue.find(:first)
     options = { :issue => issue, :name => issue.submitter.name,
+      :user => User.first,
       :url_issue => "www.issue.com", :url_attachment => "www.attachment.com" }
     response = Notifier::deliver_issue_new(options)
     assert_match issue.resume, response.subject
@@ -60,6 +61,7 @@ class NotifierTest < Test::Unit::TestCase
     issue = Issue.find(:first)
     comment = issue.first_comment
     options = { :issue => issue, :name => issue.submitter.name,
+      :user => Issue.first,
       :url_issue => "www.issue.com", :url_attachment => "www.attachment.com",
       :modifications => {:statut_id => true, :ingenieur_id => true, :severity_id => true},
       :comment => comment }
