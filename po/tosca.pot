@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: tosca 0.7.5\n"
-"POT-Creation-Date: 2008-12-02 16:46+0100\n"
+"POT-Creation-Date: 2009-01-15 07:34+0100\n"
 "PO-Revision-Date: 2008-05-22 15:28+0200\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -148,27 +148,27 @@ msgid ""
 "        the <b>status</b> or in the <b>severity</b>"
 msgstr ""
 
-#: app/controllers/comments_controller.rb:69
+#: app/controllers/comments_controller.rb:68
 msgid "Your comment was successfully added."
 msgstr ""
 
-#: app/controllers/comments_controller.rb:78
+#: app/controllers/comments_controller.rb:77
 msgid "An error has occured."
 msgstr ""
 
-#: app/controllers/comments_controller.rb:106
+#: app/controllers/comments_controller.rb:105
 msgid "The comment was successfully updated."
 msgstr ""
 
-#: app/controllers/comments_controller.rb:118
+#: app/controllers/comments_controller.rb:117
 msgid "The comment was successfully destroyed."
 msgstr ""
 
-#: app/controllers/comments_controller.rb:120
+#: app/controllers/comments_controller.rb:119
 msgid "You cannot delete the first comment"
 msgstr ""
 
-#: app/controllers/comments_controller.rb:134
+#: app/controllers/comments_controller.rb:133
 msgid "You are not allowed to edit this comment"
 msgstr ""
 
@@ -202,7 +202,7 @@ msgstr ""
 msgid "The contribution has been updated successfully."
 msgstr ""
 
-#: app/controllers/contributions_controller.rb:209
+#: app/controllers/contributions_controller.rb:214
 msgid "The associated issue does not exist"
 msgstr ""
 
@@ -399,6 +399,11 @@ msgstr ""
 msgid "Type"
 msgstr ""
 
+#: app/controllers/export_controller.rb:159 app/views/issues/_form.html.erb:57
+#: app/views/issues/_infos_issue.html.erb:42
+msgid "Assigned to"
+msgstr ""
+
 #: app/controllers/export_controller.rb:208
 #: app/views/reporting/_comex_tableaux.html.erb:9
 msgid "To be closed"
@@ -480,38 +485,38 @@ msgstr ""
 msgid "An image was successfully updated."
 msgstr ""
 
-#: app/controllers/issues_controller.rb:67 app/helpers/issues_helper.rb:169
+#: app/controllers/issues_controller.rb:68 app/helpers/issues_helper.rb:169
 #: app/helpers/links_helper.rb:129
 msgid "All issues"
 msgstr ""
 
-#: app/controllers/issues_controller.rb:139
+#: app/controllers/issues_controller.rb:140
 msgid "You have successfully submitted your %s issue."
 msgstr ""
 
-#: app/controllers/issues_controller.rb:287
+#: app/controllers/issues_controller.rb:288
 msgid "The issue has been updated successfully."
 msgstr ""
 
-#: app/controllers/issues_controller.rb:339
+#: app/controllers/issues_controller.rb:340
 msgid "This issue is no longer linked to a contribution"
 msgstr ""
 
-#: app/controllers/issues_controller.rb:341
+#: app/controllers/issues_controller.rb:342
 msgid "This contribution is now linked"
 msgstr ""
 
-#: app/controllers/issues_controller.rb:379
+#: app/controllers/issues_controller.rb:380
 msgid ""
 "It seems that you are not associated to a contract, which prevents you from "
 "filling an issue. Please contact %s if you think it's not normal"
 msgstr ""
 
-#: app/controllers/issues_controller.rb:439 app/helpers/issues_helper.rb:155
+#: app/controllers/issues_controller.rb:440 app/helpers/issues_helper.rb:155
 msgid "Active issues"
 msgstr ""
 
-#: app/controllers/issues_controller.rb:442 app/helpers/issues_helper.rb:162
+#: app/controllers/issues_controller.rb:443 app/helpers/issues_helper.rb:162
 msgid "Finished issues"
 msgstr ""
 
@@ -801,6 +806,10 @@ msgid ""
 "comments has been sent successfully."
 msgstr ""
 
+#: app/controllers/welcome_controller.rb:74
+msgid "Cache cleared !"
+msgstr ""
+
 #: app/helpers/account_helper.rb:36
 #: app/views/layouts/standard-layout.html.erb:78
 msgid "My account"
@@ -1081,7 +1090,7 @@ msgstr ""
 msgid "Forgotten password ?"
 msgstr ""
 
-#: app/helpers/links_helper.rb:159
+#: app/helpers/links_helper.rb:159 app/views/welcome/admin.html.erb:64
 msgid "Administration"
 msgstr ""
 
@@ -1354,6 +1363,10 @@ msgstr ""
 msgid "arch"
 msgstr ""
 
+#: app/models/arch.rb:-
+msgid "Arch|Name"
+msgstr ""
+
 #: app/models/archive.rb:-
 msgid "Archive|File"
 msgstr ""
@@ -1518,7 +1531,7 @@ msgstr ""
 msgid "public"
 msgstr ""
 
-#: app/models/comment.rb:104
+#: app/models/comment.rb:105
 msgid "This issue seems to be unstable."
 msgstr ""
 
@@ -1711,7 +1724,7 @@ msgid "knowledge"
 msgstr ""
 
 #: app/models/knowledge.rb:-
-msgid "Knowledge|skill"
+msgid "Knowledge|Competence"
 msgstr ""
 
 #: app/models/knowledge.rb:-
@@ -1782,36 +1795,36 @@ msgstr ""
 msgid "Mainteneur|Name"
 msgstr ""
 
-#: app/models/notifier.rb:142
+#: app/models/notifier.rb:139
 msgid "Daily digest for "
 msgstr ""
 
-#: app/models/notifier.rb:144
+#: app/models/notifier.rb:141
 msgid " week of "
 msgstr ""
 
-#: app/models/notifier.rb:145
+#: app/models/notifier.rb:142
 msgid "Weekly digest for "
 msgstr ""
 
-#: app/models/notifier.rb:148
+#: app/models/notifier.rb:145
 msgid "Monthly digest for "
 msgstr ""
 
-#: app/models/notifier.rb:151
+#: app/models/notifier.rb:148
 msgid "Yearly digest for "
 msgstr ""
 
-#: app/models/notifier.rb:263 app/models/notifier.rb:275
-#: app/models/notifier.rb:288
+#: app/models/notifier.rb:301 app/models/notifier.rb:313
+#: app/models/notifier.rb:326
 msgid "Possible error in your e-mail"
 msgstr ""
 
-#: app/models/notifier.rb:327
+#: app/models/notifier.rb:365
 msgid "An e-mail was sent to "
 msgstr ""
 
-#: app/models/notifier.rb:328
+#: app/models/notifier.rb:366
 msgid "with a copy to"
 msgstr ""
 
@@ -3235,11 +3248,11 @@ msgid "and its has been approved on %s"
 msgstr ""
 
 #: app/views/contributions/show.html.erb:26
-msgid "This bug has been discovered in the version %s "
+msgid "This patch has been made for version %s "
 msgstr ""
 
 #: app/views/contributions/show.html.erb:29
-msgid "and has been fixed in the version %s"
+msgid "and has been merged in version %s"
 msgstr ""
 
 #: app/views/contributions/show.html.erb:32
@@ -3379,11 +3392,6 @@ msgstr ""
 #: app/views/issues/_form.html.erb:23
 #: app/views/issues/_infos_issue.html.erb:53
 msgid "Concerning"
-msgstr ""
-
-#: app/views/issues/_form.html.erb:57
-#: app/views/issues/_infos_issue.html.erb:42
-msgid "Assigned to"
 msgstr ""
 
 #: app/views/issues/_form.html.erb:88
@@ -3562,13 +3570,13 @@ msgid_plural "The contracts I manage has %d pending issues"
 msgstr[0] ""
 msgstr[1] ""
 
-#: app/views/issues/lists/pending.html.erb:20
+#: app/views/issues/lists/pending.html.erb:21
 msgid "My team has %d pending issue"
 msgid_plural "My team has %d pending issues"
 msgstr[0] ""
 msgstr[1] ""
 
-#: app/views/issues/lists/pending.html.erb:28
+#: app/views/issues/lists/pending.html.erb:29
 msgid "No pending issue"
 msgstr ""
 
@@ -4077,7 +4085,7 @@ msgid_plural "New issues %s"
 msgstr[0] ""
 msgstr[1] ""
 
-#: app/views/reporting/calendar.html.erb:15
+#: app/views/reporting/calendar.html.erb:17
 msgid "%s new issue has been submitted"
 msgid_plural "%s new issues has been submitted"
 msgstr[0] ""
@@ -4798,6 +4806,10 @@ msgstr ""
 
 #: app/views/welcome/admin.html.erb:58
 msgid "Digest report"
+msgstr ""
+
+#: app/views/welcome/admin.html.erb:66
+msgid "Clear cache"
 msgstr ""
 
 #: app/views/welcome/index.html.erb:2
