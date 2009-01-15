@@ -164,8 +164,13 @@ class ContributionsController < ApplicationController
   end
 
   def ajax_list_versions
-    return render(:nothing => true) unless issue.xml_http_issue? and params[:software_id]
-    @versions = Software.find(params[:software_id]).versions.find_select # collect { |v| [v.full_software_name, v.id] }
+    return render(:nothing => true) unless request.xhr?
+    begin
+      soft = Software.find(params[:software_id])
+      @versions = soft.versions.find_select
+    rescue # mainly if software is not findable or software_id.nil?
+      render(:nothing => true)
+    end
   end
 
 private
