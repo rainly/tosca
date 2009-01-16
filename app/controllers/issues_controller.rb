@@ -351,8 +351,8 @@ class IssuesController < ApplicationController
     @statuts = Statut.find_select(:order => 'id')
     @typeissues = Typeissue.find_select()
     @severities = Severity.find_select()
+    @contracts = Contract.find_select(Contract::OPTIONS)
     if @ingenieur
-      @contracts = Contract.find_select(Contract::OPTIONS)
       @ingenieurs = Ingenieur.find_select(User::SELECT_OPTIONS)
     end
   end
