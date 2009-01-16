@@ -2,20 +2,13 @@
 <%# version of ruby ... :/ %>
 <% if defined?(@url_attachment) and not @url_attachment.blank? %>
   <p>
-    <a href="<%=@url_attachment%>">Télécharger la pièce jointe.</a>
+   <a href="<%=@url_attachment%>">Télécharger la pièce jointe.</a>
   </p>
 <% end %>
 
-<span>
-<font color="#909090">
+<span><font color="#909090">
 -- <br />
-<% url_statuts = "http://www.08000linux.com/wiki/index.php/D%C3%A9roulement_issue" %>
-<% url_portail = "http://www.08000linux.com/" %>
-<a href="<%= url_statuts %>">Rappel sur les statuts et nos commitments.</a><br /><br />
-Ceci est un mail automatique du <%= App::InternetAddress %>.<br /><br />
-Pour y répondre, contactez-nous :<br /><ul>
-<li> Par téléphone au 08000LINUX (08 00 05 46 89)</li>
-<li> Par le portail web <a href="<%= url_portail %>">08000LINUX.com</a></li>
-</ul><b>Merci de ne pas y répondre par mail.</b>
-</font>
-</span>
+Ceci est un courriel automatique du <%= App::InternetAddress %>.<br />
+Pour y répondre, contactez-nous sur le site de
+<a href="<%=App::CompanySite%>"><%=App::CompanyName%></a>
+</font></span>

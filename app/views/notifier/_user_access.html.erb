@@ -1,8 +1,11 @@
 <p>&nbsp;&nbsp;Pour mémoire, nous vous rappelons les canaux d'accès :
 <% url = "http://www.08000linux.com/" %>
 <ul>
+ <% access_code = @user.recipient.client.access_code %>
+ <% if access_code and !access_code.blank? %>
   <li> Téléphone : 08000 54 689 (taper 1 puis <%= @user.recipient.client.access_code %>)</li>
   <li> Fax : 01 58 18 68 29</li>
-  <li> Portail : <%= "<a href=\"#{url}\">www.08000linux.com</a>" %></li>
+ <% end %>
+ <li> Portail : <%= "<a href=\"#{url}\">www.08000linux.com</a>" %></li>
 </ul>
 </p>
