@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: tosca 0.7.5\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-01-15 07:34+0100\n"
-"PO-Revision-Date: 2009-01-15 07:36+0100\n"
+"PO-Revision-Date: 2009-01-16 09:54+0100\n"
 "Last-Translator: Jonathan Clarke <jclarke@linagora.com>\n"
 "Language-Team: French\n"
 "MIME-Version: 1.0\n"
@@ -4734,7 +4734,7 @@ msgstr "Ajouter une nouvelle version"
 
 #: app/views/versions/show.html.erb:9
 msgid "Version of a software"
-msgstr "Versiond d'un logiciel"
+msgstr "Version d'un logiciel"
 
 #: app/views/welcome/about.html.erb:9 app/views/welcome/index.html.erb:73
 msgid "Don't hesitate to"
