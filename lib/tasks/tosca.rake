@@ -12,11 +12,19 @@ namespace :tosca do
   end
 
 desc "Configure a new Tosca instance"
+  # TODO : split this file in more methods
   task :install do
     require 'fileutils'
     root = RAILS_ROOT
     FileUtils.mkdir_p "#{root}/log"
 
+    # dependencies
+    print "You need to install those dependencies : "
+    print "sudo apt-get install librmagick-ruby ruby1.8 ri ri1.8 rdoc rake libmysql-ruby mysql-server irb libgettext-ruby libgettext-ruby-util mongrel"
+    print "Is those dependencies here ? [Y/n]"
+    exit 0 if STDIN.gets.chomp! != 'n'
+
+    # Database #
     print "Use default access to mysql [Y/n] ?"
     if STDIN.gets.chomp! != 'n'
       FileUtils.cp "#{root}/config/database.yml.sample",
