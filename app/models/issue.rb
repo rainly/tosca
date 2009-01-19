@@ -120,6 +120,10 @@ class Issue < ActiveRecord::Base
     end
   end
 
+  def joined_tags
+    self.tag_list.join(', ')
+  end
+
   def full_software_name
     result = ""
     result = software.name if self.software
