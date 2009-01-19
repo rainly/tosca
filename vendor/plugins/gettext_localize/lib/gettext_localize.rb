@@ -140,7 +140,7 @@ module GettextLocalize
   def self.country_options
     self.get_country_options
   end
-  
+
   # Returns an Array ready to be merged in datetime select options
   # :order => [:day, :month, :year]
   def self.date_order
@@ -193,7 +193,7 @@ module GettextLocalize
   # FIXME: check if Gettext has this
   def self.has_locale?(locale)
     locale = self.format_locale(locale)
-    return true if locale=='C' or locale.split("_")[0] == 'en' # default locale to translate
+    return true if locale.nil? or locale=='C' or locale.split("_")[0] == 'en' # default locale to translate
     mos = [File.join(self.get_locale_path,locale,"LC_MESSAGES",self.get_textdomain+".mo")]
     mos << File.join(self.get_locale_path,locale.split("_")[0],"LC_MESSAGES",self.get_textdomain+".mo")
     self.each_plugin do |version,textdomain,path|
