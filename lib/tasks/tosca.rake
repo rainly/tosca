@@ -19,20 +19,20 @@ desc "Configure a new Tosca instance"
     FileUtils.mkdir_p "#{root}/log"
 
     # dependencies
-    print "You need to install those dependencies : "
-    print "sudo apt-get install librmagick-ruby ruby1.8 ri ri1.8 rdoc rake libmysql-ruby mysql-server irb libgettext-ruby libgettext-ruby-util mongrel"
-    print "Is those dependencies here ? [Y/n]"
-    exit 0 if STDIN.gets.chomp! != 'n'
+    puts "You need to install those dependencies : "
+    puts "sudo apt-get install librmagick-ruby ruby1.8 ri ri1.8 rdoc rake libmysql-ruby mysql-server irb libgettext-ruby libgettext-ruby-util rubygems mongrel"
+    puts "Is those dependencies here ? [Y/n]"
+    exit 0 if STDIN.gets.chomp! == 'n'
 
     # Database #
-    print "Use default access to mysql [Y/n] ?"
+    puts "Use default access to mysql [Y/n] ?"
     if STDIN.gets.chomp! != 'n'
       FileUtils.cp "#{root}/config/database.yml.sample",
                    "#{root}/config/database.yml"
     end
     FileUtils.cp "#{root}/config/config.rb.sample", "#{root}/config/config.rb"
     # needed for dev mode, when stylesheets are not cached in single file.
-    FileUtils.ln_s '../../public/images/' 'public/stylesheets/images'
+    FileUtils.ln_s '../../public/images/', 'public/stylesheets/images', :force => true
 
     Rake::Task['l10n:mo'].invoke
     Rake::Task['db:create'].invoke
