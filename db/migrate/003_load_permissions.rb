@@ -63,8 +63,7 @@ class LoadPermissions < ActiveRecord::Migration
     add_permission.call(roles, access)
 
     roles = [ manager_id, expert_id ]
-    access = [ [ '^account/become$',
-                 'Helper for customer account' ],
+    access = [ [ '^account/become$', 'Helper for customer account' ],
                [ '^phonecalls/(?!destroy)', 'Manage calls' ],
                [ '^welcome/admin$', 'Administration page' ],
                [ '^comments/(?!destroy)', 'Manage comments' ],
@@ -74,7 +73,8 @@ class LoadPermissions < ActiveRecord::Migration
                [ '^reporting/', 'Access to all kinds of reporting' ],
                [ '^socles/(?!destroy)', "Manage systems" ],
                [ '^urlsoftwares/(?!destroy)', 'Manage urls of software' ],
-               [ '^urlreversements/', 'Manage their own urls of contributions' ]
+               [ '^urlreversements/', 'Manage their own urls of contributions' ],
+               [ '^archives/(?!destroy)', 'Manage release files' ]
              ]
     add_permission.call(roles, access)
 
@@ -93,7 +93,6 @@ class LoadPermissions < ActiveRecord::Migration
                [ '^machines/(?!destroy)', 'Manage servers' ],
                [ '^releases/(?!destroy)', 'Manage releases' ],
                [ '^teams/(?!destroy)', 'Manage teams' ],
-               [ '^releases/(?!destroy)', 'Manage release' ],
                [ '^tags/', 'Manage tags' ],
                [ '^versions/(?!destroy)', 'Manage version' ]
              ]
@@ -144,8 +143,7 @@ class LoadPermissions < ActiveRecord::Migration
                [ '^contributions/(index|select|show|list|feed)',
                  'Public read access to contributions' ],
                [ '^groupes/(index|show)', 'Public read access to groups' ],
-               [ '^softwares/(index|show)',
-                 'Public read access to software' ],
+               [ '^softwares/(index|show)', 'Public read access to software' ],
                [ '^statuts/(index|help)$', 'Explanation of status' ] ]
     add_permission.call(roles, access)
 
