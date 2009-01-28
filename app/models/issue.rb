@@ -180,6 +180,13 @@ class Issue < ActiveRecord::Base
     contract.rule.elapsed_formatted(self.elapsed.until_now, contract)
   end
 
+  # It's only intended to be used by the export, so there's no check on the
+  # presence of this field. See export_controller#compute_issues if you want to
+  # see how this method is dynamically created.
+  def last_comment_content
+    html2text(self.last_comment_text)
+  end
+
   def find_other_comment(comment_id)
     cond = [ 'comments.private <> 1 AND comments.id <> ?', comment_id ]
     self.comments.find(:first, :conditions => cond)
