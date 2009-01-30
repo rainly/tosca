@@ -99,7 +99,7 @@ class PhonecallsController < ApplicationController
   end
 
   def ajax_recipients
-    return render(:nothing) unless issue.xml_http_issue?
+    return render(:nothing) unless request.xml_http_issue?
 
     # la magie de rails est cassé pour la 1.2.2, en mode production
     # donc je dois le faire manuellement
