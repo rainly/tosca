@@ -23,9 +23,7 @@
 # ENV['RAILS_ENV'] ||= 'production'
 
 # Specifies gem version of Rails to use when vendor/rails is not present
-RAILS_GEM_VERSION = '2.1.1' unless defined? RAILS_GEM_VERSION
-$KCODE='u'
-require 'jcode'
+RAILS_GEM_VERSION = '2.1.2' unless defined? RAILS_GEM_VERSION
 
 # Bootstrap the Rails environment, frameworks, and default configuration
 require File.join(File.dirname(__FILE__), 'boot')
@@ -43,14 +41,8 @@ page_cache_path = File.join RAILS_ROOT, 'public', 'cache'
 
 # Used to have extension
 # See http://github.com/pivotal/desert/tree/master for more info
-begin
-  require 'desert'
-rescue
-  # It cannot be loaded in config.gem, so we need this hack for freezed version
-  desert_path = File.join(RAILS_ROOT, 'vendor', 'gems', 'desert-0.3.2', 'lib')
-  $LOAD_PATH.unshift desert_path
-  require 'desert'
-end
+path = File.join RAILS_ROOT, "vendor", "extensions"
+require 'desert' if File.exists? path
 
 Rails::Initializer.run do |config|
   # Settings in config/environments/* take precedence those specified here
@@ -73,10 +65,9 @@ Rails::Initializer.run do |config|
   config.gem 'gettext', :lib => 'gettext/utils' # needed by gettext_localize
 
   # Used to generate graphs of activity report & resize some pictures
-  # We keep 1.15.10 version, coz debian makes an old & staging distribution
-  # config.gem 'rmagick', :version => '1.15.15', :lib => "RMagick"
+  config.gem 'rmagick', :lib => "RMagick2"
   # Used to load the extension mechanism
-  config.gem 'desert', :version => '0.3.2'
+  config.gem 'desert', :version => '0.3.3'
 
   # Force all environments to use the same logger level
   # (by default production uses :info, the others :debug)
