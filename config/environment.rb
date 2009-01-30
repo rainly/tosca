@@ -65,7 +65,7 @@ Rails::Initializer.run do |config|
   config.gem 'gettext', :lib => 'gettext/utils' # needed by gettext_localize
 
   # Used to generate graphs of activity report & resize some pictures
-  config.gem 'rmagick', :lib => "RMagick2"
+  #config.gem 'rmagick', :lib => "RMagick2"
   # Used to load the extension mechanism
   config.gem 'desert', :version => '0.3.3'
 
