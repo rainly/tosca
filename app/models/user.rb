@@ -37,7 +37,7 @@ class User < ActiveRecord::Base
 
   has_and_belongs_to_many :own_contracts, :class_name => "Contract"
 
-  validates_length_of :login, :within => 3..40
+  validates_length_of :login, :within => 3..20
   validates_length_of :password, :within => 5..40
   validates_presence_of :login, :password, :role, :email, :name
   validates_uniqueness_of :login

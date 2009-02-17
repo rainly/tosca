@@ -370,7 +370,6 @@ class ReportingController < ApplicationController
       end
     end
 
-    size = @types.size
     Issue.send(:with_scope, { :find => { :conditions => Issue::CLOSED } }) do
       @types.each_with_index do |type, i|
         conditions = { :conditions => { :typeissue_id => type.id } }
