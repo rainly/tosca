@@ -50,10 +50,10 @@ class Comment < ActiveRecord::Base
     #If the status was changed and we do not specify a text, we generate a default text
     text = html2text(record.text).strip
     if record.statut and not Statut::NEED_COMMENT.include? record.statut_id and text.empty?
-      record.text << ( _("The issue is now %s.<br/>") % _(record.statut.name) )
+      record.text << ( "La demande est désormais #{_(record.statut.name)}.<br/>" )
     end
     if record.ingenieur and text.empty?
-      record.text << ( _("The issue is now managed by %s.<br/>") % _(record.ingenieur.name))
+      record.text << ( "Le responsable de la demande est désormais #{record.ingenieur.name}.<br/>" )
     end
   end
 
