@@ -71,7 +71,7 @@ class ContractsController < ApplicationController
   def new
     # It is the default contract
     @contract = Contract.new
-    @contract.client_id = params[:id]
+    @contract.client_id = params[:client_id]
     @contract.rule_type = 'Rules::Component'
     @contract.opening_time, @contract.closing_time = 9, 18
     _form
@@ -160,7 +160,7 @@ class ContractsController < ApplicationController
 
       #We have to interprate this param, because rails does not od it on a find
       s['generic'] = (s['generic'] == "true")
-      
+
       # It's 2 lines but fast find_or_create call
       version = Version.first(:conditions => s)
       version = Version.create(s) unless version
