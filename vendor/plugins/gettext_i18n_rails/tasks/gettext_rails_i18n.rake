@@ -13,12 +13,14 @@ namespace :gettext do
   desc "Update pot/po files."
   task :find do
     load_gettext
+    require 'tosca'
 
     if GetText.respond_to? :update_pofiles_org
       GetText.update_pofiles_org(
-        "app",
-        Dir.glob("{app,lib,config,locale}/**/*.{rb,erb}"),
-        "version 0.0.1",
+        "tosca",
+        Dir.glob("{app,lib,config,locale}/**/*.{rb,erb}") +
+        Dir.glob("vendor/extensions/**/*.{rb,erb}"),
+        Tosca::App::Version,
         :po_root => 'locale',
         :msgmerge=>['--sort-output']
       )
