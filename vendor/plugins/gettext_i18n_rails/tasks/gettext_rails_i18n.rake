@@ -78,6 +78,7 @@ namespace :gettext do
     rescue LoadError
       #check if locale gem is installed, since gettext install will fail without it
       begin
+        gem 'locale', '>= 0.9.0' # needed for Ruby 1.9.1
         require 'locale'
       rescue LoadError
         puts "first install locale gem: sudo gem install locale"
