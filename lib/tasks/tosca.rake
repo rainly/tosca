@@ -49,7 +49,7 @@ namespace :tosca do
     # needed for dev mode, when stylesheets are not cached in single file.
     FileUtils.ln_s '../../public/images/', 'public/stylesheets/images', :force => true
 
-    Rake::Task['l10n:mo'].invoke
+    Rake::Task['gettext:pack'].invoke
     Rake::Task['db:create'].invoke
     Rake::Task['db:migrate'].invoke
   end
