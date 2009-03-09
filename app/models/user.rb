@@ -22,7 +22,6 @@ class User < ActiveRecord::Base
   # Small utils for inactive & password, located in /lib/*.rb
   include InactiveRecord
   include PasswordGenerator
-  include LdapTosca
 
   belongs_to :picture, :dependent => :destroy
   belongs_to :role
@@ -179,6 +178,8 @@ class User < ActiveRecord::Base
     end
     (user and user.inactive? ? nil : user)
   end
+  # It must be after self.authenticate, since there's a possible override in it
+  include LdapTosca
 
   def self.tams
     self.find_select( { :joins => :own_contracts, :group => "users.id, users.name",

@@ -14,9 +14,13 @@ module LdapTosca
   module LdapToscaClassMethods
 
     @@conf = nil
-    def inherited(subclass)
+    def self.extended(subclass)
       super(subclass)
       @@conf = YAML.load_file(CONFIGURATION_FILE)['ldap']
+      class << subclass
+        alias_method :authenticate_without_ldap, :authenticate
+        alias_method :authenticate, :authenticate_with_ldap
+      end
     end
 
     READ_ATTRIBUTES = ['uid', 'cn', 'mail', 'userpassword']
@@ -43,7 +47,7 @@ module LdapTosca
     end
 
     # Key method, coming from User AR model
-    def authenticate(login, pass)
+    def authenticate_with_ldap(login, pass)
       ldap_user = self.get_user(login)
       return nil unless ldap_user and self.authentificate_user(ldap_user['dn'].first, pass)
 
