@@ -1,3 +1,4 @@
+# encoding: UTF-8
 #
 # Copyright (c) 2006-2009 Linagora
 #
@@ -23,7 +24,12 @@
 # ENV['RAILS_ENV'] ||= 'production'
 
 # Specifies gem version of Rails to use when vendor/rails is not present
-RAILS_GEM_VERSION = '2.2.2' unless defined? RAILS_GEM_VERSION
+RAILS_GEM_VERSION = '2.3.1' unless defined? RAILS_GEM_VERSION
+
+if RUBY_VERSION >= '1.9'
+  Encoding.default_internal = Encoding::UTF_8
+  Encoding.default_external = Encoding::UTF_8
+end
 
 # Bootstrap the Rails environment, frameworks, and default configuration
 require File.join(File.dirname(__FILE__), 'boot')
@@ -42,6 +48,7 @@ page_cache_path = File.join RAILS_ROOT, 'public', 'cache'
 # Used to have extension
 # See http://github.com/pivotal/desert/tree/master for more info
 begin
+  gem 'desert', '>= 0.3.4'
   require 'desert'
 rescue
   # It cannot be loaded in config.gem, so we need this hack for freezed version
@@ -70,7 +77,7 @@ Rails::Initializer.run do |config|
   config.action_mailer.default_url_options = { :host => "localhost" }
 
   # Default relative root
-  config.action_controller.relative_url_root = 'tosca' if RAILS_ENV == 'production'
+  # config.action_controller.relative_url_root = 'tosca' if RAILS_ENV == 'production'
 
 
   ### External libs ###
@@ -113,6 +120,7 @@ Rails::Initializer.run do |config|
   # See Rails::Configuration for more options
 end
 
+
 FastGettext.add_text_domain 'tosca', :path => File.join(RAILS_ROOT, 'locale')
 
 
@@ -127,7 +135,7 @@ CGI::Session.expire_after 1.month
 XSendFile::Plugin.replace_send_file! if RAILS_ENV == 'production'
 
 # Config file, mainly use for mail server
-require 'config'
+require File.join(RAILS_ROOT, 'config', 'config')
 
 # Extensions to String Class
 # TODO : make an extension loader, which loads automatically all _extensions.rb

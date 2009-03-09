@@ -38,6 +38,7 @@ module FileColumn # :nodoc:
       begin
         ::Magick
       rescue NameError
+        gem 'rmagick', '>=0' # needed for ruby 1.9.1
         require 'RMagick'
       end
 
@@ -211,7 +212,12 @@ module FileColumn # :nodoc:
   module MagickExtension
 
     def self.file_column(klass, attr, options) # :nodoc:
-      require 'RMagick'
+      begin
+        ::Magick
+      rescue NameError
+        gem 'rmagick', '>=0' # needed for ruby 1.9.1
+        require 'RMagick'
+      end
       options[:magick] = process_options(options[:magick],false) if options[:magick]
       if options[:magick][:versions]
         options[:magick][:versions].each_pair do |name, value|

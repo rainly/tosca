@@ -1,4 +1,4 @@
-#
+# encoding: utf-8
 # Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
@@ -86,7 +86,7 @@ def html2text(html)
       gsub(/<[^>]*>/, '')
   )
   # OOo does not know the Unbreakable UTF-8 char, as of OOo 2.4.1, Hardy.
-  text.gsub!(/\240/, ' ')
+  text.gsub!(/\x240/, ' ')
 
   for i in (0...links.size).to_a
     text = text + "\n  [#{i+1}] <#{CGI.unescapeHTML(links[i])}>" unless links[i].nil?

@@ -1,4 +1,4 @@
-#
+# encoding: utf-8
 # Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
