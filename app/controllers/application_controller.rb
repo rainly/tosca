@@ -39,9 +39,6 @@ class ApplicationController < ActionController::Base
   # Limited perimeter for specific roles
   # around_filter :scope
 
-  # In order to escape conflict with other rails app
-  session :session_key => '_tosca_session_id'
-
   # Authentification system
   include ACLSystem
 
