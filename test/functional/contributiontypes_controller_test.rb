@@ -22,7 +22,7 @@ require 'contributiontypes_controller'
 # Re-raise errors caught by the controller.
 class ContributiontypesController; def rescue_action(e) raise e end; end
 
-class ContributiontypesControllerTest < Test::Unit::TestCase
+class ContributiontypesControllerTest < ActionController::TestCase
   fixtures :contributiontypes
 
   def setup

@@ -18,7 +18,7 @@
 #
 require File.dirname(__FILE__) + '/../test_helper'
 
-class IssueTest < Test::Unit::TestCase
+class IssueTest < ActiveSupport::TestCase
 
   def test_to_strings
     check_strings Issue, :resume, :description

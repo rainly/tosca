@@ -22,7 +22,7 @@ require 'severities_controller'
 # Re-raise errors caught by the controller.
 class SeveritiesController; def rescue_action(e) raise e end; end
 
-class SeveritiesControllerTest < Test::Unit::TestCase
+class SeveritiesControllerTest < ActionController::TestCase
   fixtures :severities
 
   def setup

@@ -18,7 +18,7 @@
 #
 require File.dirname(__FILE__) + '/../test_helper'
 
-class ChangelogTest < Test::Unit::TestCase
+class ChangelogTest < ActiveSupport::TestCase
   fixtures :changelogs
 
   def test_to_strings

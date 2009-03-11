@@ -18,7 +18,7 @@
 #
 require File.dirname(__FILE__) + '/../test_helper'
 
-class SeverityTest < Test::Unit::TestCase
+class SeverityTest < ActiveSupport::TestCase
   fixtures :severities
 
   def test_to_strings

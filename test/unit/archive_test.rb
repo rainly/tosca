@@ -18,7 +18,7 @@
 #
 require File.dirname(__FILE__) + '/../test_helper'
 
-class ArchiveTest < Test::Unit::TestCase
+class ArchiveTest < ActiveSupport::TestCase
   fixtures :attachments, :comments, :clients, :issues, :recipients
 
 #  def test_to_strings

@@ -22,7 +22,7 @@ require 'pictures_controller'
 # Re-raise errors caught by the controller.
 class PicturesController; def rescue_action(e) raise e end; end
 
-class PicturesControllerTest < Test::Unit::TestCase
+class PicturesControllerTest < ActionController::TestCase
   fixtures :pictures
 
   def setup

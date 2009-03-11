@@ -22,6 +22,6 @@ class TagTest < ActiveSupport::TestCase
   fixtures :tags
 
   def test_to_strings
-    check_strings Tag 
+    check_strings Tag
   end
 end

@@ -18,7 +18,7 @@
 #
 require File.dirname(__FILE__) + '/../test_helper'
 
-class GroupTest < Test::Unit::TestCase
+class GroupTest < ActiveSupport::TestCase
   fixtures :groups
 
   def test_to_strings

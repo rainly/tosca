@@ -22,7 +22,7 @@ require 'commitments_controller'
 # Re-raise errors caught by the controller.
 class CommitmentsController; def rescue_action(e) raise e end; end
 
-class CommitmentsControllerTest < Test::Unit::TestCase
+class CommitmentsControllerTest < ActionController::TestCase
   fixtures :commitments, :issuetypes, :severities
 
   def setup

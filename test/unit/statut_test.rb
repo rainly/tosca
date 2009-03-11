@@ -18,7 +18,7 @@
 #
 require File.dirname(__FILE__) + '/../test_helper'
 
-class StatutTest < Test::Unit::TestCase
+class StatutTest < ActiveSupport::TestCase
 
   def test_to_strings
     check_strings Statut

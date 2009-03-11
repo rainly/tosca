@@ -19,7 +19,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 require 'notifier'
 
-class NotifierTest < Test::Unit::TestCase
+class NotifierTest < ActiveSupport::TestCase
   fixtures :users, :issues
   CHARSET = "utf-8"
 

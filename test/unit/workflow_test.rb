@@ -19,7 +19,6 @@
 require 'test_helper'
 
 class WorkflowTest < ActiveSupport::TestCase
-  fixtures :workflows
 
   def test_to_strings
     check_strings Workflow

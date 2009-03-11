@@ -18,9 +18,8 @@
 #
 require File.dirname(__FILE__) + '/../test_helper'
 
-class ClientTest < Test::Unit::TestCase
-  fixtures :clients, :pictures, :severities, :users, :contracts,
-    :contributions, :softwares, :components, :credits
+class ClientTest < ActiveSupport::TestCase
+  include ActionController::TestProcess
 
   def test_to_strings
     check_strings Client

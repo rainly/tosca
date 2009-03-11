@@ -18,8 +18,8 @@
 #
 require File.dirname(__FILE__) + '/../test_helper'
 
-class PictureTest < Test::Unit::TestCase
-  fixtures :pictures
+class PictureTest < ActiveSupport::TestCase
+  include ActionController::TestProcess
 
   def test_to_strings
     check_strings Picture

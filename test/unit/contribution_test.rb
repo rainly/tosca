@@ -18,7 +18,7 @@
 #
 require File.dirname(__FILE__) + '/../test_helper'
 
-class ContributionTest < Test::Unit::TestCase
+class ContributionTest < ActiveSupport::TestCase
   fixtures :contributions
 
   def test_to_strings

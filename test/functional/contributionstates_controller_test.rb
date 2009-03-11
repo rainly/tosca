@@ -22,7 +22,7 @@ require 'contributionstates_controller'
 # Re-raise errors caught by the controller.
 class ContributionstatesController; def rescue_action(e) raise e end; end
 
-class ContributionstatesControllerTest < Test::Unit::TestCase
+class ContributionstatesControllerTest < ActionController::TestCase
   fixtures :contributionstates
 
   def setup

@@ -95,7 +95,7 @@ class Issue < ActiveRecord::Base
   end
 
   def name
-    "#{issuetype.name} (#{severity.name}) : #{resume}"
+    resume
   end
 
   def pretty_id

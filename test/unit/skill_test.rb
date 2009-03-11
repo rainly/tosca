@@ -18,7 +18,7 @@
 #
 require File.dirname(__FILE__) + '/../test_helper'
 
-class SkillTest < Test::Unit::TestCase
+class SkillTest < ActiveSupport::TestCase
   fixtures :skills
 
   def test_to_strings
