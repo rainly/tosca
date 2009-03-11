@@ -87,8 +87,6 @@ Rails::Initializer.run do |config|
   # l10n & i18n working
   config.gem "grosser-fast_gettext", :lib => 'fast_gettext', :source=>"http://gems.github.com/"
 
-
-
   # Used to generate graphs of activity report & resize some pictures
   # We keep 1.15.10 version, coz debian makes an old & staging distribution
   # config.gem 'rmagick', :version => '1.15.15', :lib => "RMagick"
@@ -101,10 +99,6 @@ Rails::Initializer.run do |config|
 
   # Use the file store with a custom storage path (if the directory doesn’t already exist it will be created)
   config.cache_store = :file_store, cache_path
-
-  # Use the database for sessions instead of the file system
-  # (create the session table with 'rake db:sessions:create')
-  config.action_controller.session_store = :active_record_store
 
   # Use SQL instead of Active Record's schema dumper when creating the test database.
   # This is necessary if your schema can't be completely dumped by the schema dumper,
@@ -126,10 +120,6 @@ FastGettext.add_text_domain 'tosca', :path => File.join(RAILS_ROOT, 'locale')
 
 # MLO : Type of cache. See http://api.rubyonrails.org/classes/ActionController/Caching.html
 ActionController::Base.cache_store = :file_store, cache_path
-
-
-# MLO : session duration is one month,
-CGI::Session.expire_after 1.month
 
 # MLO : It's faster to use X-Send-File module of Apache
 XSendFile::Plugin.replace_send_file! if RAILS_ENV == 'production'
