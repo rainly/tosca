@@ -46,7 +46,7 @@ class ContractsControllerTest < ActionController::TestCase
 
     assert_response :success
     assert_template 'show'
-    assert_valid assigns(:contract)
+    assert assigns(:contract).valid?
   end
 
   def test_new
@@ -75,7 +75,7 @@ class ContractsControllerTest < ActionController::TestCase
 
     assert_response :success
     assert_template 'edit'
-    assert_valid assigns(:contract)
+    assert assigns(:contract).valid?
   end
 
   def test_update
@@ -106,7 +106,7 @@ class ContractsControllerTest < ActionController::TestCase
     form.contract.tam_id = 2 # admin => tam
     form.submit
     assert_response :redirect
-    assert_valid assigns(:contract)
+    assert assigns(:contract).valid?
     assert_redirected_to :action => 'show', :id => 1
 
     manager = User.find_by_login('manager')

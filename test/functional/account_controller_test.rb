@@ -104,7 +104,7 @@ class AccountControllerTest < ActionController::TestCase
     form.submit
 
     user = assigns(:user)
-    assert_valid user
+    assert user.valid?
     assert user.engineer?
     assert_redirected_to account_path(user)
     assert flash.has_key?(:notice)

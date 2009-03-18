@@ -80,7 +80,7 @@ class Comment < ActiveRecord::Base
     return false unless attachment and !attachment[:file].blank?
     attachment = Attachment.new(attachment)
     attachment.comment = self
-    attachment.save and self.update_attribute(:attachment_id, attachment.id)
+    attachment.save
   end
 
   def fragments

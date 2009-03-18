@@ -135,7 +135,7 @@ class IssuesControllerTest < ActionController::TestCase
   def test_show
     %w(admin manager expert customer viewer).each {|l|
       login l, l
-      issue_id = session[:user].contracts.first.issues.first.id
+      issue_id = session[:user].issues.first.id
       get :show, :id => issue_id
       assert_response :success
       assert_template 'show'

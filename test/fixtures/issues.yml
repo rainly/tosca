@@ -82,7 +82,7 @@ issue_00002:
   software_id: 1
   mail_cc: ""
   contribution_id: 2
-  contract_id: 1
+  contract_id: 2
 issue_00004:
   first_comment_id: 7572
   mantis_id:

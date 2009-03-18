@@ -46,7 +46,7 @@ class SubscriptionsControllerTest < ActionController::TestCase
     get :show, :id => 1
     assert_response :success
     assert_template 'show'
-    assert_valid assigns(:subscription)
+    assert assigns(:subscription).valid?
   end
 
   def test_should_get_edit

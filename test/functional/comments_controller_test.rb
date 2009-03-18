@@ -69,7 +69,6 @@ class CommentsControllerTest < ActionController::TestCase
       :comment => {
         :issue_id => 1,
         :user_id => 2,
-        :attachment_id => 1,
         :text => 'Voici un autre comment',
         :private => 0,
         :created_on => '2006-09-21 08:19:30',
@@ -99,12 +98,9 @@ class CommentsControllerTest < ActionController::TestCase
         "engineer_id" => "",
         "severity_id" => "",
         "statut_id" => "3"
-      },
-      :mce_editor_0_formatSelect => "",
-      :attachment => { "file_temp" => "", "file" => "" }
+      }
          })
 
-    # TODO : why it's not a success ????
     assert_response :redirect
     assert_redirected_to(:controller => "issues", :action => "show",
                          :id => "2-Copy-something-in-a-software")
