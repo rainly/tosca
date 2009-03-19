@@ -35,6 +35,47 @@ class ExportController < ApplicationController
   # with Ruport :
   # We can export to other formats :
   # compute_contributions(:pdf) export to pdf
+  def contracts
+    respond_to do |format|
+      format.html { redirect_to contracts_path }
+      format.xml {
+        # TODO : make an xml export : a finder +
+        #  render :xml => @issues.to_xml should be enough)
+      }
+      format.ods { compute_contracts(:ods) }
+    end
+  end
+
+  def compute_contracts(type)
+    methods = [ 'contract_name', 'start_date_formatted', 'end_date_formatted',
+      'users_size', 'releases_size', 'issues_size', 'tam_name',
+      'salesman_name', 'pname_teams', 'pname_users' ]
+    options = { :order => 'contracts.start_date ASC',
+      :include => [:salesman, :manager],
+      :joins => 'INNER JOIN contracts_teams ct ON ct.contract_id=contracts.id',
+      :conditions => flash[:conditions],
+      :methods => methods }
+
+    report = Contract.report_table(:all, options)
+    columns= [ 'id', 'contract_name', 'start_date_formatted', 'end_date_formatted',
+      'users_size', 'releases_size', 'issues_size', 'tam_name',
+      'salesman_name', 'pname_teams', 'pname_users' ]
+    unless report.column_names.empty?
+      report.reorder(columns)
+      report.rename_columns columns,
+        [ _('id'), _('contract'), _('start date'), _('end date'), _('users'),
+          _('softwares'), _('issues'), _('tam'), _('salesman'), _('teams'),
+          _('users') ]
+    end
+    generate_report(report, type, {})
+  end
+
+
+
+  # return the contents of contributions in a table in ODS format
+  # with Ruport :
+  # We can export to other formats :
+  # compute_contributions(:pdf) export to pdf
   def contributions
     respond_to do |format|
       format.html { redirect_to contributions_path }

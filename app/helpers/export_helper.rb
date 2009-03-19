@@ -35,11 +35,9 @@ module ExportHelper
     export_link formatted_contributions_export_path(:ods)
   end
 
-
   private
   # create a link with the images coresponding to the type mime of the export
   def export_link(url)
     link_to(_('Export in %s') % StaticImage::mime_ods, url)
   end
 end
-

@@ -13,6 +13,9 @@
 </div>
 <ul id="menu_action">
   <li><%= link_to _('Create a new contract'), new_contract_path %></li>
+  <% Contract::actions.each do |a| %>
+   <li><%= send(a) %></li>
+  <% end %>
 </ul>
 
 <div class="menu_title" onclick="Element.toggle('menu_search')">
@@ -20,6 +23,8 @@
 <ul id="menu_search">
   <li><b><%= _('By name') %></b><br />
     <%= text_field :filters, :text %></li>
+  <li><b><%= _('By team') %> </b><br />
+    <%= select_filter(@teams, 'team') %></li>
 </ul>
 <% end %>
 
