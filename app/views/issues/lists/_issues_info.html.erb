@@ -15,7 +15,7 @@
 <%= div_toggle _('Actions'), 'menu_actions', :class => "menu_title" %>
 <ul class="menu" id="menu_actions">
  <% path = new_issue_path %>
- <% if session[:user].authorized? path %>
+ <% unless path.nil? or path.blank? %>
    <li><%= link_to _("Submit an issue"), path %></li>
  <% end %>
  <li><%= link_to( _('Distribution of issues in time'), calendar_reporting_path) %></li>
