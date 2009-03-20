@@ -59,6 +59,7 @@ class Contract < ActiveRecord::Base
   end
 
   Rules = [ 'Rules::Credit', 'Rules::Component' ] unless defined? Contract::Rules
+  INNER_JOIN_TEAMS = 'INNER JOIN contracts_teams ct ON ct.contract_id=contracts.id'
 
   # This model is scoped by Contract
   def self.scope_contract?

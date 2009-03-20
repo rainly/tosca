@@ -17,7 +17,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 class ContractsController < ApplicationController
-  helper :clients, :commitments, :versions, :issues, :subscriptions, :dates
+  helper :clients, :commitments, :versions, :issues, :subscriptions,
+    :dates, :filters
 
   auto_complete_for :user, :name, :contract, :engineer_user,
                     :conditions => { :client => false }
@@ -33,12 +34,17 @@ class ContractsController < ApplicationController
     conditions = nil
     contracts_filters = session[:contracts_filters]
     if contracts_filters
+      # we do not want an include since it's only for filtering.
+      unless contracts_filters['team_id'].blank?
+        options[:joins] = Contract::INNER_JOIN_TEAMS
+      end
       # Specification of a filter f :
       #   [ field, database field, operation ]
       # All the fields must be coherent with lib/filters.rb related Struct.
       conditions = Filters.build_conditions(contracts_filters, [
         [:text, 'clients.name', 'contracts.name', :multiple_like],
-        [:tam_id, 'contracts.tam_id', :equal]
+        [:tam_id, 'contracts.tam_id', :equal],
+        [:team_id, 'ct.team_id', :equal]
       ])
       @filters = contracts_filters
     end
@@ -236,6 +242,7 @@ private
 
   def _panel
     @tams = User.tams
+    @teams = Team.find_select
   end
 
 end
