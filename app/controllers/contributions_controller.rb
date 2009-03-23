@@ -37,11 +37,11 @@ class ContributionsController < ApplicationController
     options[:conditions] = { }
     unless params[:id] == 'all'
       @software = Software.find(params[:id])
-      options[:conditions] = { :software_id => @software.id }
+      options[:conditions] = { 'contributions.software_id' => @software.id }
     end
     client_id = params[:client_id].to_s
     unless client_id.blank?
-      options[:conditions].merge!({'contracts.client_id' => params[:client_id]})
+      options[:conditions].merge!({'contracts.client_id' => client_id })
       options[:include] = {:issue => :contract}
     end
     @contributions = Contribution.paginate options

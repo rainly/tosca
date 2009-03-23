@@ -69,7 +69,7 @@ issue_00002:
   version_id:
   engineer_id: 3
   updated_on: 2008-01-01 00:00:01 +01:00
-  recipient_id: 5
+  recipient_id: 4
   id: 2
   submitter_id: 2
   resume: Copy something in a software

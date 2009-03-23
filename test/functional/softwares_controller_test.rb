@@ -50,16 +50,6 @@ class SoftwaresControllerTest < ActionController::TestCase
     assigns(:softwares).each { |l| assert_equal l.group_id, 2 }
   end
 
-  def test_show
-    get :show, :id => 1
-
-    assert_response :success
-    assert_template 'show'
-
-    assert_not_nil assigns(:software)
-    assert assigns(:software)
-  end
-
   # Some software should not be publicly visible.
   def test_public_access
     get :show, :id => 4
@@ -70,15 +60,6 @@ class SoftwaresControllerTest < ActionController::TestCase
     assert_raise(ActiveRecord::RecordNotFound) {
       get :show, :id => 4
     }
-  end
-
-  def test_new
-    get :new
-
-    assert_response :success
-    assert_template 'new'
-
-    assert_not_nil assigns(:software)
   end
 
   def test_create
@@ -96,16 +77,6 @@ class SoftwaresControllerTest < ActionController::TestCase
     assert_response :redirect
     assert_redirected_to(:action => 'show',
         :id => "5-Ant", :controller => "softwares")
-  end
-
-  def test_edit
-    get :edit, :id => 1
-
-    assert_response :success
-    assert_template 'edit'
-
-    assert_not_nil assigns(:software)
-    assert assigns(:software)
   end
 
   def test_update

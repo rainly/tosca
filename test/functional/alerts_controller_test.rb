@@ -22,7 +22,7 @@ class AlertsControllerTest < ActionController::TestCase
 
   def test_show
     # no login, should be accessible without it
-    alert = assigns(:alert_00001)
+    alert = alerts(:alert_00001)
     get :show, :hash => alert.hash_value
     assert_response :success
   end
