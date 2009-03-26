@@ -14,6 +14,9 @@
         <th><label for="contract_tam_id"><%= _("Technical Account Manager") %></label></th>
         <td><%= select_empty :contract, :tam_id, @engineers %></td>
       </tr><tr>
+        <th><label for="contract_tam_id"><%= _("Technical Account Manager") %></label></th>
+        <td><%= select_empty :contract, :tam_id, @ingenieurs %></td>
+      </tr><tr>
         <th><label for="contract_mailinglist"><%=_("Internal mailing list")%></label></th>
         <td><%= text_field 'contract', 'internal_ml'  %></td>
       </tr><tr>

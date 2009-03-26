@@ -126,7 +126,7 @@ module FormsHelper
 
   def select_empty(object, method, choices, options = {}, html_options = {})
     title = [[ '» ', '' ]]
-    select(object, method, title.concat(choices), options, html_options)
+    select(object, method, title.concat(choices || []), options, html_options)
   end
 
   # Fields est un tableau du formulaire, en 2 colonnes
@@ -233,7 +233,7 @@ module FormsHelper
 
   # Apply a fade effect and delete the html element
   def delete_button(id)
-    link_to_function(StaticPicture::delete, %Q{tosca_remove("#{id}")})
+    link_to_function(image_delete, %Q{tosca_remove("#{id}")})
   end
 
 end

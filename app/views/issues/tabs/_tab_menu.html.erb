@@ -6,17 +6,17 @@ issue_id = @issue ? @issue.id : @issue_id %>
 <ul class="issue_tabnav" id="issue_tabnav">
   <li>
     <% options[:url] = ajax_history_issue_path(issue_id) %>
-    <% desc = _('History') + ' ' + StaticPicture::history %>
+    <% desc = _('History') + ' ' + image_history %>
     <%= link_to_remote_tab(desc, 'ajax_history', options) %>
   </li>
   <li>
     <% options[:url] = ajax_attachments_issue_path(issue_id) %>
-    <% desc = _('Attachments') + ' ' + StaticPicture::documents %>
+    <% desc = _('Attachments') + ' ' + image_documents %>
     <%= link_to_remote_tab(desc, 'ajax_attachments', options) %>
   </li>
   <li>
     <% options[:url] = ajax_cns_issue_path(issue_id) %>
-    <% desc =  _('SLA') + ' ' + StaticPicture::sla_running %>
+    <% desc =  _('SLA') + ' ' + image_sla_running %>
     <%= link_to_remote_tab(desc, 'ajax_cns', options) %>
   </li>
   <% if @session_user.engineer? %>
@@ -29,11 +29,11 @@ issue_id = @issue ? @issue.id : @issue_id %>
   <% Issue::tabs.each do |t| %>
     <li>
       <% options[:url] = send("ajax_#{t}_issue_path", issue_id) %>
-      <% desc =  "#{_(t.capitalize)} " << StaticPicture.send(t) %>
+      <% desc =  "#{_(t.capitalize)} " << send("image_#{t}") %>
       <%= link_to_remote_tab(desc, "ajax_#{t}", options) %>
      </li>
   <% end %>
   <li>
-    <%= StaticPicture::spinner %>
+    <%= image_spinner %>
   </li>
 </ul>

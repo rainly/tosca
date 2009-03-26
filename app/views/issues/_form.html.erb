@@ -112,8 +112,8 @@
       <th><label for="issue_expected_on"><%= _("Issue|Expected on") %></label></th>
       <td>
        <%= text_field :issue, :expected_on, :size => 20 %>
-       <span class="calendarPicker"><%= StaticScript::date_from %></span>
-       <%= StaticScript::script_date('issue_expected_on', 'date_from') %>
+       <span class="calendarPicker"><%= script_date_from %></span>
+       <%= script_date('issue_expected_on', 'date_from') %>
       </td>
      </tr>
      <% end %>
