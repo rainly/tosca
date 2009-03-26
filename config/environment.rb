@@ -78,7 +78,7 @@ Rails::Initializer.run do |config|
   config.action_mailer.default_url_options = { :host => "localhost" }
 
   # Default relative root
-  # config.action_controller.relative_url_root = 'tosca' if RAILS_ENV == 'production'
+  config.action_controller.relative_url_root = 'lstm' if RAILS_ENV == 'production'
 
 
   ### External libs ###
