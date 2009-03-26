@@ -13,6 +13,8 @@ class MoveSoftwareIdInPictureToPictureIdInSoftware < ActiveRecord::Migration
     Picture.all.each do |p|
       p.software.update_attribute(:picture_id, p.id) if p.software_id
     end
+    FileUtils.rm_r "#{RAILS_ROOT}/public/picture"
+    FileUtils.mv "#{RAILS_ROOT}/public/image", "#{RAILS_ROOT}/public/picture"
 
     remove_column :pictures, :software_id
   end
@@ -21,7 +23,7 @@ class MoveSoftwareIdInPictureToPictureIdInSoftware < ActiveRecord::Migration
     add_column :pictures, :software_id, :integer
 
     Software.all.each do |s|
-      s.picture.update_attribute(:software_id, s.id) if s.picture_id
+      s.picture.update_attribute(:software_id, s.id) if s.picture
     end
 
     remove_column :softwares, :picture_id
