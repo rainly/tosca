@@ -32,7 +32,7 @@ class AttachmentTest < ActiveSupport::TestCase
   end
 
   def test_magick_attachments
-    attachment = fixture_file_upload('/files/mod_le_vierge_BP.doc')
+    attachment = fixture_file_upload('../../app/models/attachment.rb')
     attachments(:attachment_00001).destroy
     options = { :file => attachment, :comment => comments(:comment_00001) }
     attachment = Attachment.new(options)
