@@ -292,10 +292,9 @@ private
   end
 
   def _panel
-    if @session_user.role_id <= 2
+    @clients = Client.find_select if @session_user.expert?
+    if @session_user.manager?
       @count = {}
-      @clients = Client.find_select
-
       @count[:users] = User.count
       @count[:recipients] = User.recipients.size
       @count[:engineers] = User.engineers.size
