@@ -22,7 +22,7 @@ require File.dirname(__FILE__) + '/../test_helper'
 # This test generate one method by route / role combination
 class ApplicationControllerTest < ActionController::TestCase
 
-  ROUTES_TO_IGNORE = %w(welcome/theme)
+  ROUTES_TO_IGNORE = [ %r(welcome/theme), %r(/:file_type/) ]
   ROUTES_REDIRECT = [ %r(welcome/clear_cache) , %r(reporting/general),
                       %r(accounts/new(?!/signup)), %r(accounts/logout) ]
 
@@ -55,7 +55,7 @@ class ApplicationControllerTest < ActionController::TestCase
         (r.conditions.empty? or
           (r.conditions[:method] == :get)) and
         not r.requirements[:action] =~ /^ajax/
-      next unless ROUTES_TO_IGNORE.select { |ro| string_route =~ Regexp.compile(ro) }.empty?
+      next unless ROUTES_TO_IGNORE.select { |ro| string_route =~ ro }.empty?
 
       p.roles.each do |role|
         # We define one method for each test, it is easier to debug

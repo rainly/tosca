@@ -42,16 +42,12 @@ module LinksHelper
 
     unless filepath.blank? or not File.exist?(filepath)
       filename = filepath[/[._ \-a-zA-Z0-9]*$/]
-      if options.has_key? :image
-        show = StaticPicture::patch
-      else
-        show = filename
-      end
+      text = (options.has_key?(:image) ? StaticPicture::patch : filename)
       url = url_for_file_column(record, file, :only_path => false)
       if public
-        public_link_to show, url
+        public_link_to text, url
       else
-        link_to show, url
+        link_to text, url
       end
     end
   end

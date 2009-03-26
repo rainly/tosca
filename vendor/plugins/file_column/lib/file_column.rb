@@ -193,7 +193,7 @@ module FileColumn # :nodoc:
     end
 
     def get_charset()
-    	get_file_type().gsub!(/^.+; /, "")
+      get_file_type('-').gsub!(/^.+; /, "")
     end
 
     private
