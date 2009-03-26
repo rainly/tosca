@@ -352,9 +352,9 @@ private
 
   # Variables utilisé par le panneau de gauche
   def _panel
+    @clients = Client.find_select unless session[:user].client?
     if session[:user].role_id <= 2
       @count = {}
-      @clients = Client.find_select
 
       @count[:users] = User.count
       @count[:recipients] = Recipient.count
