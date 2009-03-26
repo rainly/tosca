@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -18,19 +18,18 @@
 #
 require File.dirname(__FILE__) + '/../test_helper'
 
-class IssueTest < Test::Unit::TestCase
-  fixtures :all
+class IssueTest < ActiveSupport::TestCase
 
   def test_to_strings
     check_strings Issue, :resume, :description
   end
 
   def test_presence_of_attributes
-    recipient = recipients(:recipient_00001)
+    recipient = users(:user_customer)
     issue = Issue.new({:description => 'description', :resume => 'resume',
-        :recipient => recipient, :submitter => recipient.user,
+        :recipient => recipient, :submitter => recipient,
         :statut => statuts(:statut_00001), :severity => severities(:severity_00001),
-        :contract => recipient.user.contracts.first })
+        :contract => recipient.contracts.first })
     # must have a recipient
     assert issue.save
 
@@ -39,12 +38,12 @@ class IssueTest < Test::Unit::TestCase
     assert_equal c.issue_id, issue.id
     assert_equal c.severity, issue.severity
     assert_equal c.statut, issue.statut
-    assert_equal c.ingenieur, issue.ingenieur
+    assert_equal c.engineer, issue.engineer
   end
 
   def test_scope
-    Issue.set_scope([Contract.find(:first).id])
-    Issue.find(:all)
+    Issue.set_scope([Contract.first(:order => :id).id])
+    Issue.all
     Issue.remove_scope
   end
 
@@ -53,7 +52,7 @@ class IssueTest < Test::Unit::TestCase
   end
 
   def test_fragments
-    assert !Issue.find(:first).fragments.empty?
+    assert !Issue.first(:order => :id).fragments.empty?
   end
 
   def test_finder
@@ -63,7 +62,7 @@ class IssueTest < Test::Unit::TestCase
   end
 
   def test_helpers_function
-    Issue.find(:all).each { |r|
+    Issue.all.each { |r|
       r.time_running?
       result = r.state_at(Time.now)
       assert_instance_of Issue, result
@@ -78,57 +77,14 @@ class IssueTest < Test::Unit::TestCase
   end
 
   def test_reset_elapsed
-    Issue.find(:first).reset_elapsed
+    Issue.first(:order => :id).reset_elapsed
   end
 
   def test_set_defaults
-    issue = Issue.find(:first)
+    issue = Issue.first(:order => :id)
     issue.statut_id = nil
-    issue.set_defaults(nil, issue.recipient, {})
-    issue.set_defaults(issue.ingenieur, nil, {})
+    issue.set_defaults(issue.recipient, {})
+    issue.set_defaults(issue.engineer, {})
   end
-
-=begin
-  TODO : rework with rule contract model
-  def test_client
-    r = Issue.find 1,2
-    c = Client.find 1
-    assert_equal r[0].client, c
-    assert_equal r[1].client, c
-  end
-
-  def test_respect_workaround_and_correction
-    r = Issue.find 3
-    c = Contract.find 2
-    assert_kind_of String, r.respect_workaround(c.id)
-    assert_kind_of String, r.respect_correction(c.id)
-  end
-
-  # No test for affiche_temps_ecoule and affiche_temps_correction
-  # because the display of the time may change
-  def test_temps_correction
-    r = Issue.find 3
-    assert_operator r.temps_correction, '>=', 0
-    assert_equal r.temps_workaround, 0
-  end
-  def test_delais_correction
-    r = Issue.find 3
-    assert_equal r.delais_correction, 475200.0
-  end
-  def test_temps_rappel
-    r = Issue.find 3
-    assert_equal r.temps_rappel, 0
-    assert_equal r.affiche_temps_rappel, '-'
-  end
-  def test_commitment
-    r = Issue.find 3
-    e = Commitment.find 1
-    assert_equal r.commitment(3), e
-  end
-  def test_affiche_temps_ecoule
-    r = Issue.find 3
-    assert r.affiche_temps_ecoule
-  end
-=end
 
 end

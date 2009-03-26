@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<% user = session[:user] %>
+<% user = @session_user %>
 <% role_id = (user ? user.role_id : 6) %>
-<% locale = Locale.get.language.intern %>
-<% role_localised = :"#{locale}#{user.role_id}" if user %>
+<% locale = I18n.locale %>
 <% cache("layout/#{role_id}/head") do %>
  <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
- <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<%=Locale.get%>" lang="<%=Locale.get%>">
+ <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="<%=locale%>" lang="<%=locale%>">
  <head>
    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8;"/>
-   <link rel="shortcut icon" href="<%=StaticImage::favimage_ico%>" type="image/x-icon" />
-   <link rel="icon" href="<%=StaticImage::favimage_png%>" type="image/png" />
+   <link rel="shortcut icon" href="<%=StaticPicture::favimage_ico%>" type="image/x-icon" />
+   <link rel="icon" href="<%=StaticPicture::favimage_png%>" type="image/png" />
    <%= stylesheet_link_tag("yaml/core/base.css", "yaml/core/print_base.css",
         "builder/basemod.css", "builder/content_default.css", "tosca/specific.css",
         "tosca/navigation.css", "tosca/print.css", "tosca/custom_tiny.css", "tosca/calendar.css",
@@ -71,7 +70,7 @@
           <% else %>
             <%= build_simple_menu([ public_link_to_home, public_link_to_softwares, public_link_to_contributions ]) %>
           <% end %>
-          <%= public_link_to StaticImage::logo_service, welcome_url, :class => "logo"%>
+          <%= public_link_to StaticPicture::logo_service, welcome_url, :class => "logo"%>
       <% end %>
           <ul class="nav_user">
           <% if user %>
@@ -95,15 +94,15 @@
       <% end %>
 
       <div id="main">
-        <div id="col1" <%=' style="width: 75%"' if @partial_for_summary%>>
+        <div id="col1" <%=' style="width: 75%"' if @partial_panel%>>
           <div id="col1_content" class="clearfix">
             <%= @content_for_layout %>
           </div>
         </div>
-        <% if @partial_for_summary %>
+        <% if @partial_panel %>
           <div id="col3">
             <div id="col3_content" class="clearfix">
-              <%= render_partial @partial_for_summary %>
+              <%= render :partial => @partial_panel %>
             </div>
             <!-- IE Column Clearing -->
             <div id="ie_clearing"> &#160; </div>
@@ -111,12 +110,12 @@
         <% end %>
       </div>
 
-<% cache ("layout/#{role_id}/footer") do %>
+<% cache("layout/#{role_id}/footer") do %>
       <!-- begin: #footer -->
       <div id="footer">
         <%= public_link_to(App::ServiceFullName, App::CompanySite + App::CompanySitePath) %>&nbsp;
-        <%= public_link_to(StaticImage::ruby, 'http://rubyonrails.org/') %>&nbsp;
-        <%= public_link_to(App::Copyright, App::CompanySite) %>
+        <%= public_link_to(StaticPicture::ruby, 'http://rubyonrails.org/') %>&nbsp;
+        <%= public_link_to(Tosca::App::Copyright, App::CompanySite) %>
       </div>
     </div>
 

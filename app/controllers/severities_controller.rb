@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -19,7 +19,7 @@
 class SeveritiesController < ApplicationController
 
   def index
-    @severity_pages, @severities = paginate :severities, :per_page => 10
+    @severities = Severity.paginate :page => params[:page]
   end
 
   def show

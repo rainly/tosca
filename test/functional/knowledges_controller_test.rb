@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -37,36 +37,36 @@ class KnowledgesControllerTest < ActionController::TestCase
   def test_should_create_knowledge
     login 'admin', 'admin'
     assert_difference('Knowledge.count') do
-      post :create, :knowledge => { :ingenieur_id => Ingenieur.find(:first).id,
-                                    :software_id => Software.find(:first).id,
+      post :create, :knowledge => { :engineer_id => User.first(:order => :id).id,
+                                    :software_id => Software.first(:order => :id).id,
                                     :level => 3 }
     end
 
-    assert_redirected_to account_path(assigns(:knowledge).ingenieur.user)
+    assert_redirected_to account_path(assigns(:knowledge).engineer)
   end
 
   def test_should_show_knowledge
     login 'admin', 'admin'
-    get :show, :id => Knowledge.find(:first).id
+    get :show, :id => Knowledge.first(:order => :id).id
     assert_response :success
   end
 
   def test_should_get_edit
     login 'admin', 'admin'
-    get :edit, :id => Knowledge.find(:first).id
+    get :edit, :id => Knowledge.first(:order => :id).id
     assert_response :success
   end
 
   def test_should_update_knowledge
     login 'admin', 'admin'
-    put :update, :id => Knowledge.find(:first).id, :knowledge => { }
-    assert_redirected_to account_path(assigns(:knowledge).ingenieur.user)
+    put :update, :id => Knowledge.first(:order => :id).id, :knowledge => { }
+    assert_redirected_to account_path(assigns(:knowledge).engineer)
   end
 
   def test_should_destroy_knowledge
     login 'admin', 'admin'
     assert_difference('Knowledge.count', -1) do
-      delete :destroy, :id => Knowledge.find(:first).id
+      delete :destroy, :id => Knowledge.first(:order => :id).id
     end
 
     assert_redirected_to knowledges_path

@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -17,52 +17,21 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 class ClientsController < ApplicationController
-  helper :issues, :socles, :commitments, :contracts, :filters
+  helper :issues, :commitments, :contracts
 
   def index
-    options = { :per_page => 10, :order => 'clients.name',
-      :include => [:image] }
+    options = { :per_page => 15, :order => 'clients.name',
+      :include => [:picture], :page => params[:page] }
 
-    if params.has_key? :filters
-      session[:clients_filters] = Filters::Clients.new(params[:filters])
-    end
-
-    conditions = nil
-    clients_filters = session[:clients_filters]
-    if clients_filters
-      # Here is the trick for the "active" part of the view
-      special_cond = _active_filters(clients_filters[:active])
-
-      # we do not want an include since it's only for filtering.
-      unless clients_filters['system_id'].blank?
-        options[:joins] = 'INNER JOIN clients_socles ON clients_socles.client_id=clients.id'
-      end
-
-      # Specification of a filter f :
-      #   [ field, database field, operation ]
-      # All the fields must be coherent with lib/filters.rb related Struct.
-      conditions = Filters.build_conditions(clients_filters, [
-        [:text, 'clients.name', 'clients.description', :dual_like ],
-        [:system_id, 'clients_socles.socle_id', :equal ]
-      ], special_cond)
-      @filters = clients_filters
-    end
-    flash[:conditions] = options[:conditions] = conditions
-
-    @client_pages, @clients = paginate :clients, options
+    options[:conditions] = _clients_filters
+    @clients = Client.paginate options
 
     # panel on the left side.
     if request.xhr?
       render :layout => false
     else
-      _panel
-      @partial_for_summary = 'clients_info'
+      @partial_panel = 'index_panel'
     end
-  end
-
-  def stats
-    index
-    @typeissues = Typeissue.find(:all)
   end
 
   def show
@@ -78,24 +47,22 @@ class ClientsController < ApplicationController
 
   def new
     @client = Client.new
-    _form
   end
 
   def create
     @client = Client.new(params[:client])
-    @client.creator = session[:user]
+    @client.creator = @session_user
     if add_logo && @client.save
       flash[:notice] = _('Client created successfully.') + '<br />' +
         _('You have now to create the associated contract.')
       redirect_to new_contract_path(:id => @client.id)
     else
-      _form and render :action => 'new'
+      render :action => 'new'
     end
   end
 
   def edit
     @client = Client.find(params[:id])
-    _form
   end
 
   def update
@@ -104,7 +71,7 @@ class ClientsController < ApplicationController
       flash[:notice] = _('Client updated successfully.')
       redirect_to client_path(@client)
     else
-      _form and render :action => 'edit'
+      render :action => 'edit'
     end
   end
 
@@ -114,20 +81,37 @@ class ClientsController < ApplicationController
   end
 
   private
-  def _form
-    @socles = Socle.find_select
-  end
 
-  def _panel
-    @systems = Socle.find_select
+  def _clients_filters
+    if params.has_key? :filters
+      session[:clients_filters] = Filters::Clients.new(params[:filters])
+    end
+
+    conditions = nil
+    clients_filters = session[:clients_filters]
+    if clients_filters
+      # Here is the trick for the "active" part of the view
+      special_cond = _active_filters(clients_filters[:active])
+
+      # Specification of a filter f :
+      #   [ field, database field, operation ]
+      # All the fields must be coherent with lib/filters.rb related Struct.
+      conditions = Filters.build_conditions(clients_filters, [
+        [:text, 'clients.name',
+                'clients.context',
+                'clients.address', :multiple_like ]
+      ], special_cond)
+      @filters = clients_filters
+    end
+    conditions
   end
 
   def add_logo
-    image = params[:image]
+    image = params[:picture]
     unless image.nil? || image[:image].blank?
       image[:description] = @client.name
-      @client.image = Image.new(image)
-      @client.image.save
+      @client.picture = Picture.new(image)
+      @client.picture.save
     else
       true
     end
@@ -139,10 +123,10 @@ class ClientsController < ApplicationController
     case value.to_i
     when -1
       @title = _('Inactive clients')
-      'clients.inactive = 1'
+      [ 'clients.inactive = ?', true ]
     else # '1' & default are the same.
       @title = _('Active clients')
-      'clients.inactive = 0'
+      [ 'clients.inactive = ?', false ]
     end
   end
 

@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -20,30 +20,29 @@ require File.dirname(__FILE__) + '/../test_helper'
 
 # Each Controller Test should test all _public_ methods
 class AccountControllerTest < ActionController::TestCase
-  fixtures :all
 
   def test_login_and_logout
-    %w(admin manager expert customer viewer).each { |l|
+    %w(admin manager expert customer viewer).each do |l|
       login l, l
       assert_response :redirect
       # strange initialisation bug with welcome_path
-      assert_redirected_to({:action => "index", :controller => "welcome"})
+      assert_redirected_to '/welcome'
       assert session[:user] == User.find_by_login(l)
 
       logout
       assert_redirected_to '/'
       assert session[:user].nil?
-    }
+    end
   end
 
   def test_new
-    %w(admin manager).each { |l|
+    %w(admin manager).each do |l|
       login l, l
       get :new
       assert_response :redirect
       assert_redirected_to signup_new_account_path
       # TODO : test ajax things. See issues_controller_test if you need sample
-    }
+    end
   end
 
   def test_forgotten_password
@@ -79,7 +78,7 @@ class AccountControllerTest < ActionController::TestCase
     form.submit
 
     user = assigns(:user)
-    assert_not_nil user.recipient
+    assert user.recipient?
     assert_redirected_to account_path(user)
     assert flash.has_key?(:notice)
     assert !flash.has_key?(:warning)
@@ -94,17 +93,19 @@ class AccountControllerTest < ActionController::TestCase
   def test_signup_expert
     login 'manager', 'manager'
     get :signup
+    assert_response :success
     form = select_form 'main_form'
     # 3 fields are mandatory
     form.user.name = "Engineer"
     form.user.email = App::MaintenerEmail
     form.user.login = "engineer"
     # field used to indicate that's an expert account
-    form.user.client = "false"
+    form.user.client_form = "false"
     form.submit
 
     user = assigns(:user)
-    assert_not_nil user.ingenieur
+    assert user.valid?
+    assert user.engineer?
     assert_redirected_to account_path(user)
     assert flash.has_key?(:notice)
     assert !flash.has_key?(:warning)
@@ -136,7 +137,7 @@ class AccountControllerTest < ActionController::TestCase
       # We cannot user check_ajax_filters, since it's a distant field
       xhr :get, :index, :filters => { :client_id => 1 }
       assert_response :success
-      assigns(:users).each { |u| assert_equal u.recipient.client_id, 1 }
+      assigns(:users).each { |u| assert_equal u.client_id, 1 }
 
       xhr :get, :index, :filters => { :role_id => 1 }
       assert_response :success
@@ -163,22 +164,16 @@ class AccountControllerTest < ActionController::TestCase
     }
   end
 
-  # It will be a feature for next version, so it's just a get test, for now
-  def test_lemon
-    login 'admin', 'admin'
-    get :lemon
-    assert_response :redirect
-  end
-
   def test_become
     %w(admin manager expert).each { |l|
       login l, l
-      post :become, :id => Recipient.find(:first).id
+      post :become, :id => User.recipients.first.id
       assert_response :redirect
       assert_redirected_to welcome_path
     }
   end
 
+  # Test the dynamic recipient/expert panel on the right side
   def test_ajax_place
     login 'manager', 'manager'
     test = Proc.new do |params|
@@ -188,9 +183,11 @@ class AccountControllerTest < ActionController::TestCase
       assert_not_nil assigns(:user)
     end
     test.call(:client => 'true')
-    assert_not_nil assigns(:user_recipient)
+    assert_not_nil assigns(:user)
+    assert assigns(:user).recipient?
     test.call(:client => 'false')
-    assert_not_nil assigns(:user_engineer)
+    assert_not_nil assigns(:user)
+    assert assigns(:user).engineer?
   end
 
   def test_ajax_contracts
@@ -203,10 +200,10 @@ class AccountControllerTest < ActionController::TestCase
       assert_not_nil assigns(:user)
     end
     # test on a new user, without id
-    test.call(:client_id => Client.find(:first).id)
+    test.call(:client_id => Client.first(:order => :id).id)
     # test on an existing user, with his id
-    test.call(:client_id => Client.find(:first).id,
-              :id => User.find(:first).id)
+    test.call(:client_id => Client.first(:order => :id).id,
+              :id => User.first(:order => :id).id)
   end
 
 end

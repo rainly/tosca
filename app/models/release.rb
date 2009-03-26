@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -22,7 +22,7 @@ class Release < ActiveRecord::Base
   belongs_to :version
   belongs_to :contract
 
-  has_one :changelog
+  has_one :changelog, :dependent => :destroy
 
   has_many :archives, :dependent => :destroy
 
@@ -52,6 +52,11 @@ class Release < ActiveRecord::Base
     self.scoped_methods << { :find => { :conditions =>
         [ 'releases.contract_id IN (?)', contract_ids ]
       } } if contract_ids
+  end
+
+  #This model is scoped by Contract
+  def self.scoped_contract?
+    true
   end
 
 end

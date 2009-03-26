@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -38,27 +38,27 @@ class VersionTest < ActiveSupport::TestCase
     v_generic = versions(:version_ff_2_generic)
     assert_equal("2.*", v_generic.name)
   end
-  
+
   def test_validation
     v = Version.new(:software_id => 1)
     assert !v.save
-    
+
     v = Version.new(:software_id => 1)
     v.generic = true
     assert v.save
     assert_equal "*", v.to_s
-    
+
     v = Version.new(:software_id => 1)
     v.generic = false
     v.name = ""
     assert !v.save
-    
+
     v = Version.new(:software_id => 1)
     v.generic = false
     v.name = "2"
     assert v.save
     assert_equal "2", v.to_s
-    
+
     v = Version.new(:software_id => 1)
     v.generic = true
     v.name = "2"

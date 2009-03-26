@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -23,19 +23,21 @@ class User < ActiveRecord::Base
   include InactiveRecord
   include PasswordGenerator
 
-  belongs_to :image
+  belongs_to :picture, :dependent => :destroy
   belongs_to :role
   belongs_to :team
+  belongs_to :client
 
-  has_many :attachments
-  has_many :documents
-  has_many :comments
-  has_many :managed_contracts, :class_name => 'Contract', :foreign_key => :manager_id
+  has_many :comments, :dependent => :destroy
+  has_many :assigned_issues, :dependent => :destroy, :foreign_key => :recipient_id,
+    :dependent => :destroy, :class_name => 'Issue'
+  has_many :managed_contracts, :class_name => 'Contract', :foreign_key => :tam_id
 
-  has_one :ingenieur, :dependent => :destroy
-  has_one :recipient, :dependent => :destroy
+  has_many :knowledges, :order => 'knowledges.level DESC', :foreign_key => :engineer_id,
+    :dependent => :destroy
+  has_many :subscriptions, :dependent => :destroy
 
-  has_and_belongs_to_many :own_contracts, :class_name => "Contract"
+  has_and_belongs_to_many :own_contracts, :class_name => 'Contract', :order => :id
 
   validates_length_of :login, :within => 3..20
   validates_length_of :password, :within => 5..40
@@ -44,14 +46,15 @@ class User < ActiveRecord::Base
 
   attr_accessor :pwd_confirmation
 
-  N_('User|Pwd')
-  N_('User|Pwd confirmation')
-
 
   #Preferences
+=begin
+  deactivated, since preference plugin is broken with Rails 2.2
+  TODO : fix it and restore it
   preference :digest_daily, :default => false
   preference :digest_weekly, :default => false
   preference :digest_monthly, :default => false
+=end
 
   def pwd
     @pwd
@@ -63,8 +66,31 @@ class User < ActiveRecord::Base
     self.password = User.sha1(pass)
   end
 
+  #Specific methods used in forms
+  #TODO: find a better way
+  def client_form
+    recipient?
+  end
+  def client_form=(client)
+    #Nothing to do
+  end
+
   def manager?
     role_id <= 2
+  end
+
+  def trigram
+    return @trigram if @trigram
+    names = name.split(/ |-/)
+    case names.size
+    when 0..1 # ["Admin"] => ADM
+      @trigram = self.login[0..2].upcase!
+    when 2 # ["Jon", "Toto"] => JTO
+      @trigram = (b.first.first + b.last.first).upcase!
+    else # ["Jon", "Michael", "Toto"] => JMT
+      @trigram = (b.first.first + b[1].first + b.last.first).upcase!
+    end
+    @trigram
   end
 
   # TODO : this formatting method has to be in an helper, a lib or a plugin.
@@ -88,6 +114,12 @@ class User < ActiveRecord::Base
     if record.team
       record.own_contracts -= record.team.contracts
     end
+    true
+  end
+
+  after_create :do_after_create
+  def do_after_create
+    Notifier::deliver_user_signup(self)
     true
   end
 
@@ -115,39 +147,50 @@ class User < ActiveRecord::Base
   def self.get_scope(contract_ids)
     { :find => { :conditions =>
           [ 'contracts_users.contract_id IN (?) ', contract_ids ], :joins =>
-        'INNER JOIN contracts_users ON contracts_users.user_id=users.id ' } }
+          'INNER JOIN contracts_users ON contracts_users.user_id=users.id ' } }
   end
 
   # Associate current User to a recipient profile
   def associate_recipient(client_id)
-    client = nil
-    client = Client.find(client_id.to_i) unless client_id.nil?
-    self.recipient = Recipient.new(:user => self, :client => client)
-    self.client = true
+    c_id = nil
+    c_id = Client.find(client_id.to_i).id unless client_id.nil?
+    self.client_id = c_id
+    self.save
   end
 
   # Associate current User to an Engineer profile
-  def associate_engineer()
-    self.ingenieur = Ingenieur.new(:user => self)
-    self.client = false
+  def associate_engineer
+    self.client_id = nil
+    self.save
   end
 
-  SELECT_OPTIONS = { :include => [:user], :order =>
-    'users.name ASC', :conditions => 'users.inactive = 0' }
-  EXPERT_OPTIONS = { :conditions => 'users.client = 0 AND users.inactive = 0',
-    :order => 'users.name' }
+  SELECT_OPTIONS = { :order => 'users.name ASC',
+    :conditions => ['users.inactive = ?', false ] } unless defined? User::SELECT_OPTIONS
+  EXPERT_OPTIONS = { :conditions => [ 'users.inactive = ? AND users.client_id IS NULL', false ],
+    :order => 'users.name' } unless defined? User::EXPERT_OPTIONS
 
-  def self.authenticate(login, pass, crypt = 'false')
-    User.with_exclusive_scope() do
-      pass = sha1(pass) if crypt == 'false'
-      user = User.find(:first, :conditions =>
-                              ['login = ? AND password = ?', login, pass])
-      return nil if user and user.inactive?
-      user
+  # If you move/rename this method, do NOT forget to look at lib/ldap_tosca.rb /!\
+  def self.authenticate(login, pass)
+    user = nil
+    User.with_exclusive_scope do
+      conditions = ['login = ? AND password = ?', login, sha1(pass)]
+      user = User.first(:conditions => conditions)
     end
+    (user and user.inactive? ? nil : user)
+  end
+  # It must be after self.authenticate, since there's a possible override in it
+  include LdapTosca
+
+  def self.tams
+    self.find_select( { :joins => :own_contracts, :group => "users.id, users.name",
+        :conditions => "contracts.tam_id = users.id" } )
   end
 
-  # Pour la gestion des roles/perms :
+  def self.admins
+    self.all(:conditions => { :role_id => 1 })
+  end
+
+  # To manage permissions/roles :
 
   # Return true/false if User is authorized for resource.
   def authorized?(resource)
@@ -160,6 +203,46 @@ class User < ActiveRecord::Base
       end
     end
     return match
+  end
+
+  def recipient?
+    not engineer?
+  end
+
+  def engineer?
+    self.client_id.nil?
+  end
+  alias_method :expert?, :engineer?
+
+  def self.engineers
+    User.all(:conditions => 'users.client_id IS NULL')
+  end
+
+  def self.recipients
+    User.all(:conditions => 'users.client_id IS NOT NULL')
+  end
+
+  def self.find_select_recipients
+    options = SELECT_OPTIONS.dup
+    options[:conditions][0] += ' AND users.client_id IS NOT NULL'
+    User.find_select(options)
+  end
+
+  def self.find_select_by_contract_id(contract_id)
+    conditions = [ 'contracts_users.contract_id = ?', contract_id ]
+    options = {:find => {:conditions => conditions, :joins => :own_contracts}}
+    User.send(:with_scope, options) do
+      User.find_select(User::SELECT_OPTIONS)
+    end
+  end
+
+  def self.find_select_engineers_by_contract_id(contract_id)
+    joins = 'INNER JOIN contracts_users cu ON cu.user_id=users.id'
+    conditions = [ 'cu.contract_id = ?', contract_id ]
+    options = {:find => {:conditions => conditions, :joins => joins}}
+    User.send(:with_scope, options) do
+      User.find_select(User::EXPERT_OPTIONS)
+    end
   end
 
   def name
@@ -180,26 +263,26 @@ class User < ActiveRecord::Base
 
   def active_contracts
     options = { :conditions => { :inactive => false } }
-    result = self.own_contracts.find(:all, options)
+    result = self.own_contracts.all(options)
     # options are modified within a relationship finder, so we need to reset it
     options = { :conditions => { :inactive => false } }
-    result.concat(self.team.contracts.find(:all, options)) if self.team
+    result.concat(self.team.contracts.all(options)) if self.team
     result
   end
 
   # TODO : provide a cache for those really often used & costly 2 methods
   def contract_ids
-    self.contracts.collect &:id
+    self.contracts.collect(&:id)
   end
 
   def client_ids
-    res = self.contracts.collect &:client_id
+    res = self.contracts.collect(&:client_id)
     res.uniq!
     res
   end
 
   def kind
-    (client? ? 'recipient' : 'expert')
+    (recipient? ? 'recipient' : 'expert')
   end
 
   def team_manager?
@@ -213,11 +296,36 @@ class User < ActiveRecord::Base
     @@permission_strings = Array.new(7)
   end
 
+  def contracts_subscribed
+    models_subscribed(Contract)
+  end
+
+  def issues_subscribed
+    models_subscribed(Issue)
+  end
+
+  def softwares_subscribed
+    models_subscribed(Software)
+  end
+
   # Cache permission strings, not the best way
   @@permission_strings = Array.new(7)
   def permission_strings(role_id)
     @@permission_strings[role_id] ||=
       Role.find(role_id).permissions.collect{|p| Regexp.new(p.name) }
+  end
+
+  #Generate a field for an email
+  #like : Toto Tutu <tutu.toto@truc.com>
+  def email_name
+    "#{self.name} <#{self.email}>"
+  end
+
+  def issues
+    res = self.contracts.collect(&:issues)
+    res.flatten!
+    res.uniq!
+    res
   end
 
   private
@@ -226,8 +334,17 @@ class User < ActiveRecord::Base
   end
 
   # specialisation, since an Account can be <inactive>.
-  def self.find_select(options = { })
+  def self.find_select(options = {})
     find_active4select(options)
+  end
+
+  def models_subscribed(model)
+    self.subscriptions.select { |s| s.model.is_a? model }.collect { |s| s.model }
+  end
+
+  def fake4translation
+    N_('User|Pwd')
+    N_('User|Pwd confirmation')
   end
 
 end

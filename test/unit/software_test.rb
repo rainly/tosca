@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -18,8 +18,8 @@
 #
 require File.dirname(__FILE__) + '/../test_helper'
 
-class SoftwareTest < Test::Unit::TestCase
-  fixtures :softwares, :competences, :images, :contracts
+class SoftwareTest < ActiveSupport::TestCase
+  include ActionController::TestProcess
 
   def test_to_strings
     check_strings Software
@@ -39,15 +39,15 @@ class SoftwareTest < Test::Unit::TestCase
     upload_logo('/files/logo_firefox.gif', 'image/gif', 4)
     upload_logo('/files/logo_cvs.gif', 'image/gif', 5)
 
-    assert !@software.image.image.blank?
+    assert !@software.picture.image.blank?
   end
 
   # We need to upload files in order to have working logo in test environment.
   def upload_logo(path, mimetype, id)
-    @software ||= Software.find(:first)
+    @software ||= Software.first(:order => :id)
     image_file = fixture_file_upload(path, mimetype)
-    Image.find(id).destroy
-    image = Image.new(:image => image_file, :software => @software)
+    Picture.find(id).destroy
+    image = Picture.new(:image => image_file, :software => @software)
     image.id = id
     image.save!
   end

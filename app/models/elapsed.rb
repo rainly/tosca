@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -86,21 +86,21 @@ class Elapsed < ActiveRecord::Base
 
   def taken_into_account_progress
     # 1 hour = 1/24 of a day
-    progress(self.taken_into_account(), (1/24.0))
+    progress(self.taken_into_account, (1/24.0))
   end
 
   def workaround_progress
     issue = self.issue
     commitment = issue.commitment
     return 0.0 unless commitment
-    progress(self.workaround(), commitment.workaround)
+    progress(self.workaround, commitment.workaround)
   end
 
   def correction_progress
     issue = self.issue
     commitment = issue.commitment
     return 0.0 unless commitment
-    progress(self.correction(), commitment.correction)
+    progress(self.correction, commitment.correction)
   end
 
   # TODO

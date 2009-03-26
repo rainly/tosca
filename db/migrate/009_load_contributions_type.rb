@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -29,6 +29,6 @@ class LoadContributionsType < ActiveRecord::Migration
   end
 
   def self.down
-    Typecontribution.find(:all).each{ |tc| tc.destroy }
+    Typecontribution.all.each{ |tc| tc.destroy }
   end
 end

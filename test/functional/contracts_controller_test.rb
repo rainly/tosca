@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -20,7 +20,7 @@ require File.dirname(__FILE__) + '/../test_helper'
 
 class ContractsControllerTest < ActionController::TestCase
 
-  fixtures :contracts, :commitments, :clients, :severities, :typeissues,
+  fixtures :contracts, :commitments, :clients, :severities, :issuetypes,
     :credits, :components, :softwares
 
   def setup
@@ -46,8 +46,6 @@ class ContractsControllerTest < ActionController::TestCase
 
     assert_response :success
     assert_template 'show'
-
-    assert_not_nil assigns(:contract)
     assert assigns(:contract).valid?
   end
 
@@ -56,7 +54,6 @@ class ContractsControllerTest < ActionController::TestCase
 
     assert_response :success
     assert_template 'new'
-
     assert_not_nil assigns(:contract)
   end
 
@@ -78,8 +75,6 @@ class ContractsControllerTest < ActionController::TestCase
 
     assert_response :success
     assert_template 'edit'
-
-    assert_not_nil assigns(:contract)
     assert assigns(:contract).valid?
   end
 
@@ -101,35 +96,55 @@ class ContractsControllerTest < ActionController::TestCase
     assert_response :redirect
     assert_redirected_to :action => 'index'
 
-    assert_raise(ActiveRecord::RecordNotFound) {
-      Contract.find(1)
-    }
+    assert_raise(ActiveRecord::RecordNotFound) { Contract.find(1) }
+  end
+
+  # test tam change => automatic subscription change
+  def test_tam_subscription
+    get :edit, :id => 1
+    form = select_form "main_form"
+    form.contract.tam_id = 2 # admin => tam
+    form.submit
+    assert_response :redirect
+    assert assigns(:contract).valid?
+    assert_redirected_to :action => 'show', :id => 1
+
+    manager = User.find_by_login('manager')
+    assert_equal assigns(:contract).tam, manager
+    assert assigns(:contract).subscribers.include?(manager)
+  end
+
+  def test_user_subscription
+    get :show, :id => 1
+    admin = User.find_by_login('admin')
+
+    xhr :post, :ajax_subscribe, :id => 1
+    assert_response :success
+    assert_template '_subscribers'
+    assert assigns(:contract).subscribers.include?(admin)
+
+    xhr :delete, :ajax_unsubscribe, :id => 1
+    assert_response :success
+    assert_template '_subscribers'
+    assert !assigns(:contract).subscribers.include?(admin)
   end
 
   def test_supported_software
     get :supported_software, :id => 1
     assert_response :success
     assert_template 'supported_software'
-    versions = Contract.find(1).versions
-    assert_no_difference('Version.count') do
-      form = select_form "main_form"
-      form.submit
-      assert_response :redirect
-      assert_redirected_to contract_path(:id => 1)
-    end
+    form = select_form "main_form"
+    form.submit
+    assert_response :redirect
+    assert_redirected_to contract_path(:id => 1)
   end
 
   def test_add_software
     get :supported_software, :id => 1
     assert_response :success
     assert_template 'supported_software'
-    versions = Contract.find(1).versions
-    assert_no_difference('Version.count') do
-      form = select_form "main_form"
-      form.submit
-    end
     xhr :post, :ajax_add_software, :select => {
-      :software => Software.find(:first).id }
+      :software => Software.first(:order => :id).id }
     assert_response :success
     assert_template 'contracts/_software'
   end

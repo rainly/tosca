@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -19,7 +19,7 @@
 module LicensesHelper
   # call it like :
   # <%= link_to_new_license %>
-  def link_to_new_license()
+  def link_to_new_license
     link_to image_create(_('a copyright')), new_license_path
   end
 

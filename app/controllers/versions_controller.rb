@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -17,10 +17,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 class VersionsController < ApplicationController
-  helper :filters, :softwares, :releases
+  helper :softwares, :releases
 
   def index
-    options = { :per_page => 15 }
+    options = { :page => params[:page] }
 
     # Specification of a filter f :
     # [ namespace, field, database field, operation ]
@@ -30,14 +30,14 @@ class VersionsController < ApplicationController
      ]) unless params_version.blank?
     flash[:conditions] = options[:conditions] = conditions
 
-    @version_pages, @versions = paginate :versions, options
+    @versions = Version.paginate options
 
     # panel on the left side
     if request.xhr?
-      render :partial => 'versions_list', :layout => false
+      render :layout => false
     else
       _panel
-      @partial_for_summary = 'versions_info'
+      @partial_panel = 'index_panel'
     end
   end
 
@@ -91,14 +91,11 @@ class VersionsController < ApplicationController
   private
   def _form
     @softwares = Software.find_select
-    @groupes = Groupe.find_select
-    @socles = Socle.find_select
-    @contracts = Contract.find_select(Contract::OPTIONS)
   end
 
   def _panel
     @count = {}
-    @clients = Client.find_select(:conditions => 'clients.inactive = 0')
+    @clients = Client.find_select
     @count[:versions] = Version.count
   end
 

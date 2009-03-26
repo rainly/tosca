@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -17,7 +17,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 module ReportingHelper
-
   # Renvoit les titres du tableau
   # Data contient les entêtes. Les options applicable sont :
   # :without_firstcol => permet de ne pas afficher la première colonne
@@ -46,7 +45,6 @@ module ReportingHelper
   # élément de reporting : 2 cellules
   # options : one_row, muli_row et titre
   def report_evolution(name, options={})
-    data = @data[name]
     @first_col = @months_col
     table = ''
     table << '<table style="width: 100%">'
@@ -77,7 +75,6 @@ module ReportingHelper
   # - l'autre concernant la totalité depuis le début du contract
   # TODO : style : center report_item tr td
   def report_distribution(name, options= {})
-    data = @data[name]
     options[:distribution] = true
     if options.has_key? :separated
       @first_col = [ _('Running'), _('Finished') ]
@@ -193,12 +190,12 @@ module ReportingHelper
     if options.has_key?(:cut_table) && size >= 4
       cut = size / 2
       out << show_report_table(first_col, cleaned_data[0..cut-1],
-                               fill_titles(cleaned_data[0..cut-1], options), options)
+        fill_titles(cleaned_data[0..cut-1], options), options)
       out << show_report_table(first_col, cleaned_data[cut..-1],
-                               fill_titles(cleaned_data[cut..-1], options), options)
+        fill_titles(cleaned_data[cut..-1], options), options)
     else
       out << show_report_table(first_col, cleaned_data,
-                               fill_titles(cleaned_data, options), options)
+        fill_titles(cleaned_data, options), options)
     end
     out
   end
@@ -268,9 +265,9 @@ module ReportingHelper
 
   # TODO : find 3 images. Maybe include this helper in static image  ??
   def progress_image( status, percent )
-    return StaticImage.sla_exceeded if percent > 1.0
-    return StaticImage.sla_ok if status
-    StaticImage.sla_running
+    return StaticPicture.sla_exceeded if percent > 1.0
+    return StaticPicture.sla_ok if status
+    StaticPicture.sla_running
   end
 
   # Display a progress bar colored according to the percentage given in
@@ -293,7 +290,7 @@ module ReportingHelper
     color = "rgb( #{red}, #{green},0)"
 
     result = image_percent(1.23*percent, color, desc)
-    result << " (#{(percent).round} %) " if @ingenieur
+    result << " (#{(percent).round} %) " if @session_user.engineer?
     result
   end
 
@@ -314,7 +311,7 @@ module ReportingHelper
   # <%= box_clients(9) %> will show a multi-selection box
   #                       with 9 selectable items
   def box_clients(number_items)
-    elements = Client.find(:all, :select => 'id,name', :order => 'name')
+    elements = Client.all(:select => 'id,name', :order => 'name')
     items='<option value=\'all\' selected=\'selected\'>»</option>'
 
     elements.each do |elt|
@@ -324,8 +321,6 @@ module ReportingHelper
     end
     return '<select id=\'clients\' multiple=\'multiple\' name=\'clients[]\' size="' << number_items.to_s << '">' <<  items << '</select>'
   end
-
-
 
   # Display nicely the issues for the weekly report. See
   # reporting/weekly.rhtml for more information.

@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -19,13 +19,14 @@
 class Comment < ActiveRecord::Base
   belongs_to :issue
   belongs_to :user
-  belongs_to :attachment
   belongs_to :statut
   belongs_to :severity
-  belongs_to :ingenieur
+  belongs_to :engineer, :class_name => 'User',
+    :conditions => 'users.client_id IS NULL'
 
-  validates_length_of :text, :minimum => 5,
-    :warn => _('You must have a comment with at least 5 characters')
+  #TODO : For multiple attachment change this to has_many
+  has_one :attachment, :dependent => :destroy
+
   validates_presence_of :user
 
   validate do |record|
@@ -44,16 +45,18 @@ class Comment < ActiveRecord::Base
     if (record.statut_id && record.private)
       record.errors.add_to_base _('You cannot privately change the status')
     end
+    # Used by rails to know if validation is ok.
+    record.errors.empty?
   end
 
   before_validation do |record|
     #If the status was changed and we do not specify a text, we generate a default text
     text = html2text(record.text).strip
     if record.statut and not Statut::NEED_COMMENT.include? record.statut_id and text.empty?
-      record.text << ( "La demande est désormais #{_(record.statut.name)}.<br/>" )
+      record.text << ( _("The issue is now %s.<br/>") % _(record.statut.name) )
     end
-    if record.ingenieur and text.empty?
-      record.text << ( "Le responsable de la demande est désormais #{record.ingenieur.name}.<br/>" )
+    if record.engineer and text.empty?
+      record.text << ( _("The issue is now managed by %s.<br/>") % _(record.engineer.name))
     end
   end
 
@@ -77,11 +80,21 @@ class Comment < ActiveRecord::Base
     return false unless attachment and !attachment[:file].blank?
     attachment = Attachment.new(attachment)
     attachment.comment = self
-    attachment.save and self.update_attribute(:attachment_id, attachment.id)
+    attachment.save
   end
 
   def fragments
     [ ]
+  end
+
+  def first_comment?
+    (self.id == self.issue.first_comment_id)
+  end
+
+  # See ApplicationController#scope
+  def self.set_private_scope()
+    scope = { :conditions => [ 'comments.private = ?', false ] }
+    self.scoped_methods << { :find => scope, :count => scope }
   end
 
 
@@ -92,6 +105,9 @@ class Comment < ActiveRecord::Base
   before_destroy :delete_dependancies
   def delete_dependancies
     issue = self.issue
+
+    #We come from Issue.destroy
+    return true unless issue
 
     # We MUST have at least the first comment in an issue
     return false if issue.first_comment_id == self.id
@@ -109,18 +125,17 @@ class Comment < ActiveRecord::Base
     end
 
     issue.elapsed.remove(self) if issue.elapsed
-    self.attachment.destroy unless self.attachment.nil?
     true
   end
 
   after_destroy :update_status
   def update_status
-    return true if self.statut_id.nil? || self.statut_id == 0
+    return true if self.statut_id.nil? or self.statut_id == 0 or self.issue.nil?
 
     issue = self.issue
     options = { :order => 'created_on DESC', :conditions =>
       'comments.statut_id IS NOT NULL' }
-    last_one = issue.comments.find(:first, options)
+    last_one = issue.comments.first(options)
     return true unless last_one
     issue.update_attribute(:statut_id, last_one.statut_id)
   end
@@ -128,7 +143,7 @@ class Comment < ActiveRecord::Base
   # update issue attributes, when creating a comment
   after_create :update_issue
   def update_issue
-    fields = %w(statut_id ingenieur_id severity_id)
+    fields = %w(statut_id engineer_id severity_id)
     issue = self.issue
 
     # Update all attributes
@@ -141,8 +156,8 @@ class Comment < ActiveRecord::Base
     end
 
     # auto-assignment to current engineer
-    if issue.ingenieur_id.nil? && self.user.ingenieur
-      issue.ingenieur = self.user.ingenieur
+    if issue.engineer_id.nil? && self.user.engineer?
+      issue.engineer = self.user
     end
 
     # update cache of elapsed time
@@ -161,6 +176,23 @@ class Comment < ActiveRecord::Base
     issue.last_comment_id = self.id unless self.private
 
     issue.save
+
+    #Sending e-mail
+    Notifier::deliver_issue_new_comment(self)
+  end
+
+  after_save :automatic_subscribtion
+  # TODO : this subscription should be communicated, in a way or another
+  # e.g. : by email or with the flash box.
+  def automatic_subscribtion
+    #Try to subscribe engineer that has deposit the comment
+    Subscription.create(:user => self.user,
+                        :model => self.issue) if self.user.engineer?
+
+    #Try to subscribe new engineer who is responsible for the request
+    Subscription.create(:user => self.engineer,
+                        :model => self.issue) if self.engineer
+    true
   end
 
 end

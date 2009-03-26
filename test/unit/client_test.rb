@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -18,9 +18,8 @@
 #
 require File.dirname(__FILE__) + '/../test_helper'
 
-class ClientTest < Test::Unit::TestCase
-  fixtures :clients, :images, :severities, :recipients, :users, :contracts,
-    :contributions, :softwares, :components, :credits
+class ClientTest < ActiveSupport::TestCase
+  include ActionController::TestProcess
 
   def test_to_strings
     check_strings Client
@@ -29,40 +28,36 @@ class ClientTest < Test::Unit::TestCase
   def test_logo
     image_file = fixture_file_upload('/files/logo_linagora.gif', 'image/gif')
     client = Client.new(:name => "Testing logo",
-      :creator => User.find(:first),
-      :description => "I a client with a nice logo",
+      :creator => User.first(:order => :id),
+      :context => "I a client with a nice logo",
       :address => "I live next door")
     assert client.save
 
-    images(:image_00001).destroy
-    i = Image.new(:image => image_file, :client => client)
+    pictures(:image_00001).destroy
+    i = Picture.new(:image => image_file, :client => client)
     i.id = 1
     i.save
 
     client = Client.find_by_name('Testing logo')
-    assert_match(/logo_linagora.gif$/, client.image.image.to_s)
+    assert_match(/logo_linagora.gif$/, client.picture.image.to_s)
     client.destroy
   end
 
   def test_destroy
-    Client.find(:all).each {  |c|
-      c.destroy
-      assert Recipient.find_all_by_client_id(c.id).empty?
-      assert Document.find_all_by_client_id(c.id).empty?
-    }
+    Client.all.each { |c| c.destroy }
   end
 
   def test_desactivate_recipients
-    Client.find(:all).each {  |c| c.desactivate_recipients }
+    Client.all.each { |c| c.desactivate_recipients }
   end
 
   def test_contract_ids
-    Client.find(:all).each { |c| check_ids c.contract_ids, Contract }
+    Client.all.each { |c| check_ids c.contract_ids, Contract }
   end
 
   def test_scope
-    Client.set_scope([Client.find(:first).id])
-    Client.find(:all)
+    Client.set_scope([Client.first(:order => :id).id])
+    Client.all
     Client.remove_scope
   end
 
@@ -71,7 +66,7 @@ class ClientTest < Test::Unit::TestCase
   end
 
   def test_support_distribution
-    Client.find(:all).each { |c|
+    Client.all.each { |c|
       res = c.support_distribution
       assert !res.nil?
       assert(res == true || res == false)
@@ -79,52 +74,64 @@ class ClientTest < Test::Unit::TestCase
   end
 
   def test_recipient_ids
-    Client.find(:all).each { |c| check_ids c.recipient_ids, Recipient }
+    Client.all.each { |c| check_ids c.recipient_ids, User }
   end
 
   def test_ingenieurs
-    Client.find(:all).each{|c| c.ingenieurs.each{|i| assert_instance_of(Ingenieur, i)}}
+    Client.all.each do |c|
+      c.engineers.each do |e|
+        assert_instance_of(User, e) and assert_nil(e.client_id)
+      end
+    end
   end
 
   def test_softwares
-    Client.find(:all).each{ |c| c.softwares.each{ |i| assert_instance_of(Software, i) } }
+    Client.all.each{ |c| c.softwares.each { |i| assert_instance_of(Software, i) } }
   end
 
   def test_contributions
-    Client.find(:all).each{|c| c.contributions.each{|i| assert_instance_of(Contribution, i)}}
+    Client.all.each{|c| c.contributions.each{|i| assert_instance_of(Contribution, i)}}
   end
 
-  def test_typeissues
-    Client.find(:all).each{|c| c.typeissues.each{|i| assert_instance_of(Typeissue, i)}}
+  def test_issuetypes
+    Client.all.each{|c| c.issuetypes.each{|i| assert_instance_of(Issuetype, i)}}
   end
 
   def test_severities
-    Client.find(:all).each{|c| c.severities.each{|i| assert_instance_of(Severity, i)}}
+    Client.all.each{|c| c.severities.each{|i| assert_instance_of(Severity, i)}}
   end
 
   def test_inactive
-    Client.find(:all).each { |c|
+    Client.all.each do |c|
       name = c.name
       assert c.update_attribute(:inactive, true)
+      c.desactivate_recipients
       assert_equal c.name , "<strike>#{name}</strike>"
-      c.recipients.each do |b|
-        assert b.user.inactive?
+      c.recipients.each do |r|
+        assert r.inactive?
       end
 
       assert c.update_attribute(:inactive, false)
-      assert_equal c.name , name
+      assert_equal c.name, name
       # reload client, in order to avoid cache errors
       Client.find(c.id).recipients.each do |b|
-        assert !b.user.inactive?
+        assert !b.inactive?
       end
-    }
+    end
   end
 
   def test_content_columns
     columns = Client.content_columns.collect { |c| c.name }
     columns.sort!
 
-    assert_equal(["access_code", "description", "name"], columns)
+    assert_equal(["access_code", "context", "name"], columns)
   end
-  
+
+  def test_active_recipients
+    Client.all.each do |c|
+      c.active_recipients.each do |r|
+        assert !r.inactive?
+      end
+    end
+  end
 end

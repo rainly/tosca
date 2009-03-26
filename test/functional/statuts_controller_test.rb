@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -22,7 +22,7 @@ require 'statuts_controller'
 # Re-raise errors caught by the controller.
 class StatutsController; def rescue_action(e) raise e end; end
 
-class StatutsControllerTest < Test::Unit::TestCase
+class StatutsControllerTest < ActionController::TestCase
   fixtures :statuts
 
   def setup

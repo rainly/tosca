@@ -1,0 +1,54 @@
+fr:
+  a_new_issue: une nouvelle demande
+  are_you_sure: "Êtes-vous sûr ?"
+  successfully_created: "'{{name}}' a été créé(e) avec succès."
+  successfully_updated: "'{{name}}' a été mis(e) à jour avec succès."
+  updated_on: "Mis(e) à jour le"
+  created_on: "Créé(e) le"
+  Description: Description
+  Id: Id
+  By: Par
+  Model: "Modèle"
+  Name: Nom
+  Type: Type
+  Validate: Valider
+  Attributes: Attributs
+  Create: "Créer"
+  Validate: Valider
+  Description: Description
+  Destroy: "Effacer"
+  Homepage: "Page d'accueil"
+  Tosca_on_rails: "Tosca on Rails"
+  Consultation: "Consultation"
+  Create: Créer
+  Delete: Effacer
+  Update: Modifier
+  Show: Consulter
+  View: Consulter
+  Back: Retour
+  Edit: Modifier
+  List: Liste
+  Search: Rechercher
+  Save: Sauvegarder
+  Activated: Activée
+  Recipient: "Bénéficiaire"
+  Expert: "Expert"
+  Public: Publique
+  Private: "Privé"
+  Immediate: "Immédiatement"
+  Help: Aide
+  About: "À propos"
+  Reporting: Reporting
+  Customers: Clients
+  Connected: "connecté"
+  a_version: une version
+
+  # NB: Quotes around Yes/No are mandatory since
+  #     they are keyword, as of Ruby 1.8.6
+  "Yes": Oui
+  "No": "Non"
+  will_paginate:
+    no_entries_found: "Aucun résultat trouvé"
+    displaying_1_entries: "<b>1</b> résultat"
+    displaying_x_entries: "<b>{{count}}</b> résultats"
+    displaying_x_y_entries: "Résultats <b>{{from}}&nbsp;-&nbsp;{{to}}</b> sur un total de <b>{{total}}</b>"

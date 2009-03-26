@@ -1,0 +1,12 @@
+<% for column in Picture.content_columns %>
+<p>
+  <b><%= column.human_name %>:</b> <%= @picture.send(column.name) %>
+</p>
+<% end %>
+<%= image_tag url_for_file_column("picture", "image", "thumb") %><br />
+<%= image_tag url_for_file_column("picture", "image", "inactive_thumb") %><br />
+<%= image_tag url_for_file_column("picture", "image", "medium") %><br />
+<%= image_tag url_for_file_column("picture", "image") %><br />
+
+<%= link_to_edit_and_list(@picture)%>
+

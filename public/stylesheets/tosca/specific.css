@@ -30,12 +30,24 @@ input:focus { background-color: #ffffcc; }
 textarea:focus { background-color: #ffffcc; }
 table { border-collapse: collapse; }
 
-.show tr td fieldset {
-  width: 35em;
-}
 
 div.info { width: 100%; }
 table.full { width: 100%; }
+
+
+pre, code {
+  padding: 1em;
+  border-width: 1px;
+  border-style: dashed;
+  border-color: #000000;
+  background-color: #fafafa;
+  overflow-x: auto;
+  overflow-y: auto;
+  white-space: -moz-pre-wrap;
+}
+
+/* visible in roles/ view */
+th a { color: lightgreen; }
 
 /* used mainly in show view, where we don't want 100% width */
 .info  {
@@ -43,17 +55,18 @@ table.full { width: 100%; }
   max-width: 45em;
 }
 
+
 #col3 input, #col3 select {
   width: 95%;
 }
 
-#footer a, #footer a:hover {
-  color: #fff;
-}
+#footer a, #footer a:hover { color: #fff; }
 
+/* realign radio button. See account form for an example */
+td input.radio { position: relative; top: 2px; }
 p img { vertical-align: middle; }
 label { font-weight: bold; }
-ul { list-style-type: square; margin: 0 0 1em 0; }
+ul { list-style-type: disc; margin: 0 0 1em 0; }
 li img { vertical-align: middle; }
 a:focus, a:hover, a:active { background-color: transparent; }
 a { font-weight: bold; }
@@ -75,8 +88,6 @@ a { font-weight: bold; }
 }
 
 ul { margin: 0 0 1em 0; }
-
-.aligned_picture { vertical-align: middle; }
 
 .datestamp div {
     text-align: center;
@@ -118,6 +129,7 @@ div.login_box, div.show, div.help, div.info {
   border-top: 1px solid #ffffff;
   border-right: 1px solid #999999;
   border-bottom: 1px solid #999999;
+  width: 100%;
 }
 
 /* used mainly in div.show box in order to nicely
@@ -144,6 +156,13 @@ div.redbox_scroll {
   max-height: 600px;
   overflow: auto;
 }
+
+/*******************
+  * Pagination CSS *
+  *****************/
+span.pagination img { vertical-align: middle; }
+span.disabled img { display: none; }
+
 
 /*************************
   * Comments	 *
@@ -191,7 +210,7 @@ table.comment-table td.text {
 }
 
 /*************************
-  * Tabs in issuet	 *
+  * Tabs in issues	 *
   ************************/
 
 .issue_tabnav {
@@ -261,7 +280,6 @@ table.comment-table td.text {
   font-size: 95%;
   padding: 0.5em;
 }
-
 
 
 /******************************
@@ -407,7 +425,7 @@ a.nobackground {
 }
 
 /***************************************
- *                severite
+ *                severities
  ***************************************/
 
 /* TODO : options du select severite en couleur  */
@@ -531,6 +549,8 @@ h1.section {
 .percentImage {
   background: url(../images/percentimage_back2.png) no-repeat;
 }
+
+
 
 .cal1 {
   font-size: 1.5em;

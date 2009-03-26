@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -18,8 +18,8 @@
 #
 class AttachmentsController < ApplicationController
   def index
-    @attachment_pages, @attachments = paginate :attachments, :per_page => 10,
-    :include => [:comment]
+    options = {:page => params[:page], :per_page => 10, :include => [:comment]}
+    @attachments = Attachment.paginate options
   end
 
   def show

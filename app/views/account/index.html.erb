@@ -1,10 +1,9 @@
-<h1><%= _('User list') %><%= StaticImage::spinner %></h1>
+<h1><%= _('User list') %><%= StaticPicture::spinner %></h1>
 
-<% links = show_pages_links(@user_pages, _('a new user'),
-                             :url => accounts_path) %>
-<%= links %>
-<% manager = session[:user].manager? %>
-<table class="full">
+<% options = { :create_label => _('a new user'), :remote_url => accounts_path } %>
+<% paginated_section(@users, options) do %>
+ <% manager = @session_user.manager? %>
+ <table class="full">
   <tr>
     <th><%= _('User|Title')%></th>
     <th><%= _('User|Name')%></th>
@@ -21,21 +20,19 @@
   <% options[:method] = :put %>
   <% @users.each_index do |i| %>
    <% user = @users[i] %>
-   <% recipient = user.recipient %>
-   <% ingenieur = user.ingenieur %>
    <tr class="<%= cycle('even', 'odd') %>">
       <td><%= user.title %></td>
       <td><%= user.name %></td>
       <% if manager %>
        <td><%= user.role.name %></td>
-       <td style="text-align: center"><%= 'X' if ingenieur %></td>
-       <td style="text-align: center"><%= 'X' if recipient %></td>
+       <td style="text-align: center"><%= 'X' if user.engineer? %></td>
+       <td style="text-align: center"><%= 'X' if user.recipient? %></td>
       <% end %>
       <td><%= mail_to user.email, user.email %></td>
       <td><%= user.phone %></td>
       <td><%= form_become(user) %></td>
 
-     <% if manager or session[:user].id == user.id %>
+     <% if manager or @session_user.id == user.id %>
       <td><%= link_to_show user %></td>
       <td><%= link_to_edit user %></td>
      <% else %>
@@ -43,6 +40,6 @@
      <% end %>
     </tr>
   <% end %>
-</table>
-
-<%= links %>
+ </table>
+ <%= page_entries_info @users %><br />
+<% end %>

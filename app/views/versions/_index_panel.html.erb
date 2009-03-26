@@ -1,0 +1,34 @@
+<% options = { :update => 'col1_content', :method => :get,
+    :url => versions_path,
+    :before => "Element.show('spinner')",
+    :success => "Element.hide('spinner')" } %>
+
+<% form_remote_tag( options.dup.update(:html => {
+    :id => 'filters', :name => 'filters', :method => :get})) do %>
+
+<%# used for iteration in ajaxified list %>
+<%= hidden_field_tag 'page', '1' %>
+
+<div class="menu_title" onclick="Element.toggle('menu_consultation')">
+  > <%= _('Consultation')%></div>
+<ul id="menu_consultation">
+ <li><%= link_to _('Software list'), :controller => 'softwares' %></li>
+ <li><%= link_to _('Releases list'), :controller => 'releases' %></li>
+</ul>
+
+
+<div class="menu_title" onclick="Element.toggle('menu_recherche')">
+  > <%= _('Search')%></div>
+<ul id="menu_recherche">
+  <li><b><%= _('Version')%> </b><br />
+      <%= text_field :version, :name %></li>
+</ul>
+
+<div class="menu_title" onclick="Element.toggle('menu_perimetre')">
+  > <%= _('Perimeter')%></div>
+<ul id="menu_perimetre">
+  <li><b><%= _('Versions')%> : </b><%=  @count[:versions] %></li>
+</ul>
+
+<% end %>
+<%= observe_form 'filters', options %>

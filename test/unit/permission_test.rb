@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -18,7 +18,7 @@
 #
 require File.dirname(__FILE__) + '/../test_helper'
 
-class PermissionTest < Test::Unit::TestCase
+class PermissionTest < ActiveSupport::TestCase
   fixtures :permissions
 
   def test_to_strings

@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -24,11 +24,11 @@ require 'calendar_grid'
 CalendarGrid::Builder.start_wday = 1
 
 module DatesHelper
-  
+
   def pretty_date(date)
     day = sprintf("%02d", date.day)
     month = _(date.strftime("%b"))
-    
+
     result = ""
     result << '<div class="datestamp">'
     result << '<div>'
@@ -38,24 +38,24 @@ module DatesHelper
     result << '</div>'
     result << '</div>'
   end
-  
+
   def complete_date(date)
-     result = _(date.strftime("%A"))            #day of the week : Monday
-     result << " "
-     result << date.strftime("%d")              #day of the month : 10
-     result << " "
-     result << _(date.strftime("%B"))           #month : December
-     result << " "
-     result << date.strftime("%Y")              #Year : 2007
+    result = _(date.strftime("%A"))            #day of the week : Monday
+    result << " "
+    result << date.strftime("%d")              #day of the month : 10
+    result << " "
+    result << _(date.strftime("%B"))           #month : December
+    result << " "
+    result << date.strftime("%Y")              #Year : 2007
   end
-  
-  # Display a BIG calendar for the month of the date in parm
+
+  # Display a BIG calendar for the month of the date in param
   #
   # options :
   #   :title Display a title for the calendar
-  def calendar(date, options = {})
+  def calendar_month(date, options = {})
     cal = CalendarGrid.build(date, 1)
-    
+
     #We limit to one year and one month
     year = cal.years.first
     month = year.months.first
@@ -87,8 +87,60 @@ module DatesHelper
         end
       end
       result << %(</tr>)
-    end        
+    end
     result << %(</table></div>)
   end
- 
+
+  # Display a BIG calendar for the week of the date in param
+  #
+  #
+  #
+  def calendar_weekly(start_date, options = {}, &block)
+    block ||= Proc.new { |d| nil }
+    defaults = {
+      :table_class => 'week-view',
+      :start_time => 8,
+      :end_time => 19,
+      :duration => 30
+    }
+    options = defaults.merge options
+
+    time_range = (options[:start_time]..options[:end_time]).to_a
+
+    cal = "<table class=\"#{options[:table_class]}\">"
+    cal << '<thead><tr>'
+    week = start_date.strftime(_('W%W %Y'))
+    cal << "<th><h3>#{week}</h3></th>"
+    5.times do |d|
+      date = start_date.beginning_of_day + d.days
+      cal << "<th><h3>#{date.strftime('%a %d/%m')}</h3></th>"
+    end
+    cal << '</tr></thead><tbody>'
+    time_range.each do |hour|
+      minutes = 0
+      number_division = (60/options[:duration])
+      number_division.times do |i|
+        print_minutes = minutes.to_s.rjust(2, '0')
+        cal << "<tr class=\"m#{print_minutes} d#{options[:duration]}\">"
+        cal << "<th rowspan=\"#{number_division}\"><h2>#{hour.to_s.rjust(2, '0')}:00</h2></th>" if i == 0
+        5.times do |d|
+
+          # cell_attrs should return a hash.
+          now = start_date.beginning_of_day +
+            d.day + hour.hour + minutes.minutes
+          cell_text, cell_attrs = block.call(now)
+          cell_text ||= ''
+          cell_attrs ||= {}
+          cell_attrs[:class] = cell_attrs[:class].to_s + ' today' if Time.today == d
+          cell_attrs = cell_attrs.map {|k, v| %(#{k}="#{v}") }.join(' ')
+
+          cal << "<td #{cell_attrs}>#{cell_text}</td>"
+        end
+        minutes += options[:duration]
+        cal << '</tr>'
+      end
+    end
+    cal << '</tbody></table>'
+  end
+
 end

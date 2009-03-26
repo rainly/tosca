@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -42,16 +42,12 @@ module LinksHelper
 
     unless filepath.blank? or not File.exist?(filepath)
       filename = filepath[/[._ \-a-zA-Z0-9]*$/]
-      if options.has_key? :image
-        show = StaticImage::patch
-      else
-        show = filename
-      end
-      url = url_for_file_column(record, file, :absolute => true)
+      text = (options.has_key?(:image) ? StaticPicture::patch : filename)
+      url = url_for_file_column(record, file, :only_path => false)
       if public
-        public_link_to show, url
+        public_link_to text, url
       else
-        link_to show, url
+        link_to text, url
       end
     end
   end
@@ -97,13 +93,13 @@ module LinksHelper
   def redbox_div(relative_path, content, options = {})
     return '' if relative_path.blank? or content.nil?
     content << '<div style="position: absolute;top: 0;right: 0;">'
-    content << link_to_close_redbox(StaticImage::hide_notice) << '</div>'
+    content << link_to_close_redbox(StaticPicture::hide_notice) << '</div>'
     content = link_to_close_redbox(content) if options.has_key? :background_close
     return  <<EOS
       <div id="#{relative_path}" style="display: none;">
         #{content}
       </div>
-      #{link_to_redbox(StaticImage::view, relative_path)}
+      #{link_to_redbox(StaticPicture::view, relative_path)}
 EOS
   end
 
@@ -145,9 +141,9 @@ EOS
                    :title => _('Access to the list of contributions.'))
   end
 
-  def public_link_to_about()
+  def public_link_to_about
     public_link_to('?', about_welcome_path,
-                   :title => _("About %s") % App::Name)
+                   :title => _("About %s") % Tosca::App::Name)
   end
 
   def public_link_to_forgotten_pwd
@@ -160,10 +156,9 @@ EOS
             :title => _('Administration interface'))
   end
 
-
   def public_link_to_remote_theme
-    link_to_remote_redbox(StaticImage.icon_css, :url => theme_welcome_path,
-                          :method => :get, :update => 'theme_box')
+    link_to_remote_redbox(StaticPicture::icon_css, { :url => theme_welcome_path,
+                          :method => :get, :update => 'theme_box' })
   end
 
 end

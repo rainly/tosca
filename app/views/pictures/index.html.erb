@@ -1,0 +1,12 @@
+<h1><%= _("List of images") %></h1>
+
+<% paginated_section(@pictures, :create_label => _('an image')) do %>
+ <% titles = [_('Formatted'), _('Description')]%>
+ <%= show_table(@pictures, Picture, titles) do |p|
+   result = ''
+   result << "<td>#{self.image_tag(url_for_file_column(p, 'image', 'thumb')) if p.image}</td>"
+   result << "<td>#{p.description}</td>"
+   result << "#{link_to_actions_table(p)}"
+ end %>
+ <%= page_entries_info @pictures %><br />
+<% end %>

@@ -4,11 +4,11 @@
 <%
   #We create next/previous month links
   last_month = @time.last_month
-  link_previous = link_to(StaticImage::previous_page,
+  link_previous = link_to(StaticPicture::previous_page,
     calendar_reporting_path(:month => last_month.month,
       :year => last_month.year))
   next_month = @time.next_month
-  link_next = link_to(StaticImage::next_page,
+  link_next = link_to(StaticPicture::next_page,
     calendar_reporting_path(:month => next_month.month,
       :year => next_month.year))
 
@@ -21,9 +21,9 @@
 %>
 
 
-<%= calendar(@time, :title => title) do |time|
+<%= calendar_month(@time, :title => title) do |time|
   @issues[time.day].map do |e|
-    title = (@ingenieur ? "[#{e.client}] #{e.resume}" : e.resume)
+    title = (@session_user.engineer? ? "[#{e.client}] #{e.resume}" : e.resume)
     link_to("##{e.id}", issue_path(e), :title => title)
   end.join(', ') if @issues.has_key? time.day
 end %>

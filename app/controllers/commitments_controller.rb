@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -18,9 +18,9 @@
 #
 class CommitmentsController < ApplicationController
   def index
-    @commitment_pages, @commitments = paginate :commitments,
-    :per_page => 20, :order => "typeissue_id, severity_id",
-    :include => [:typeissue,:severity]
+    options = { :per_page => 20, :order => "issuetype_id, severity_id",
+      :include => [:issuetype,:severity], :page => params[:page] }
+    @commitments = Commitment.paginate options
   end
 
   def show
@@ -65,7 +65,7 @@ class CommitmentsController < ApplicationController
 
   private
   def _form
-    @typeissues = Typeissue.find_select
+    @issuetypes = Issuetype.find_select
     @severities = Severity.find_select
   end
 end

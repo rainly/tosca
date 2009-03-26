@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -22,8 +22,8 @@ require 'commitments_controller'
 # Re-raise errors caught by the controller.
 class CommitmentsController; def rescue_action(e) raise e end; end
 
-class CommitmentsControllerTest < Test::Unit::TestCase
-  fixtures :commitments, :typeissues, :severities
+class CommitmentsControllerTest < ActionController::TestCase
+  fixtures :commitments, :issuetypes, :severities
 
   def setup
     @controller = CommitmentsController.new

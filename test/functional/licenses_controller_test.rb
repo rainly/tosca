@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -22,7 +22,7 @@ require 'licenses_controller'
 # Re-raise errors caught by the controller.
 class LicensesController; def rescue_action(e) raise e end; end
 
-class LicensesControllerTest < Test::Unit::TestCase
+class LicensesControllerTest < ActionController::TestCase
   fixtures :licenses
 
   def setup

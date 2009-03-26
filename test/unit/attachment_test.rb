@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -18,21 +18,21 @@
 #
 require File.dirname(__FILE__) + '/../test_helper'
 
-class AttachmentTest < Test::Unit::TestCase
-  fixtures :attachments, :comments, :clients, :issues, :recipients
+class AttachmentTest < ActiveSupport::TestCase
+  include ActionController::TestProcess
 
   def test_to_strings
     check_strings Attachment
   end
 
   def test_scope
-    Attachment.set_scope(Client.find(:first).id)
-    Attachment.find(:all)
+    Attachment.set_scope(Contract.all.collect(&:id))
+    Attachment.all
     Attachment.remove_scope
   end
 
   def test_magick_attachments
-    attachment = fixture_file_upload('/files/mod_le_vierge_BP.doc')
+    attachment = fixture_file_upload('../../app/models/attachment.rb')
     attachments(:attachment_00001).destroy
     options = { :file => attachment, :comment => comments(:comment_00001) }
     attachment = Attachment.new(options)
@@ -41,14 +41,14 @@ class AttachmentTest < Test::Unit::TestCase
 
     attachment = fixture_file_upload('/files/sw-html-insert-unknown-tags.diff')
     attachments(:attachment_00002).destroy
-    options = { :file => attachment, :comment => comments(:comment_00002) }
+    options = { :file => attachment, :comment => comments(:comment_00005) }
     attachment = Attachment.new(options)
     attachment.id = 2
     assert attachment.save
 
     attachment = fixture_file_upload('/files/logo_linagora.gif')
     attachments(:attachment_00003).destroy
-    options = { :file => attachment, :comment => comments(:comment_00003) }
+    options = { :file => attachment, :comment => comments(:comment_00673) }
     attachment = Attachment.new(options)
     attachment.id = 3
     assert attachment.save

@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -23,7 +23,6 @@ module MailHelper
   def wrap(s, width=78)
     s.gsub!(/(.{1,#{width}})(\s+|\Z)/, "\\1\n")
   end
-
 
   def awrap(s, width=78)
     s.gsub!(/(.{1,#{width}})(\s+|\Z)/, ">\\1\n")

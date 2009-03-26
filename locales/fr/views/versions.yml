@@ -1,0 +1,8 @@
+fr:
+  versions:
+    Show: Version
+    New: "Nouvelle version"
+    Edit: "Modifier la version"
+    Index: "Liste des versions"
+    index:
+      a_version: "une version"

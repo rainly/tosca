@@ -9,7 +9,10 @@
         <td><%= select(:contract, :client_id, @clients) %></td>
       </tr><tr>
         <th><label for="contract_salesman_id"><%= _("Salesman Contact") %></label></th>
-        <td><%= select_empty :contract, :salesman_id, @ingenieurs %></td>
+        <td><%= select_empty :contract, :salesman_id, @engineers %></td>
+      </tr><tr>
+        <th><label for="contract_tam_id"><%= _("Technical Account Manager") %></label></th>
+        <td><%= select_empty :contract, :tam_id, @engineers %></td>
       </tr><tr>
         <th><label for="contract_manager_id"><%= _("Technical Account Manager") %></label></th>
         <td><%= select_empty :contract, :manager_id, @ingenieurs %></td>
@@ -29,18 +32,12 @@
         <th><label for="contract_end_date"><%=_('End')%></label></th>
         <td><%= date_select :contract, :end_date %></td>
       </tr><tr>
-        <th><label for="contract_technological_survey"><%= _("Technological survey") %></label></th>
-        <td><%= check_box :contract, :technological_survey %></td>
-      </tr><tr>
-        <th><label for="contract_newsletter"><%= _("Newsletter") %></label></th>
-        <td><%= check_box :contract, :newsletter  %></td>
-      </tr><tr>
         <th><label for="contract_name"><%= _("Domain") %></label></th>
         <td><%= text_field :contract, :name %></td>
       </tr><tr>
         <th colspan="2"><label><%=_('Commitments')%> <%= link_to_new_commitment %></label></th>
       </tr><tr>
-        <td colspan="2"><%= show_form_commitments(@contract.commitments, @commitments, 'contract[commitment_ids]') %></td>
+        <td colspan="2"><%= show_form_commitments(@contract.commitments, @commitments) %></td>
       </tr>
     </table>
 </div></div>

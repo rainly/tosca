@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -18,7 +18,7 @@
 #
 class ChangelogsController < ApplicationController
   def index
-    @changelog_pages, @changelogs = paginate :changelogs, :per_page => 10
+    render :nothing => true
   end
 
   def show
@@ -58,4 +58,3 @@ class ChangelogsController < ApplicationController
     redirect_to changelogs_path
   end
 end
-

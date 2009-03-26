@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -19,14 +19,19 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class SoftwaresControllerTest < ActionController::TestCase
-  fixtures :softwares, :competences, :issues, :comments, :contracts,
-    :recipients, :contributions, :users, :clients, :credits, :components
 
   def setup
     login 'admin', 'admin'
   end
 
   def test_index
+    browse_index
+    # test public access
+    logout
+    browse_index
+  end
+
+  def browse_index
     get :index
     assert_response :success
     assert_template 'index'
@@ -40,20 +45,9 @@ class SoftwaresControllerTest < ActionController::TestCase
       assert_equal software.versions.first.contract.id, 3
     end
 
-    xhr :get, :index, :filters => { :groupe_id => 2 }
+    xhr :get, :index, :filters => { :group_id => 2 }
     assert_response :success
-    assigns(:softwares).each { |l| assert_equal l.groupe_id, 2 }
-
-  end
-
-  def test_show
-    get :show, :id => 1
-
-    assert_response :success
-    assert_template 'show'
-
-    assert_not_nil assigns(:software)
-    assert assigns(:software)
+    assigns(:softwares).each { |l| assert_equal l.group_id, 2 }
   end
 
   # Some software should not be publicly visible.
@@ -68,61 +62,35 @@ class SoftwaresControllerTest < ActionController::TestCase
     }
   end
 
-  def test_new
-    get :new
-
-    assert_response :success
-    assert_template 'new'
-
-    assert_not_nil assigns(:software)
-  end
-
   def test_create
-    num_softwares = Software.count
-
-    post :create, :software => {
-      :name=> 'ANT',
-      :groupe_id=> 4,
-      :referent=> 'ant',
-      :description=> 'un bon software.',
-      :resume=> 'Outil de compilation pour java',
-      :license_id=> 2,
-      :competence_ids => [1]
-    }
+    get :new
+    assert_difference('Software.count') do
+      form = select_form 'form_software'
+      form.software.name = 'Ant'
+      form.software.group_id = 4
+      form.software.summary = 'compilation java tool'
+      form.software.skill_ids = '1'
+      form.submit
+    end
 
     assert flash.has_key?(:notice)
     assert_response :redirect
-    assert_redirected_to :action => 'show'
-
-    assert_equal num_softwares + 1, Software.count
-  end
-
-  def test_edit
-    get :edit, :id => 1
-
-    assert_response :success
-    assert_template 'edit'
-
-    assert_not_nil assigns(:software)
-    assert assigns(:software)
+    assert_redirected_to(:action => 'show',
+        :id => "5-Ant", :controller => "softwares")
   end
 
   def test_update
-    options = {
-        :name => 'ANT',
-        :groupe_id=> 4,
-        :referent=> 'ant',
-        :description=> 'un bon software.',
-        :resume=> 'Outil de compilation pour java',
-        :license_id=> 2,
-        :competence_ids => [1]
-    }
-    post :update, { :id => 1, :software => options }
+    get :edit, :id => 1
 
-    assert flash.has_key?(:notice)
+    form = select_form 'form_software'
+    form.software.name = 'OOo'
+    form.submit
+
     assert_response :redirect
-    assert_redirected_to({:action =>"show", :id => "1-ANT",
+    assert flash.has_key?(:notice)
+    assert_redirected_to({:action =>"show", :id => "1-OOo",
                            :controller => "softwares"})
+    assert_equal 'OOo', assigns(:software).name
   end
 
   def test_destroy

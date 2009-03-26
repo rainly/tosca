@@ -1,0 +1,73 @@
+<%
+  options = { :method => :get,
+    :before => "Element.show('spinner')",
+    :success => "Element.hide('spinner')" }
+
+  #We create next/previous weeks links
+  last_week = @start_date - 1.week
+  link_text = StaticPicture::previous_page +
+    _('Week of the %s') % last_week.strftime('%d %B')
+  link_previous = link_to_remote(link_text,
+    options.dup.update(:url => weekly_reporting_path(:report =>
+        { :start_date => last_week.strftime("%Y-%m-%d") })))
+
+  next_week = @start_date + 1.week
+  link_text = _('Week of the %s') % next_week.strftime('%d %B') +
+    StaticPicture::next_page
+  link_next = link_to_remote(link_text,
+    options.dup.update(:url => weekly_reporting_path(:report =>
+        { :start_date => next_week.strftime("%Y-%m-%d") })))
+%>
+
+<div style="float: right">
+  <p><%= link_previous %>&nbsp;|&nbsp;<%= link_next %></p>
+</div>
+<h1><%= @title %>&nbsp;<%= StaticPicture::spinner %></h1>
+
+<%= calendar_weekly(@start_date, :start_time => @opening_time,
+  :end_time => @closing_time) do |time|
+  key = "#{time.day}_#{time.hour}_#{time.min*30/30}"
+  result = '<h3><p>'
+
+  if @issues.has_key? key
+    if @issues[key].has_key? :new_issues
+      res = []
+      @issues[key][:new_issues].each do |i|
+        res.push link_to("##{i.id}", issue_path(i))
+      end
+      unless res.empty?
+        result << "#{StaticPicture::new}&nbsp;["
+        result << res.join(', ')
+        result << ']'
+      end
+    end
+
+    if @issues[key].has_key? :running_issues
+      res = []
+      @issues[key][:running_issues].each do |i|
+        res.push link_to("##{i.id}", issue_path(i))
+      end
+      unless res.empty?
+        result << '<br/>' if @issues[key].has_key? :new_issues
+        result << "#{StaticPicture::sla_running}&nbsp;["
+        result << res.join(', ')
+        result << ']'
+      end
+    end
+
+    if @issues[key].has_key? :closed_issues
+      res = []
+      @issues[key][:closed_issues].each do |i|
+        res.push link_to("##{i.id}", issue_path(i))
+      end
+      unless res.empty?
+        result << '<br/>' unless @issues[key].has_key? :new_issues or @issues[key].has_key? :closed_issues
+        result << "#{StaticPicture::stop}&nbsp;["
+        result << res.join(', ')
+        result << ']'
+      end
+    end
+  end
+  result << '</p></h3>'
+end
+%>

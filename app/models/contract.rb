@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -21,27 +21,28 @@ class Contract < ActiveRecord::Base
   belongs_to :rule, :polymorphic => true
   belongs_to :creator, :class_name => 'User'
   belongs_to :salesman, :class_name => 'User'
-  belongs_to :manager, :class_name => 'User'
+  belongs_to :tam, :class_name => 'User'
 
-  has_many :issues
-  has_many :appels
-  has_many :tags
-  has_many :releases
+  has_many :issues, :dependent => :destroy
+  has_many :tags, :dependent => :destroy
+  has_many :releases, :dependent => :destroy
+
+  has_many :subscriptions, :as => :model, :dependent => :destroy
 
   has_and_belongs_to_many :versions, :order => 'versions.name DESC', :uniq => true
   has_and_belongs_to_many :commitments, :uniq => true, :order =>
-    'typeissue_id, severity_id', :include => [:severity,:typeissue]
+    'issuetype_id, severity_id', :include => [:severity,:issuetype]
   has_and_belongs_to_many :users, :order => 'users.name', :uniq => true
   # Those 2 ones are helpers, not _real_ relation ship
   has_and_belongs_to_many :engineer_users, :class_name => 'User',
-    :conditions => 'users.client = 0',
+    :conditions => 'users.client_id IS NULL',
     :order => 'users.name ASC'
   has_and_belongs_to_many :recipient_users, :class_name => 'User',
-    :conditions => 'users.client = 1', :include => :recipient,
+    :conditions => 'users.client_id IS NOT NULL',
     :order => 'users.name ASC'
   has_and_belongs_to_many :teams, :order => 'teams.name', :uniq => true
 
-  validates_presence_of :client, :rule, :creator
+  validates_presence_of :client, :rule, :creator, :start_date, :end_date
   validates_numericality_of :opening_time, :closing_time,
     :only_integer => true
   validates_inclusion_of :opening_time, :closing_time, :in => 0..24
@@ -57,14 +58,13 @@ class Contract < ActiveRecord::Base
     valid
   end
 
-  after_save do |record|
-    # To make sure we have only one time a engineer
-    record.engineer_users = record.engineer_users - (record.teams.collect { |t| t.users }.flatten)
+  Rules = [ 'Rules::Credit', 'Rules::Component' ] unless defined? Contract::Rules
+  INNER_JOIN_TEAMS = 'INNER JOIN contracts_teams ct ON ct.contract_id=contracts.id'
+
+  # This model is scoped by Contract
+  def self.scope_contract?
     true
   end
-
-
-  Rules = [ 'Rules::Credit', 'Rules::Component' ]
 
   def self.set_scope(contract_ids)
     self.scoped_methods << { :find => { :conditions =>
@@ -90,21 +90,19 @@ class Contract < ActiveRecord::Base
   end
 
   # We have open clients which can declare
-  # issues on everything. It's with the "socle" field.
+  # issues on everything.
   def softwares
     if rule_type == 'Rules::Component' and rule.max == -1
-      return Software.find(:all, :order => 'softwares.name ASC')
+      return Software.all(:order => 'softwares.name ASC')
     end
-    Software.find(:all, :conditions => { "contracts.id" => self.id },
+    Software.all(:conditions => { "contracts.id" => self.id },
       :joins => { :versions => :contracts },
-      :group => "versions.software_id")
+      :order => 'softwares.name')
   end
 
-  # TODO : I am sure it could be better. Rework model ???
   def find_recipients_select
-    options = { :conditions => 'users.inactive = 0' }
-    self.recipient_users.find(:all, options).collect{|u|
-      [  u.name, u.recipient.id ] if u.recipient }
+    options = { :conditions => ['users.inactive = ?', false]}
+    self.recipient_users.all(options).collect { |u| [u.name, u.id ] }
   end
 
   def start_date_formatted
@@ -117,17 +115,17 @@ class Contract < ActiveRecord::Base
 
   def find_commitment(issue)
     options = { :conditions =>
-      [ 'commitments.typeissue_id = ? AND severity_id = ?',
-        issue.typeissue_id, issue.severity_id ] }
-    self.commitments.find(:first, options)
+      [ 'commitments.issuetype_id = ? AND severity_id = ?',
+        issue.issuetype_id, issue.severity_id ] }
+    self.commitments.first(options)
   end
 
-  def typeissues
-    joins = 'INNER JOIN commitments ON commitments.typeissue_id = typeissues.id '
+  def issuetypes
+    joins = 'INNER JOIN commitments ON commitments.issuetype_id = issuetypes.id '
     joins << 'INNER JOIN commitments_contracts ON commitments.id = commitments_contracts.commitment_id'
     conditions = [ 'commitments_contracts.contract_id = ? ', id ]
-    Typeissue.find(:all,
-                     :select => "DISTINCT typeissues.*",
+    Issuetype.all(
+                     :select => "DISTINCT issuetypes.*",
                      :conditions => conditions,
                      :joins => joins)
   end
@@ -135,21 +133,51 @@ class Contract < ActiveRecord::Base
   INCLUDE = [:client]
   ORDER = 'clients.name ASC'
   OPTIONS = { :include => INCLUDE, :order => ORDER, :conditions =>
-    "clients.inactive = 0" }
+    ["clients.inactive = ?", false] }
 
   def name
     specialisation = read_attribute(:name)
-    res = "#{client.name} - #{rule.name}"
-    res << " - #{specialisation}" unless specialisation.blank?
+    res = (client ? client.name : '-')
+    res = "#{res} - #{specialisation}" unless specialisation.blank?
     res
   end
-  
+
   def total_elapsed
     total = 0
     self.issues.each do |r|
       total += r.elapsed.until_now
     end
     total
+  end
+
+  def subscribers
+    self.subscriptions.collect(&:user)
+  end
+
+  def subscribed?(user)
+    return false if user.nil?
+    conditions = {:user_id => user.id,
+      :model_type => 'Contract', :model_id => self.id}
+    Subscription.count(:conditions => conditions) >= 1
+  end
+
+  #This model is scoped by Contract
+  def self.scoped_contract?
+    true
+  end
+
+  private
+  # To make sure we have only once an engineer
+  before_save do |record|
+    record.engineer_users = record.engineer_users -
+      (record.teams.collect(&:users).flatten)
+  end
+
+  # Ensure tam is subscribed
+  after_save do |record|
+    unless record.subscribed?(record.tam)
+      Subscription.create(:user => record.tam, :model => record)
+    end
   end
 
 end

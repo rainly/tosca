@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -18,18 +18,18 @@
 #
 require File.dirname(__FILE__) + '/../test_helper'
 
-class UserTest < Test::Unit::TestCase
+class UserTest < ActiveSupport::TestCase
   self.use_instantiated_fixtures  = true
 
   fixtures :users, :clients, :roles, :permissions, :permissions_roles,
-    :contracts_users, :contracts, :socles
+    :contracts_users, :contracts
 
   def test_to_strings
     check_strings User
   end
 
   def test_scope
-    assert !User.get_scope([Contract.find(:first).id]).empty?
+    assert !User.get_scope([Contract.first(:order => :id).id]).empty?
   end
 
   def test_reset_permission_strings
@@ -37,11 +37,11 @@ class UserTest < Test::Unit::TestCase
   end
 
   def test_team_manager
-    User.find(:all).each { |u| u.team_manager? }
+    User.all.each { |u| u.team_manager? }
   end
 
   def test_find_select
-    assert !User.find_select().empty?
+    assert !User.find_select.empty?
   end
 
   def test_authenticate
@@ -52,7 +52,7 @@ class UserTest < Test::Unit::TestCase
   end
 
   def test_generate_password
-    User.find(:all).each do |u|
+    User.all.each do |u|
       u.generate_password
       assert u.save
     end
@@ -67,13 +67,12 @@ class UserTest < Test::Unit::TestCase
 
     c = clients(:client_00001)
     u.associate_recipient(c.id)
-    assert u.recipient
-    assert_equal u.recipient.client, c
-    assert_equal u.client?, true
+    assert_equal u.client, c
+    assert_equal u.recipient?, true
 
     u.associate_engineer
-    assert u.ingenieur
-    assert_equal u.client, false
+    assert_nil(u.client_id)
+    assert_equal u.engineer?, true
   end
 
   def test_authorized
@@ -88,11 +87,11 @@ class UserTest < Test::Unit::TestCase
   end
 
   def test_contract_ids
-    User.find(:all).each{ |u| check_ids u.contract_ids, Contract }
+    User.all.each{ |u| check_ids u.contract_ids, Contract }
   end
 
   def test_client_ids
-    User.find(:all).each{ |u| check_ids u.client_ids, Client }
+    User.all.each{ |u| check_ids u.client_ids, Client }
   end
 
   def test_passwordchange
@@ -184,5 +183,106 @@ class UserTest < Test::Unit::TestCase
     assert_equal(expert.kind, kind_expert)
     assert_equal(manager.kind, kind_expert)
     assert_equal(admin.kind, kind_expert)
+  end
+
+  def test_trigram
+    user = users(:user_expert)
+    assert_equal(user.trigram, "EXP")
+  end
+
+  def test_engineers
+    User.engineers.each do |u|
+      assert_nil u.client_id
+    end
+  end
+
+  def test_recipients
+    User.recipients.each do |u|
+      assert_not_nil u.client_id
+    end
+  end
+
+  def test_tams
+    User.tams.each do |u|
+      user = User.find(u.last)
+      assert_equal user.name, u.first
+      #The user is at least a tam of one of his contracts
+      assert user.contracts.collect { |c| c.tam_id == user.id}.include?(true)
+    end
+  end
+
+  def test_find_select_recipients
+    User.find_select_recipients do |u|
+      user = User.find(u.last)
+      assert_equal user.name, u.first
+      assert user.recipient?
+    end
+  end
+
+  def test_active_contracts
+    User.all.each do |u|
+      u.active_contracts.each do |c|
+        assert !c.inactive?
+      end
+    end
+  end
+
+  def test_find_select_by_contract_id
+    Contract.all.each do |c|
+      User.find_select_by_contract_id(c.id).each do |u|
+        user = User.find(u.last)
+        assert_equal user.name, u.first
+        assert user.contracts.collect { |contract| contract.id == c.id }.include?(true)
+      end
+    end
+  end
+
+  def test_find_select_engineers_by_contract_id
+    Contract.all.each do |c|
+      User.find_select_engineers_by_contract_id(c.id).each do |u|
+        user = User.find(u.last)
+        assert_equal user.name, u.first
+        assert user.engineer?
+        assert user.contracts.collect { |contract| contract.id == c.id }.include?(true)
+      end
+    end
+  end
+
+  def test_contracts_subscribed
+    User.all.each do |u|
+      u.contracts_subscribed.each do |c|
+        assert_kind_of Contract, c
+      end
+    end
+  end
+
+  def test_issues_subscribed
+    User.all.each do |u|
+      u.issues_subscribed.each do |c|
+        assert_kind_of Issue, c
+      end
+    end
+  end
+
+  def test_softwares_subscribed
+    User.all.each do |u|
+      u.softwares_subscribed.each do |c|
+        assert_kind_of Software, c
+      end
+    end
+  end
+  
+  def test_admins
+    User.admins.each do |u|
+      assert u.role_id == 1
+    end
+  end
+
+  def test_issues
+    User.all.each do |u|
+      u.issues.each do |i|
+        assert_kind_of Issue, i
+      end
+    end
   end
 end

@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -18,8 +18,8 @@
 #
 class Archive < ActiveRecord::Base
   belongs_to :release
-  
-  validates_presence_of :file, :message => _('You must select a file to upload')
+
+  validates_presence_of :file
 
   file_column :file, :fix_file_extensions => nil, :size => true
 

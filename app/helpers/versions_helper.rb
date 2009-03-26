@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -21,7 +21,6 @@ module VersionsHelper
   def link_to_version(version)
     return '-' unless version and version.is_a? Version
     name = "<i>#{version}</i>"
-    # we need to display version name on public views
     link_to(name, version_path(version)) || name
   end
 
@@ -29,7 +28,7 @@ module VersionsHelper
   # <%= link_to_new_version(@software) %>
   def link_to_new_version(software = nil)
     return '' unless software
-    path = new_version_path(:software_id => software.id,:referent => software.referent)
+    path = new_version_path(:software_id => software.id)
     link_to(image_create(_('a package')), path)
   end
 

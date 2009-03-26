@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -19,7 +19,7 @@
 module TagsHelper
   # call it like :
   # <%= link_to_new_tag %>
-  def link_to_new_tag()
+  def link_to_new_tag
     link_to image_create(_('a tag')), new_tag_path
   end
 

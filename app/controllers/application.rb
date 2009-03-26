@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -26,18 +26,18 @@ require_dependency 'login_system'
 # Manage roles and permissions
 # Infos : http://wiki.rubyonrails.com/rails/pages/LoginGeneratorACLSystem/
 require_dependency 'acl_system'
+require 'overrides'
 
 class ApplicationController < ActionController::Base
-  init_gettext 'tosca'
-
-  # access protected everywhere, See Wiki for more Info
-  before_filter :set_global_shortcuts, :login_required
+  # access protected everywhere, See
+  # * Wiki for more generic Info,
+  # * lib/scope.rb for deep protection
+  # * lib/login_system.rb for account protection
+  before_filter :set_gettext_locale, :set_global_shortcuts, :login_required, :before_scope
+  after_filter :after_scope
 
   # Limited perimeter for specific roles
-  around_filter :scope
-
-  # In order to escape conflict with other rails app
-  session :session_key => '_tosca_session_id'
+  # around_filter :scope
 
   # Authentification system
   include ACLSystem
@@ -72,36 +72,47 @@ protected
     redirect_back_or_default welcome_path
   end
 
+  def set_gettext_locale
+    FastGettext.text_domain = 'tosca'
+    FastGettext.available_locales = ['en','fr'] #all you want to allow
+    super
+  end
+
   # global variables (not pretty, but those two are really usefull)
   @@first_time = true
   def set_global_shortcuts
     # this small hack allows to initialize the static url
     # generator on the first request. We need it 'coz the prefix
     # (e.g.: /tosca) cannot be known before a request go through.
-    if @@first_time and not defined? Static
+    if @@first_time
       require 'static'
       require 'static_script'
-      require 'static_image'
-      Static::ActionView.set_request(request())
+      require 'static_picture'
+      Static::ActionView.set_url_root
+
+      #Used for url in e-mails
+      ActionMailer::Base.default_url_options[:host] = request.host_with_port
       @@first_time = false
     end
-    #    /!\
-    # don't forget to take a look at accout/clear_session method
-    # if you add something here. And don't add something here too ;).
-    #    /!\
-    user = session[:user]
-    if user
-      @ingenieur = user.ingenieur
-      @recipient = user.recipient
-    end
+    # useful variable : allows to test both if one is logged & get is account
+    @session_user = session[:user]
     true
   end
 
-  # Todo : Why is there 2 times the same information in args of define_scope ???
-  def scope(&block)
-    user = session[:user]
-    is_connected = !user.nil?
-    define_scope(user, is_connected, &block)
+  def before_scope()
+    set_scopes(@session_user)
+  end
+
+  def after_scope()
+    remove_scopes(@session_user)
+  end
+
+
+  #Compute the receiver of an email for the flash
+  def message_notice(recipients, cc)
+    result = '<br />' << _("An e-mail was sent to ") << " <b>#{html2text(recipients)}</b> "
+    result << '<br />' << _("with a copy to") << " <b>#{html2text(cc)}</b>" if cc && !cc.blank?
+    result << '.'
   end
 
 private

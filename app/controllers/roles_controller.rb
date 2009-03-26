@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -18,9 +18,9 @@
 #
 class RolesController < ApplicationController
   def index
-    options = { :order => 'permissions.name', :include => [:roles] }
-    @permissions = Permission.find(:all, options)
-    @roles = Role.find(:all)
+    options = { :order => 'permissions.name', :include => :roles }
+    @permissions = Permission.all(options)
+    @roles = Role.all
   end
 
   def show

@@ -1,17 +1,16 @@
 <% client = (@contracts ? @contracts.first.client : nil) %>
 
 <div class="report_images" style="float: left;">
-  <%= StaticImage::linagora %>
+  <%= StaticPicture::linagora %>
 </div>
 <% if client %>
 <div class="report_images" style="float: right;">
-  <%= logo_client(client) %>
+  <%= image_tag(url_for_file_column(client.picture, 'image', 'thumb')) %>
 </div>
 <% end %>
 
-
 <h1 class="title">
-  <%= (client ? client.name : App::Name) %><br />
+  <%= (client ? client.name : Tosca::App::Name) %><br />
   <%= _("Activity report") %><br />
   <% if @report[:middle_date].month == @report[:end_date].month %>
     <%= _('of') %> <%= @report[:middle_date].strftime('%B %Y') %>

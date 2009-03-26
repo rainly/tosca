@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -21,7 +21,7 @@ class Issue < ActiveRecord::Base
 
   has_one :elapsed, :dependent => :destroy
 
-  belongs_to :typeissue
+  belongs_to :issuetype
   belongs_to :software
   belongs_to :version
   belongs_to :release
@@ -29,20 +29,20 @@ class Issue < ActiveRecord::Base
   belongs_to :statut
   # 3 peoples involved in an issue :
   #  1. The submitter (The one who has filled the issue)
-  #  2. The engineer (The one which is currently in charged of this issue)
-  #  3. The recipient (The one which has the problem)
-  belongs_to :recipient
-  belongs_to :ingenieur
+  #  2. The engineer (The one who is currently in charged of this issue)
+  #  3. The recipient (The one who has the problem)
+  belongs_to :recipient, :class_name => 'User',
+    :conditions => 'users.client_id IS NOT NULL'
+  belongs_to :engineer, :class_name => 'User',
+  :conditions => 'users.client_id IS NULL'
   belongs_to :submitter, :class_name => 'User',
     :foreign_key => 'submitter_id'
 
   belongs_to :contract
   belongs_to :contribution
-  belongs_to :socle
 
-  has_many :phonecalls
   has_many :comments, :order => "created_on ASC", :dependent => :destroy
-  has_many :attachments, :through => :comments
+  has_many :subscriptions, :as => :model, :dependent => :destroy
 
   named_scope :actives, lambda { |contract_ids| { :conditions =>
       { :statut_id => Statut::OPENED, :contract_id => contract_ids }
@@ -52,12 +52,6 @@ class Issue < ActiveRecord::Base
       { :statut_id => Statut::CLOSED, :contract_id => contract_ids }
     }
   }
-
-  # Used for digest report see
-  N_('year')
-  N_('month')
-  N_('week')
-  N_('day')
 
   # Key pointers to the issue history
   # /!\ used to store the description /!\
@@ -69,7 +63,7 @@ class Issue < ActiveRecord::Base
 
   # Validation
   validates_presence_of :resume, :contract, :description, :recipient,
-    :statut, :severity, :warn => _("You must indicate a %s for your issue")
+    :statut, :severity
   validates_length_of :resume, :within => 4..70
   validates_length_of :description, :minimum => 5
 
@@ -101,7 +95,7 @@ class Issue < ActiveRecord::Base
   end
 
   def name
-    "#{typeissue.name} (#{severity.name}) : #{resume}"
+    resume
   end
 
   def pretty_id
@@ -118,10 +112,6 @@ class Issue < ActiveRecord::Base
       self.comments.each { |c| c.update_attribute :elapsed, 0 }
       self.reset_elapsed
     end
-  end
-
-  def joined_tags
-    self.tag_list.join(', ')
   end
 
   def full_software_name
@@ -143,10 +133,9 @@ class Issue < ActiveRecord::Base
     elsif self.software
       self.software.name
     else
-      "-"
+      '-'
     end
   end
-
 
   # It associates issue with the correct id since
   # we maintain both the 2 cases.
@@ -165,8 +154,8 @@ class Issue < ActiveRecord::Base
   # Remanent fields are those which persists after the first submit
   # It /!\ MUST /!^ be an _id field. See IssuesController#create.
   def self.remanent_fields
-    [ :contract_id, :recipient_id, :typeissue_id, :severity_id,
-      :socle_id, :software_id, :ingenieur_id ]
+    [ :contract_id, :recipient_id, :issuetype_id, :severity_id,
+      :software_id, :engineer_id, :version_id ]
   end
 
   # Used in the cache/sweeper system
@@ -180,29 +169,22 @@ class Issue < ActiveRecord::Base
     contract.rule.elapsed_formatted(self.elapsed.until_now, contract)
   end
 
-  # It's only intended to be used by the export, so there's no check on the
-  # presence of this field. See export_controller#compute_issues if you want to
-  # see how this method is dynamically created.
-  def last_comment_content
-    html2text(self.last_comment_text)
-  end
-
   def find_other_comment(comment_id)
-    cond = [ 'comments.private <> 1 AND comments.id <> ?', comment_id ]
-    self.comments.find(:first, :conditions => cond)
+    cond = [ 'comments.private <> ? AND comments.id <> ?', true, comment_id ]
+    self.comments.first(:conditions => cond)
   end
 
   def find_status_comment_before(comment)
     options = { :order => 'created_on DESC', :conditions =>
       [ 'comments.statut_id IS NOT NULL AND comments.created_on < ?',
         comment.created_on ]}
-    self.comments.find(:first, options)
+    self.comments.first(options)
   end
 
   def last_status_comment
     options = { :order => 'created_on DESC', :conditions =>
       'comments.statut_id IS NOT NULL' }
-    self.comments.find(:first, options)
+    self.comments.first(options)
   end
 
   def time_running?
@@ -210,16 +192,18 @@ class Issue < ActiveRecord::Base
   end
 
   # set the default for a new issue
-  def set_defaults(expert, recipient, params)
+  def set_defaults(user, params)
     return if self.statut_id
     # self-assignment
-    self.ingenieur = expert
+    if user.engineer?
+      self.engineer_id = user.id
+    else
+      self.recipient_id = user.id
+    end
     # without severity, by default
     self.severity_id = 4
     # if we came from software view, it's sets automatically
     self.software_id = params[:software_id]
-    # recipients
-    self.recipient_id = recipient.id if recipient
   end
 
   # Description was moved to first comment mainly for
@@ -235,11 +219,11 @@ class Issue < ActiveRecord::Base
   # it's not enough, but a good start :)
   SELECT_LIST = 'issues.*, severities.name as severities_name,
     softwares.name as softwares_name, clients.name as clients_name,
-    typeissues.name as typeissues_name, statuts.name as statuts_name' unless defined? SELECT_LIST
+    issuetypes.name as issuetypes_name, statuts.name as statuts_name' unless defined? SELECT_LIST
   JOINS_LIST = 'INNER JOIN severities ON severities.id=issues.severity_id
-    INNER JOIN recipients ON recipients.id=issues.recipient_id
-    INNER JOIN clients ON clients.id = recipients.client_id
-    INNER JOIN typeissues ON typeissues.id = issues.typeissue_id
+    INNER JOIN users ON users.id = issues.recipient_id
+    INNER JOIN clients ON clients.id = users.client_id
+    INNER JOIN issuetypes ON issuetypes.id = issues.issuetype_id
     INNER JOIN statuts ON statuts.id = issues.statut_id
     LEFT OUTER JOIN softwares ON softwares.id = issues.software_id ' unless defined? JOINS_LIST
 
@@ -253,33 +237,27 @@ class Issue < ActiveRecord::Base
     @client ||= ( recipient ? recipient.client : nil )
   end
 
-   # TODO : remove for versions > 0.7.5
-  def expert_name
-    (ingenieur ? ingenieur.user.name : '-')
-  end
-
-
   # Returns the state of an issue at date t
   # The result is a READ ONLY clone with the 3 indicators
-  #   statut_id, ingenieur_id & severity_id
+  #   statut_id, engineer_id & severity_id
   def state_at(t)
     return self if t >= self.updated_on
     return Issue.new if t < self.created_on
 
     options = {:conditions => ["statut_id IS NOT NULL AND created_on <= ?", t],
       :order => "created_on DESC" }
-    statut_id = self.comments.find(:first, options).statut_id
+    statut_id = self.comments.first(options).statut_id
 
     options[:conditions] = [ "severity_id IS NOT NULL AND created_on <= ?", t ]
-    severity_id = self.comments.find(:first, options).severity_id
+    severity_id = self.comments.first(options).severity_id
 
-    options[:conditions] = [ "ingenieur_id IS NOT NULL AND created_on <= ?", t ]
-    com_ingenieur = self.comments.find(:first, options)
-    ingenieur_id = com_ingenieur ? com_ingenieur.ingenieur_id : nil
+    options[:conditions] = [ "engineer_id IS NOT NULL AND created_on <= ?", t ]
+    com_engineer = self.comments.first(options)
+    engineer_id = com_engineer ? com_engineer.engineer_id : nil
 
     result = self.clone
     result.attributes = { :statut_id => statut_id,
-      :ingenieur_id => ingenieur_id, :severity_id => severity_id }
+      :engineer_id => engineer_id, :severity_id => severity_id }
     result.readonly!
     result
   end
@@ -300,7 +278,7 @@ class Issue < ActiveRecord::Base
 
   # Used for migration or if there is an issue on the computing of issue
   # It can be used on all issue with a line like this in the console :
-  # <tt>Issue.find(:all).each{|r| r.reset_elapsed }</tt>
+  # <tt>Issue.all.each{|r| r.reset_elapsed }</tt>
   def reset_elapsed
     # clean previous existing elapsed
     Elapsed.destroy_all(['elapseds.issue_id = ?', self.id])
@@ -311,7 +289,7 @@ class Issue < ActiveRecord::Base
     self.elapsed = Elapsed.new(self)
     options = { :conditions => 'comments.statut_id IS NOT NULL',
       :order => "comments.created_on ASC" }
-    life_cycle = self.comments.find(:all, options)
+    life_cycle = self.comments.all(options)
 
     # first one is different : it's the submission of the issue
     life_cycle.first.update_attribute :elapsed, rule.elapsed_on_create
@@ -331,9 +309,9 @@ class Issue < ActiveRecord::Base
   # TODO : add a commitment_id to Issue Table. This helper method
   # clearly slows uselessly Tosca.
   def commitment
-    return nil unless contract_id && severity_id && typeissue_id
-    self.contract.commitments.find(:first, :conditions =>
-        {:typeissue_id => self.typeissue_id, :severity_id => self.severity_id})
+    return nil unless contract_id && severity_id && issuetype_id
+    self.contract.commitments.first(:conditions =>
+        {:issuetype_id => self.issuetype_id, :severity_id => self.severity_id})
   end
 
   # useful shortcut
@@ -344,19 +322,20 @@ class Issue < ActiveRecord::Base
   # We have to make it in two steps, coz of the whole validation. If you
   # manage to cover all the case in one method, MLO will offer you a beer ;)
   before_create :create_first_comment
-  after_create :finish_first_comment
+  after_create :do_after_create
 
   # Generate the cc for an outgoing mail for this issue
   # private indicates if it's reserved for internal use or not
   def compute_copy(private = false)
+    subscribers_emails = subscribers.collect(&:email_name).join(', ')
     if private
-      contract.internal_ml
+      subscribers_emails
     else
       res = []
-      [ contract.internal_ml, contract.customer_ml, mail_cc ].each { |m|
-        res << m unless m.blank?
-      }
-      res.join(',')
+      [ contract.customer_ml, mail_cc, subscribers_emails ].each do |m|
+        res << m unless m.nil? or m.blank?
+      end
+      res.join(', ')
     end
   end
 
@@ -364,29 +343,43 @@ class Issue < ActiveRecord::Base
   def compute_recipients(private = false)
     res = []
     # The client is not informed of private messages
-    res << recipient.user.email unless private
+    res << recipient.email_name unless private
     # Issue are not assigned, by default
-    res << ingenieur.user.email if ingenieur
-    res.join(',')
+    res << engineer.email_name if engineer
+    res.join(', ')
+  end
+
+  def subscribed?(user)
+    self.subscribers.include?(user)
+  end
+
+  def subscribers
+    software_subscribers = []
+    (self.software ? self.software.subscribers : []).each do |s|
+      software_subscribers << s if s.contracts.include?(self.contract)
+    end
+    res = self.subscriptions.collect(&:user).
+      concat(self.contract.subscribers).
+      concat(software_subscribers)
+    res.uniq!
+    res
   end
 
   #Find the pending requests of a user
   def self.find_pending_user(user)
     options, conditions = build_conditions_pending
 
-    own_id = nil
-    if user.client?
+    if user.recipient?
       conditions.first << 'issues.recipient_id IN (?)'
-      own_id = user.recipient.id
     else
-      conditions.first << 'issues.ingenieur_id IN (?)'
-      own_id = user.ingenieur.id
+      conditions.first << 'issues.engineer_id IN (?)'
     end
+    own_id = user.id
     conditions[0] = conditions.first.join(' AND ')
     options[:conditions] = conditions
 
     conditions << [ own_id ]
-    Issue.find(:all, options)
+    Issue.all(options)
   end
 
   #Find the pending requests from a list of contracts
@@ -398,14 +391,19 @@ class Issue < ActiveRecord::Base
     options[:conditions] = conditions
 
     conditions << contract_ids
-    Issue.find(:all, options)
+    Issue.all(options)
   end
 
+  #This model is scoped by Contract
+  def self.scoped_contract?
+    true
+  end
 
   private
-
+  # TODO : Use memoization as described here, when Tosca is on Rails >= 2.2
+  # http://www.railway.at/articles/2008/09/20/a-guide-to-memoization
   def self.build_conditions_pending
-    options = { :order => 'updated_on DESC',
+    options = { :order => 'issues.updated_on DESC',
       :select => Issue::SELECT_LIST, :joins => Issue::JOINS_LIST }
     conditions = [ [ ] ]
 
@@ -413,7 +411,8 @@ class Issue < ActiveRecord::Base
 
     conditions.first << 'issues.statut_id IN (?)'
     conditions << Statut::OPENED
-    conditions.first << '(issues.expected_on < NOW() OR issues.expected_on IS NULL)'
+    conditions.first << '(issues.expected_on < ? OR issues.expected_on IS NULL)'
+    conditions << Time.now
 
     [ options, conditions ]
   end
@@ -422,16 +421,31 @@ class Issue < ActiveRecord::Base
     self.first_comment = Comment.new do |c|
       #We use id's because it's quicker
       c.text = self.description
-      c.ingenieur_id = self.ingenieur_id
+      c.engineer_id = self.engineer_id
       c.issue = self
       c.severity_id = self.severity_id
       c.statut_id = self.statut_id
-      c.user_id = self.recipient.user_id
+      c.user_id = self.submitter_id
     end
   end
 
-  def finish_first_comment
+  def do_after_create
     self.first_comment.update_attribute :issue_id, self.id
+    #Sending e-mail when a issue is created
+    Notifier::deliver_issue_new(self)
+  end
+
+  # This model is scoped by Contract
+  def self.scope_contract?
+    true
+  end
+
+  def fake4translation
+    # Used for digest report see
+    N_('year')
+    N_('month')
+    N_('week')
+    N_('day')
   end
 
 end

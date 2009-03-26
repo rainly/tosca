@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -25,13 +25,6 @@ class ClientsControllerTest < ActionController::TestCase
     login 'admin', 'admin'
   end
 
-  def test_stats
-    get :stats
-    assert_response :success
-    assert_template 'stats'
-    assert_not_nil assigns(:clients)
-  end
-
   def test_index
     %w(admin manager expert).each do |l|
       login l, l
@@ -40,7 +33,6 @@ class ClientsControllerTest < ActionController::TestCase
       assert_template 'index'
       assert_not_nil assigns(:clients)
 
-      check_ajax_filter(:system_id, Socle.find(:first).id, :clients)
       # The search box cannot be checked with the helper
       xhr :get, :index, :filters => { :text => "linagora" }
       assert_response :success
@@ -82,7 +74,7 @@ class ClientsControllerTest < ActionController::TestCase
   end
 
   def test_update
-    get :edit, :id => Client.find(:first).id
+    get :edit, :id => Client.first(:order => :id).id
     assert_response :success
     assert_template 'edit'
     assert_not_nil assigns(:client)
@@ -97,8 +89,20 @@ class ClientsControllerTest < ActionController::TestCase
     assert assigns(:client).valid?
   end
 
+  def test_update_logo
+    get :edit, :id => Client.first(:order => :id).id
+    form = select_form 'main_form'
+    form.picture.image = fixture_file_upload('/files/logo_linagora.gif', 'image/gif')
+    form.submit
+    assert flash.has_key?(:notice)
+    assert_response :redirect
+    assert_redirected_to :action => 'show', :id => '1-Linagora'
+    assert_not_nil assigns(:client)
+    assert assigns(:client).valid?
+  end
+
   def test_destroy
-    client = Client.find(:first).clone
+    client = Client.first(:order => :id).clone
     client.save!
 
     assert_difference('Client.count', -1) do
@@ -110,5 +114,7 @@ class ClientsControllerTest < ActionController::TestCase
     assert_raise(ActiveRecord::RecordNotFound) {
       Client.find(client.id)
     }
+    # restore client
+    client.save!
   end
 end

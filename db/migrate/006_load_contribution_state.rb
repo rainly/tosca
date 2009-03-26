@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -35,6 +35,6 @@ class LoadContributionState < ActiveRecord::Migration
   end
 
   def self.down
-    Etatreversement.find(:all).each{ |er| er.destroy }
+    Etatreversement.all.each{ |er| er.destroy }
   end
 end

@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -27,8 +27,10 @@ module FormsHelper
   # Collection doit contenir des objects qui ont un 'id' et un 'name'
   # objectcollection contient le tableau des objects déjà présents
   # C'est la fonction to_s qui est utilisée pour le label
-  # L'option :size permet une mise en colonne
-  # Ex : hbtm_check_box( @software.competences, @competences, 'competence_ids')
+  # Option
+  #   :size => set a column disposition
+  #   :no_empty_field => do not set the additional empty field
+  # Ex : hbtm_check_box( @software.skills, @skills, 'skill_ids')
   def hbtm_check_box( objectcollection, collection, name , options={})
     return '' if collection.nil? || collection.empty?
     objects = objectcollection.collect { |c| [ c.name, c.id ] }
@@ -58,7 +60,11 @@ module FormsHelper
       end
     end
     out << '</tr></table>'
-    out << "<input id=\"#{name_w3c}_\" type=\"hidden\" name=\"#{name}[]\" value=\"\" >"
+    unless options.has_key? :no_empty_field
+      # Needed for clearing an hbtm relation
+      out << "<input id=\"#{name_w3c}_\" type=\"hidden\" name=\"#{name}[]\" value=\"\" />"
+    end
+    out
   end
 
   # Collection have to contain object which respond to 'id' and 'name'
@@ -72,8 +78,8 @@ module FormsHelper
     options_size = options[:size]
     count = 1
     for data in collection
-      out << radio_button(object, param, data.last)
-      out << "<label for=\"#{object}_#{param}_#{data.last}\">#{data.first}</label> "
+      out << radio_button(object, param, data.last, :class => 'radio')
+      out << " <label for=\"#{object}_#{param}_#{data.last}\">#{data.first}</label> "
       if options_size
         out << '<br />' if (count % options_size == 0)
         count += 1
@@ -81,6 +87,21 @@ module FormsHelper
     end
     out
   end
+
+  # Provides a select box to filter choice
+  # select_filter(@softwares, :software)
+  # select_filter(@types, :issuetype, :title => '» Type')
+  def select_filter(list, property, options = {:title => '» '})
+    out = ''
+    field = "#{property}_id"
+    # disabling auto submit, there is an observer in filter form
+    options[:onchange] = ''
+    filters = instance_variable_get(:@filters)
+    default_value = (filters ? filters.send(field) : nil)
+    out << select_onchange(list, default_value,
+                           "filters[#{field}]", options)
+  end
+
 
   # select_onchange(@clients, @current_client, 'client')
   # options
@@ -96,10 +117,6 @@ module FormsHelper
     options[:onchange] ||= 'this.form.submit();'
     options[:name] ||= name
 
-    if options.has_key?(:first_value)
-      options[:first_name] ||= options[:first_value].name
-      title.push([options[:first_name] , options[:first_value].id ])
-    end
     list = title.concat(list || [])
 
     default_value = (default.is_a?(Numeric) ? default : 0)
@@ -143,7 +160,7 @@ module FormsHelper
   # Display a quick form field to go to a ticket
   # TODO : use yield to include what we want in the form
   # Call it like :
-  #  if session[:user] && session[:user].authorized?('issues/index')
+  #  if @session_user && @session_user.authorized?('issues/index')
   #    out << form_tag(issues_path)
   #    out <<  search_issue_field
   #    out << end_form_tag
@@ -171,7 +188,6 @@ module FormsHelper
     tag_options[:onblur] = "$('#{object}_#{method}').value = \"#{_("Search") + "..."}\""
     completion_options[:skip_style] = true
     completion_options[:indicator] = "spinner_#{object}_#{method}"
-    out << "<label>" << _("Add")<< " "<< _(object.to_s) << "</label>"
     out << "</td></tr><tr><td>"
     out << text_field_with_auto_complete(object, method, tag_options, completion_options)
     field = "#{object}_#{method}"
@@ -217,7 +233,7 @@ module FormsHelper
 
   # Apply a fade effect and delete the html element
   def delete_button(id)
-    link_to_function(StaticImage::delete, %Q{tosca_remove("#{id}")})
+    link_to_function(StaticPicture::delete, %Q{tosca_remove("#{id}")})
   end
 
 end

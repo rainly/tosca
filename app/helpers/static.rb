@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -30,11 +30,12 @@ module Static
     include ::ActionView
     include ::ActionView::Helpers::AssetTagHelper
     include ::ActionView::Helpers::TagHelper
+    include FastGettext::Translation
 
     @@av = nil
     @@relative_url_root = nil
-    def self.set_request(request)
-      @@relative_url_root = "#{request.relative_url_root}/images/"
+    def self.set_url_root()
+      @@relative_url_root = "#{ActionController::Base.relative_url_root}/images/"
       @@av = ActionView.new
     end
 
@@ -52,7 +53,7 @@ module Static
 
     private
 
-    def compute_public_path(source,dir,ext=nil)
+    def compute_public_path(source, dir, ext=nil)
       "#{@@relative_url_root}#{source}"
     end
 

@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -20,4 +20,20 @@ class Severity < ActiveRecord::Base
   has_many :issues
   has_many :commitments
 
+
+  # It's one of the rare "heavily used & fixed" AR model,
+  # So we can include it in the translation mechanism
+  def name
+    _(read_attribute(:name))
+  end
+
+  private
+  def fake4translation
+    ####################
+    N_('Blocking') # 1 #
+    N_('Major')    # 2 #
+    N_('Minor')    # 3 #
+    N_('None')     # 4 #
+    ####################
+  end
 end

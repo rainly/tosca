@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -17,45 +17,11 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 require File.dirname(__FILE__) + '/../test_helper'
-require 'attachments_controller'
 
-# Re-raise errors caught by the controller.
-class AttachmentsController; def rescue_action(e) raise e end; end
-
-class AttachmentsControllerTest < Test::Unit::TestCase
-  fixtures :attachments, :comments
+class AttachmentsControllerTest < ActionController::TestCase
 
   def setup
-    @controller = AttachmentsController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
     login 'admin', 'admin'
-  end
-
-  def test_index
-    get :index
-    assert_response :success
-    assert_template 'index'
-    assert_not_nil assigns(:attachments)
-  end
-
-  def test_show
-    get :show, :id => 1
-
-    assert_response :success
-    assert_template 'show'
-
-    assert_not_nil assigns(:attachment)
-    assert assigns(:attachment).valid?
-  end
-
-  def test_new
-    get :new
-
-    assert_response :success
-    assert_template 'new'
-
-    assert_not_nil assigns(:attachment)
   end
 
   def test_create
@@ -63,23 +29,13 @@ class AttachmentsControllerTest < Test::Unit::TestCase
 
     post :create, :attachment => {
       :file => uploaded_png("#{File.expand_path(RAILS_ROOT)}/test/fixtures/upload_document.png"),
-      :comment => Comment.find(:first)
+      :comment => Comment.first(:order => :id)
     }
 
     assert_response :redirect
     assert_redirected_to attachment_path(assigns(:attachment))
 
     assert_equal num_attachments + 1, Attachment.count
-  end
-
-  def test_edit
-    get :edit, :id => 1
-
-    assert_response :success
-    assert_template 'edit'
-
-    assert_not_nil assigns(:attachment)
-    assert assigns(:attachment).valid?
   end
 
   def test_update
@@ -89,7 +45,8 @@ class AttachmentsControllerTest < Test::Unit::TestCase
   end
 
   def test_destroy
-    assert_not_nil Attachment.find(1)
+    attachment = Attachment.find(1)
+    assert_not_nil attachment
 
     post :destroy, :id => 1
     assert_response :redirect
@@ -98,5 +55,13 @@ class AttachmentsControllerTest < Test::Unit::TestCase
     assert_raise(ActiveRecord::RecordNotFound) {
       Attachment.find(1)
     }
+
+    attachment = fixture_file_upload('../../app/models/attachment.rb')
+    options = { :file => attachment, :comment => comments(:comment_00001) }
+    attachment = Attachment.new(options)
+    attachment.id = 1
+    assert attachment.save
+    assert_not_nil Attachment.find(1)
   end
+
 end

@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -19,7 +19,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class KnowledgeTest < ActiveSupport::TestCase
-  fixtures :knowledges, :competences, :softwares, :ingenieurs
+  fixtures :knowledges, :skills, :softwares
 
   # Common test, see the Wiki for more info
   def test_to_strings
@@ -27,14 +27,14 @@ class KnowledgeTest < ActiveSupport::TestCase
   end
 
   def test_validation
-    obj = Knowledge.new(:competence => nil, :software => nil)
+    obj = Knowledge.new(:skill => nil, :software => nil)
     assert !obj.valid?
-    obj = Knowledge.new(:competence => Competence.find(:first),
-                        :software => Software.find(:first),
-                        :ingenieur => Ingenieur.find(:first),
+    obj = Knowledge.new(:skill => Skill.first(:order => :id),
+                        :software => Software.first(:order => :id),
+                        :engineer => User.first(:order => :id),
                         :level => 3)
     assert !obj.valid?
-    obj.competence = nil
+    obj.skill = nil
     assert obj.valid?
   end
 end

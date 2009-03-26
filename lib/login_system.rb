@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -52,8 +52,7 @@ module LoginSystem
 
     return true if authorize?(LoginSystem::public_user)
 
-    user = session[:user]
-    if user and authorize?(user)
+    if @session_user and authorize?(@session_user)
       return true
     end
 

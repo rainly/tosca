@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -28,13 +28,6 @@ module SoftwaresHelper
   def public_link_to_software(software, options = {})
     return '-' unless software and software.is_a? Software
     public_link_to software.name, software_path(software), options
-  end
-
-  # Link to create a new url for a Software
-  def link_to_new_urlsoftware(software_id)
-    return '-' unless software_id
-    options = new_urlsoftware_path(:software_id => software_id)
-    link_to(image_create('an url'), options)
   end
 
   # Create a link to modify the active value in the form filter

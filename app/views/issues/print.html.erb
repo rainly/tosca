@@ -10,15 +10,17 @@
 <%= render :partial => 'issues/tabs/history' %>
 <br />
 
-<h1><%= _("Phonecalls") %></h1>
-<%= render :partial => 'issues/tabs/phonecalls' %>
-<br />
+<% Issue::tabs.each do |t| %>
+  <h1><%= _(t.capitalize) %></h1>
+  <%= render :partial => "issues/tabs/#{t}" %>
+  <br />
+<% end %>
 
 <h1><%= _("SLA") %></h1>
 <%= render :partial => 'issues/tabs/cns' %>
 <br />
 
 <script type="text/javascript"><!--
+  tosca_expand_all_comments();
   window.onload = print();
-  tosca_show_all_comments();
 //--></script>

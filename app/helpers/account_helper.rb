@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -18,21 +18,17 @@
 #
 module AccountHelper
 
-  def avatar(recipient, engineer)
-    if recipient
-      logo_client(recipient.client)
+  def avatar(user)
+    if user.recipient?
+      logo_client(user.client)
     else
-      if engineer.image_id.blank?
-        StaticImage::logo_service
-      else
-        image_tag(url_for_file_column(engineer.image, 'image', 'thumb'))
-      end
+      StaticPicture::logo_service
     end
   end
 
-  def get_title(user)
+  def get_title
     result = ''
-    if session[:user].id == @user.id
+    if @session_user.id == @user.id
       result << _('My account')
     else
       result << _('Account of %s') % @user.name
@@ -44,8 +40,8 @@ module AccountHelper
   def observe_client_field
     @@options ||= PagesHelper::SPINNER_OPTIONS.dup.\
       update(:with => "client", :url => 'ajax_place')
-    observe_field("user_client_true", @@options) <<
-      observe_field("user_client_false", @@options)
+      observe_field("user_client_form_true", @@options) <<
+      observe_field("user_client_form_false", @@options)
   end
 
   def observe_client_list
@@ -55,13 +51,16 @@ module AccountHelper
   end
 
   def form_become(user)
-    recipient = user.recipient
     result = ''
-    if @ingenieur && recipient && !user.inactive?
-      result << %Q{<form action="#{become_account_path(recipient)}" method="post">}
+    if @session_user.engineer? && user && !user.inactive?
+      result << %Q{<form action="#{become_account_path(user)}" method="post">}
       result << %Q{<input name="commit" value='#{_('Become')}' type="submit" /></form>}
     end
     result
+  end
+
+  def link_to_user(user)
+    link_to user.name, account_path(user)
   end
 
 end

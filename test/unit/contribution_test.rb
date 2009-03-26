@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -18,7 +18,7 @@
 #
 require File.dirname(__FILE__) + '/../test_helper'
 
-class ContributionTest < Test::Unit::TestCase
+class ContributionTest < ActiveSupport::TestCase
   fixtures :contributions
 
   def test_to_strings
@@ -30,7 +30,7 @@ class ContributionTest < Test::Unit::TestCase
   end
 
   def test_fragments
-    assert !Contribution.find(:first).fragments.empty?
+    assert !Contribution.first(:order => :id).fragments.empty?
   end
 
   def test_delay

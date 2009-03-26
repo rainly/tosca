@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -18,8 +18,7 @@
 #
 class StatutsController < ApplicationController
   def index
-    @statut_pages, @statuts = paginate :statuts, :per_page => 10, 
-      :order => 'id'
+    @statuts = Statut.all(:order => 'id')
   end
 
   def help

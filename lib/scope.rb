@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -21,45 +21,66 @@ module Scope
   private
   # There is a global scope, on all finders, in order to
   # preserve each user in his particular space.
-  # TODO : scope contract only ?? it seems coherent...
   # This method has a 'handmade' scope, really faster and with no cost
   # of safety. It was made in order to avoid 15 yields.
-  def define_scope(user, is_connected)
+  def define_scope(user)
+    set_scopes user
+    begin
+      yield
+    ensure
+      remove_scope user
+    end
+  end
+
+
+  # Beware that this method is linked with remove_scope
+  # It's used to set up models for a new request
+  def set_scopes(user)
     # defined locally since this file is loaded by application controller
     # it reduces dramatically loading time
-    @@scope_client ||= [ Client, Document ]
-    @@scope_contract ||= [ Release, Contract, Issue, Phonecall, Tag ]
-    if is_connected
-      recipient, ingenieur = user.recipient, user.ingenieur
-      apply = ((ingenieur and user.restricted?) || recipient)
-      if apply
+    @@scope_client ||= @@models.select(&:scope_client?)
+    @@scope_contract ||= @@models.select(&:scope_contract?)
+
+    if !user.nil?
+      # You can NOT change this condition without looking at remove_scope
+      if ((user.engineer? and user.restricted?) || user.recipient?)
         contract_ids = user.contract_ids
         client_ids = user.client_ids
         if contract_ids.empty?
           contract_ids = [ 0 ]
-          client_ids = [ recipient.client_id ] if recipient
+          client_ids = [ user.client_id ] if user.recipient?
         end
         @@scope_contract.each {|m| m.set_scope(contract_ids) }
         @@scope_client.each {|m| m.set_scope(client_ids) }
+        # Forbid access to private comments for recipients. It's just paranoia.
+        Comment.set_private_scope if user.recipient?
       end
     else
       # Forbid access to issue if we are not connected. It's just a paranoia.
       Issue.set_scope([0])
-      Software.set_public_scope()
-    end
-    begin
-      yield
-    ensure
-      if is_connected
-        if apply
-          @@scope_client.each { |m| m.remove_scope }
-          @@scope_contract.each { |m| m.remove_scope }
-        end
-      else
-        Issue.remove_scope
-        Software.remove_scope
-      end
+      Software.set_public_scope
     end
   end
+
+  # Beware that this method is linked with set_scope
+  # It's used to clean up models after the request
+  def remove_scopes(user)
+    if !user.nil?
+      # You can NOT change this condition without looking at set_scope
+      if ((user.engineer? and user.restricted?) || user.recipient?)
+        @@scope_client.each(&:remove_scope)
+        @@scope_contract.each(&:remove_scope)
+        Comment.remove_scope if user.recipient?
+      end
+    else
+      Issue.remove_scope
+      Software.remove_scope
+    end
+  end
+
+
+  #We load all the models
+  Dir.glob(RAILS_ROOT + '/app/models/*.rb').each { |file| require file }
+  @@models = Object.subclasses_of(ActiveRecord::Base)
 
 end

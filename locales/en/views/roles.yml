@@ -1,0 +1,9 @@
+en:
+  roles:
+    Index: "Roles"
+    index:
+      a_role: "a role"
+      associated_permissions: associated permissions
+    New: "New role"
+    Edit: "Edit role"
+    Show: "Role"

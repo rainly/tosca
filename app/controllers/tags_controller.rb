@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -18,8 +18,7 @@
 #
 class TagsController < ApplicationController
   def index
-    options = { :per_page => 50, :order => 'tags.name' }
-    @tag_pages, @tags = paginate :tags, options
+    @tags = Tag.paginate :order => 'tags.name', :page => params[:page]
   end
 
   def show
@@ -33,7 +32,7 @@ class TagsController < ApplicationController
 
   def create
     @tag = Tag.new(params[:tag])
-    @tag.user_id = session[:user].id
+    @tag.user_id = @session_user.id
     if @tag.save
       flash[:notice] = _('Skill was successfully created.')
       redirect_to tags_path
@@ -64,8 +63,7 @@ class TagsController < ApplicationController
 
 private
   def _form
-    @competences = Competence.find_select
+    @skills = Skill.find_select
     @contracts = Contract.find_select(Contract::OPTIONS)
   end
 end
-

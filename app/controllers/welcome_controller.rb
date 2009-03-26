@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -18,7 +18,7 @@
 #
 class WelcomeController < ApplicationController
   # Includes somme helpers
-  helper :issues, :account, :contributions, :softwares, :groupes, :documents, :clients
+  helper :issues, :account, :contributions, :softwares, :groups, :clients
 
   # Default page, redirect if necessary
   def index
@@ -31,6 +31,10 @@ class WelcomeController < ApplicationController
 
   # About this software
   def about
+  end
+
+  # Various administrative links
+  def admin
   end
 
   # Used to select a theme, even without an account
@@ -54,13 +58,13 @@ class WelcomeController < ApplicationController
     if suggestion
       unless suggestion[:team].blank?
         Notifier::deliver_welcome_idea(suggestion[:team],
-                                       :team, session[:user])
+          :team, @session_user)
       end
       unless suggestion[:tosca].blank?
         Notifier::deliver_welcome_idea(suggestion[:tosca],
-                                       :tosca, session[:user])
+          :tosca, @session_user)
       end
-      flash[:notice] = _("Thank your for taking time in order to help us to improve this product. Your comments has been sent successfully.")
+      flash[:notice] = _('Thank your for taking time in order to help us to improve this product. Your comments has been sent successfully.')
       redirect_to_home
     end
   end
@@ -76,7 +80,18 @@ class WelcomeController < ApplicationController
     redirect_to_home
   end
 
-protected
+  #Action to clear the cache of Tosca
+  # !! ONLY FOR ADMINS !!
+  def clear_cache
+    if @session_user.role_id == 1
+      #TODO : Find a better way, and call directly the rake task tmp:cache:clear
+      FileUtils.rm_rf(Dir['tmp/cache/[^.]*'])
+      flash[:notice] = _("Cache cleared !")
+    end
+    redirect_to_home
+  end
+
+  protected
 
   # Returns an array of a pair : [ 'controller', *actions ]
   def _plan
@@ -92,7 +107,7 @@ protected
         # sort actions list, in order to display'em nicely
         # uniq is there coz' we can have multiple paths with different verbs
         @routes.last.last.sort!.uniq! unless @routes.empty?
-        @routes.push [ r.requirements[:controller], Array.new ]
+        @routes.push [ r.requirements[:controller], [] ]
       end
       @routes.last.last.push r.requirements[:action]
       last_controller = r.requirements[:controller]

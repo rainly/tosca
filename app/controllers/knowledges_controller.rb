@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -17,12 +17,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 class KnowledgesController < ApplicationController
-  helper :filters
-
 
   def index
-    options = { :per_page => 25, :order => 'knowledges.ingenieur_id',
-      :include => [:ingenieur, :competence, :software] }
+    options = { :per_page => 25, :order => 'knowledges.engineer_id',
+      :include => [:engineer, :skill, :software], :page => params[:page] }
 
     if params.has_key? :filters
       session[:knowledges_filters] =
@@ -36,19 +34,19 @@ class KnowledgesController < ApplicationController
       # All the fields must be coherent with lib/filters.rb related Struct.
       conditions = Filters.build_conditions(knowledges_filters, [
         [:software_id, 'knowledges.software_id', :equal ],
-        [:competence_id, 'knowledges.competence_id', :equal ],
-        [:ingenieur_id, 'knowledges.ingenieur_id', :equal ]
+        [:skill_id, 'knowledges.skill_id', :equal ],
+        [:engineer_id, 'knowledges.engineer_id', :equal ]
       ])
       @filters = knowledges_filters
     end
     flash[:conditions] = options[:conditions] = conditions
 
-    @knowledge_pages, @knowledges = paginate :knowledges, options
+    @knowledges  = Knowledge.paginate options
     if request.xhr?
       render :layout => false
     else
       _panel
-      @partial_for_summary = 'knowledges_info'
+      @partial_panel = 'index_panel'
     end
 
   end
@@ -69,11 +67,11 @@ class KnowledgesController < ApplicationController
 
   def create
     @knowledge = Knowledge.new(params[:knowledge])
-    @knowledge.ingenieur_id = @ingenieur.id
+    @knowledge.engineer_id = @session_user.id
 
     if @knowledge.save
       flash[:notice] = _('Your knowledge was successfully created.')
-      redirect_to(account_path(@knowledge.ingenieur.user))
+      redirect_to(account_path(@knowledge.engineer))
     else
       _form and render :action => "new"
     end
@@ -83,7 +81,7 @@ class KnowledgesController < ApplicationController
     @knowledge = Knowledge.find(params[:id])
     if @knowledge.update_attributes(params[:knowledge])
       flash[:notice] = _('Your knowledge was successfully updated.')
-      redirect_to(account_path(@knowledge.ingenieur.user))
+      redirect_to(account_path(@knowledge.engineer))
     else
       _form and render :action => "edit"
     end
@@ -98,14 +96,14 @@ class KnowledgesController < ApplicationController
 
   private
   def _form
-    @competences = Competence.find_select
+    @skills = Skill.find_select
     @software = Software.find_select
   end
 
   def _panel
     @software = Software.find_select
-    @competences = Competence.find_select
-    @experts = Ingenieur.find_select(User::SELECT_OPTIONS)
+    @skills = Skill.find_select
+    @experts = User.find_select(User::EXPERT_OPTIONS)
   end
 
 end

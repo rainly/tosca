@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -17,20 +17,14 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 require File.dirname(__FILE__) + '/../test_helper'
-require 'alerts_controller'
 
-# Re-raise errors caught by the controller.
-class AlertsController; def rescue_action(e) raise e end; end
+class AlertsControllerTest < ActionController::TestCase
 
-class AlertsControllerTest < Test::Unit::TestCase
-  def setup
-    @controller = AlertsController.new
-    @request    = ActionController::TestRequest.new
-    @response   = ActionController::TestResponse.new
+  def test_show
+    # no login, should be accessible without it
+    alert = alerts(:alert_00001)
+    get :show, :hash => alert.hash_value
+    assert_response :success
   end
 
-  # Replace this with your real tests.
-  def test_truth
-    assert true
-  end
 end

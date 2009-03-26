@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -32,6 +32,6 @@ class LoadRequestsType < ActiveRecord::Migration
   end
 
   def self.down
-    Typedemande.find(:all).each{ |td| td.destroy }
+    Typedemande.all.each{ |td| td.destroy }
   end
 end

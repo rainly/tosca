@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -48,12 +48,12 @@ class AlertsController < ApplicationController
   def new_issue
     #We remove the scope for the public user
     Issue.send(:with_exclusive_scope) do 
-      alert = Alert.find(:first, :conditions => { :hash_value => params[:hash] })
+      alert = Alert.first(:conditions => { :hash_value => params[:hash] })
       @issues_found = []
       if alert
         team = alert.team
         conditions = [ 'issues.contract_id IN (?) AND issues.statut_id = 1', team.contract_ids ]
-        @issues_found = Issue.find(:all, :conditions => conditions)
+        @issues_found = Issue.all(:conditions => conditions)
       end
     end
   end

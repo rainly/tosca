@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -23,11 +23,13 @@ module KnowledgesHelper
   def link_to_knowledge(k)
     return '-' unless k and k.is_a? Knowledge
     name = "#{k.level} - #{k.name}"
-    link_to name, knowledge_path(k)
+    res = link_to name, knowledge_path(k)
+    res << " #{StaticPicture::subscription}" if k.subscribed?
+    res
   end
 
   def link_to_new_knowledge
-    return '' if @user_engineer && @user_engineer.user_id != session[:user].id
+    return '' unless @session_user.engineer?
     options = new_knowledge_path
     link_to(image_create('a knowledge'), options)
   end

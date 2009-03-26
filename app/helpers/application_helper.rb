@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -28,8 +28,7 @@ module ApplicationHelper
   include PagesHelper
   include FormsHelper
   include LinksHelper
-  include ImagesHelper
-  include DatesHelper
+  include PicturesHelper
   include TagsHelper
 
   ### TEXT #####################################################################
@@ -46,14 +45,6 @@ module ApplicationHelper
 
   def hide_unless(condition)
     (condition ? %Q{style="display: none;"} : '')
-  end
-
-  # Show a help message
-  # TODO : add an icon
-  # TODO : use more on forms
-  # TODO : change the cursor to the one in ? shape
-  def show_help( help_text )
-    "<a title=\"#{help_text}\" >?</a>"
   end
 
   ### FILES #####################################################################
@@ -79,7 +70,7 @@ module ApplicationHelper
     result = ''
     return '' unless size > 0
 
-    if !session[:user] && options.has_key?(:public_summarised)
+    if !@session_user && options.has_key?(:public_summarised)
       return "<u><b>#{pluralize(size, name.to_s.capitalize)}" << _(' to date') << '</b></u><br />'
     end
 
@@ -118,16 +109,16 @@ module ApplicationHelper
   end
 
   # Call it like :
-  # <% titres = ['Fichier', 'Taille', 'Auteur', 'Maj'] %>
-  # <%= show_table(@documents, Document, titres) { |e| "<td>#{e.name}</td>" } %>
-  # N'oubliez pas d'utiliser les <td></td>
-  # 3 options
-  #   :total > désactive le décompte total si positionné à false
-  #   :content_columns > active l'affichage des content_columns si positionné à true
-  #   :add_lines > affiche à la fin le tableau de lignes passé [[line1],[line2]]
-  # TODO : intégrer width et style dans une seule option
+  # <% titles = ['File', 'Size', 'Author', 'Updated on'] %>
+  # <%= show_table(@attachments, Attachment, titles) { |e| "<td>#{e.name}</td>" } %>
+  # Do NOT forget to use <td></td>
+  # Options
+  #   :total > deactivate total count
+  #   :content_columns > use Rails AR fonctionnality
+  #   :add_lines > add the string at the end of the table
+  #   :width > html options for global table width
   def show_table(elements, ar, titles, options = {})
-    return '<p>' << _('No %s at the moment') % ar.table_name.singularize + '</p>' unless elements and elements.size > 0
+    return '<p>' << _('No %s at the moment') % _(ar.table_name.singularize) + '</p>' unless elements and elements.size > 0
     width = ( options[:width] ? "width=#{options[:width]}" : '' )
     result = "<table #{width} class=\"full\">"
     content_columns = options.has_key?(:content_columns)
@@ -223,7 +214,6 @@ module ApplicationHelper
     menu.each { |e| out << "<li>#{e}</li>" }
     out << ' </ul>'
     out << '</form>' if options[:form]
-    #            <li id="current"><a href="#">Button 1</a></li>
   end
 
   # Build a menu from a hash of 2 arrays : titles and links

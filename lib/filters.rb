@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -21,58 +21,68 @@ module Filters
   module Shared
     def self.extended(base)
       base.class_eval do
-        define_method(:initialize) { |params, *args|
+        define_method(:initialize) do |params, *args|
           if params.is_a? Hash
-            params.each {|key, value|
-              if key =~ /_id/ and value.is_a? String and not value.blank?
-                send("#{key}=", value.to_i)
-              else
-                send("#{key}=", value)
+            params.each do |key, value|
+              if value.is_a?(String) and not value.blank?
+                # TODO : use a real method, not a lame trick to
+                # detect JSON Array encoded String
+                if value =~ /\[/
+                  value = ActiveSupport::JSON.decode(value)
+                elsif key =~ /_id/
+                  value = value.to_i
+                end
               end
-            }
+              send("#{key}=", value)
+            end
           else
             super(*args.unshift(params))
           end
-        }
+        end
       end
     end
   end
 
-  class Knowledges < Struct.new('Knowledges', :ingenieur_id,
-                                :software_id, :competence_id)
+
+  class Accounts < Struct.new('Accounts', :name, :client_id, :role_id)
     extend Shared
   end
 
-  class Contributions < Struct.new('Contributions', :software, :ingenieur_id,
-                             :contribution, :etatreversement_id, :contract_id)
-    extend Shared
-  end
-
-  class Softwares < Struct.new('Softwares', :software, :groupe_id,
-                               :contract_id, :description )
-    extend Shared
-  end
-
-  class Calls < Struct.new('Calls', :ingenieur_id, :recipient_id,
+  class Calls < Struct.new('Calls', :engineer_id, :recipient_id,
                             :contract_id, :after, :before)
     extend Shared
   end
 
-  class Clients < Struct.new('Clients', :text, :system_id, :active)
+  class Clients < Struct.new('Clients', :text, :active)
     extend Shared
   end
 
-  class Contracts < Struct.new('Contracts', :text, :team_id)
+  class Contracts < Struct.new('Contracts', :text, :team_id, :tam_id)
     extend Shared
   end
 
-  class Issues < Struct.new('Issues', :text, :contract_id, :ingenieur_id,
-                              :typeissue_id, :severity_id, :statut_id,
+  class Contributions < Struct.new('Contributions', :software, :engineer_id,
+                             :contribution, :contributionstate_id, :contract_id)
+    extend Shared
+  end
+
+  class Issues < Struct.new('Issues', :text, :contract_id, :engineer_id,
+                              :issuetype_id, :severity_id, :statut_id,
                               :active, :limit)
     extend Shared
   end
 
-  class Accounts < Struct.new('Accounts', :name, :client_id, :role_id)
+  class Knowledges < Struct.new('Knowledges', :engineer_id,
+                                :software_id, :skill_id)
+    extend Shared
+  end
+
+  class Softwares < Struct.new('Softwares', :software, :group_id,
+                               :contract_id, :description )
+    extend Shared
+  end
+
+  class WeeklyReport < Struct.new('WeeklyReport', :contract_id)
     extend Shared
   end
 
@@ -87,8 +97,8 @@ module Filters
   # conditions = Filters.build_conditions(params, [
   #   ['software', 'name', 'versions.name', :like ],
   #   ['software', 'description', 'versions.description', :like ],
-  #   ['filters', 'groupe_id', 'softwares.groupe_id', :equal ],
-  #   ['filters', 'knowledge_id', 'competences_softwares.competence_id', :equal ],
+  #   ['filters', 'group_id', 'softwares.group_id', :equal ],
+  #   ['filters', 'knowledge_id', 'skills_softwares.skill_id', :equal ],
   #   ['filters', 'client_id', ' versions.contract_id', :in ]
   # ])
   # flash[:conditions] = options[:conditions] = conditions
@@ -100,35 +110,40 @@ module Filters
   def self.build_conditions(params, filters, special_conditions = nil)
     conditions = [[]]
     condition_0 = conditions.first
-    filters.each { |f|
+    filters.each do |f|
       value = params[f.first]
-      unless value.blank?
-        query = case f.last
-                when :equal
-                  "#{f[1]}=?"
-                when :greater_than
-                  "#{f[1]}>?"
-                when :lesser_than
-                  "#{f[1]}<?"
-                when :dual_like
-                  "(#{f[1]} LIKE (?) OR #{f[2]} LIKE (?))"
-                else
-                  "#{f[1]} #{f[2]} (?)"
-                end
-        condition_0.push query
-        # now, fill in parameters of the query
-        case f.last
-        when :like
-          conditions.push "%#{value}%"
-        when :dual_like
-          temp = "%#{value}%"
-          conditions.push temp, temp
-        else
-          conditions.push value
-        end
+      next if value.nil? or value.blank?
+      query = case f.last
+              when :equal
+                "#{f[1]}=?"
+              when :greater_than
+                "#{f[1]}>?"
+              when :lesser_than
+                "#{f[1]}<?"
+              when :multiple_like
+                '(' << f[1..-2].collect{|v| "#{v} LIKE ?"}.join(' OR ') << ')'
+              else
+                "#{f[1]} #{f[2]} (?)"
+              end
+      condition_0.push query
+      # now, fill in parameters of the query
+      case f.last
+      when :like
+        conditions.push "%#{value}%"
+      when :multiple_like
+        conditions.push(*(Array.new(f[1..-2].size, "%#{value}%")))
+      else
+        conditions.push(value)
       end
-    }
-    condition_0.push special_conditions if special_conditions.is_a? String
+    end
+
+    if special_conditions.is_a?(String)
+      condition_0.push special_conditions
+    elsif special_conditions.is_a?(Array)
+      condition_0.push special_conditions.first
+      special_conditions[1..-1].each { |v| conditions.push v }
+    end
+
     if condition_0.empty?
       nil
     else

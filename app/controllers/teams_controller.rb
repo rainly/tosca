@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -19,24 +19,24 @@
 class TeamsController < ApplicationController
   auto_complete_for :contract, :name, :team, :contract
   auto_complete_for :user, :name, :team, :user,
-                    :conditions => { :client => false }
-
+                    :conditions => { :client_id => nil }
   def index
-    @team_pages, @teams = paginate :teams, :per_page => 25
+    @teams = Team.paginate :page => params[:page]
   end
 
   def show
     @team = Team.find(params[:id])
+    @team.contracts.sort!{|c1, c2| c1.name <=> c2.name}
   end
 
   def new
-    _form
     @team = Team.new
+    _form
   end
 
   def edit
-    _form
     @team = Team.find(params[:id])
+    _form
   end
 
   def create
@@ -67,8 +67,8 @@ class TeamsController < ApplicationController
 
 private
   def _form
-    @users = Ingenieur.find(:all, :include => :user).collect { |i| [i.user.name, i.user.id] }
-    @contracts = Contract.find_select(Contract::OPTIONS)
+    @users = User.find_select(User::EXPERT_OPTIONS)
+    @team.contracts.sort!{|c1, c2| c1.name <=> c2.name}
   end
 
 end

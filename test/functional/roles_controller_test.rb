@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -22,7 +22,7 @@ require 'roles_controller'
 # Re-raise errors caught by the controller.
 class RolesController; def rescue_action(e) raise e end; end
 
-class RolesControllerTest < Test::Unit::TestCase
+class RolesControllerTest < ActionController::TestCase
   fixtures :roles
 
   def setup

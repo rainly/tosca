@@ -1,8 +1,6 @@
 <p>
-  <b><%= _('File') %>:</b> <%= link_to @attachment, url_for_file_column(@attachment, "file", :absolute => true) %>
+  <b><%= _('File') %>:</b> <%= link_to_file @attachment, "file" %>
 </p>
-
-<%= link_to _('Download'), url_for_file_column(@attachment, "file", :absolute => true) %>
 
 <br /><br />
 <%= link_to_edit_and_list @attachment %>

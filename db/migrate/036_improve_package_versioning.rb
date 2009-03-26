@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -30,7 +30,7 @@ class ImprovePackageVersioning < ActiveRecord::Migration
   def self.up
     change_column :paquets, :version, :string,  :limit => 60, :default => "x",  :null => false
     change_column :paquets, :release, :string,  :limit => 60, :default => nil, :null => true
-    Paquet.find(:all).each do |p|
+    Paquet.all.each do |p|
       p.update_attribute :release, nil if p.release == ''
     end
   end

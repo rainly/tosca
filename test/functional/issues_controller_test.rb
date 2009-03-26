@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -20,14 +20,29 @@ require File.dirname(__FILE__) + '/../test_helper'
 
 class IssuesControllerTest < ActionController::TestCase
 
-  fixtures :all
-
   def test_pending
     %w(admin manager expert customer).each do |l|
       login l, l
       get :pending
       assert_response :success
       assert_template 'pending'
+    end
+
+    %w(admin manager expert).each do |l|
+      login l, l
+      issue, now = session[:user].contracts.first.issues.first, Time.now
+      issue.update_attribute(:expected_on, now)
+
+      xhr :get, :ajax_renew
+      assert_response :success
+      issue.reload
+      assert_not_equal issue.expected_on, (now + 15.days)
+
+
+      xhr :get, :ajax_renew, :expected_on => "15", :issue_ids => [issue.id]
+      assert_response :success
+      issue.reload
+      assert_in_delta issue.expected_on, (now + 15.days), 2.seconds
     end
   end
 
@@ -36,13 +51,13 @@ class IssuesControllerTest < ActionController::TestCase
       login l, l
       get :index
       assert_response :success
-      assert_template 'index'
+      assert_template '_issues_list'
 
-      check_ajax_filter(:contract_id, Contract.find(:first).id, :issues)
-      check_ajax_filter(:ingenieur_id, Ingenieur.find(:first).id, :issues)
-      check_ajax_filter(:typeissue_id, Typeissue.find(:first).id, :issues)
-      check_ajax_filter(:severity_id, Severity.find(:first).id, :issues)
-      check_ajax_filter(:statut_id, Statut.find(:first).id, :issues)
+      check_ajax_filter(:contract_id, Contract.first.id, :issues)
+      check_ajax_filter(:engineer_id, User.first.id, :issues)
+      check_ajax_filter(:issuetype_id, Issuetype.first.id, :issues)
+      check_ajax_filter(:severity_id, Severity.first.id, :issues)
+      check_ajax_filter(:statut_id, Statut.first.id, :issues)
       # The search box cannot be checked with the helper
       xhr :get, :index, :filters => { :text => "openoffice" }
       assert_response :success
@@ -52,7 +67,7 @@ class IssuesControllerTest < ActionController::TestCase
   def test_edit
     %w(admin manager).each do |l|
       login l, l
-      get :edit, :id => Issue.find(:first).id
+      get :edit, :id => Issue.first(:order => :id).id
       assert_response :success
       assert_template 'edit'
 
@@ -64,7 +79,7 @@ class IssuesControllerTest < ActionController::TestCase
   def test_update
     %w(admin manager).each do |l|
       login l, l
-      get :edit, :id => Issue.find(:first).id
+      get :edit, :id => Issue.first(:order => :id).id
       assert_response :success
       assert_template 'edit'
 
@@ -120,22 +135,18 @@ class IssuesControllerTest < ActionController::TestCase
   def test_show
     %w(admin manager expert customer viewer).each {|l|
       login l, l
-      issue_id = session[:user].contracts.first.issues.first.id
+      issue_id = session[:user].issues.first.id
       get :show, :id => issue_id
       assert_response :success
       assert_template 'show'
 
-      xhr :get, :ajax_comments, :id => issue_id
+      xhr :get, :ajax_actions, :id => issue_id
       assert_response :success
-      assert_template 'issues/tabs/_tab_comments'
+      assert_template 'issues/tabs/_tab_actions'
 
       xhr :get, :ajax_history, :id => issue_id
       assert_response :success
       assert_template 'issues/tabs/_tab_history'
-
-      xhr :get, :ajax_phonecalls, :id => issue_id
-      assert_response :success
-      assert_template 'issues/tabs/_tab_phonecalls'
 
       xhr :get, :ajax_attachments, :id => issue_id
       assert_response :success
@@ -144,6 +155,7 @@ class IssuesControllerTest < ActionController::TestCase
       xhr :get, :ajax_cns, :id => issue_id
       assert_response :success
       assert_template 'issues/tabs/_tab_cns'
+      logout
     }
   end
 
@@ -181,11 +193,10 @@ class IssuesControllerTest < ActionController::TestCase
   def _test_ajax_form_methods
     # test the 3 ajax methods
     xhr :get, :ajax_display_commitment, :issue => { :severity_id => '2',
-      :typeissue_id => '2' }
+      :issuetype_id => '2' }
     assert_response :success
 
-    xhr :get, :ajax_display_version, :issue => { :software_id => "1",
-      :socle_id => "1"}
+    xhr :get, :ajax_display_version, :issue => { :software_id => "1" }
     assert_response :success
 
     xhr :get, :ajax_display_contract, :contract_id => session[:user].contracts.first.id

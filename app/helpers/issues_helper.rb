@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -30,8 +30,8 @@ module IssuesHelper
       limit = options[:limit] || 50
       text = ''
       text << "##{issue.id} " if options.has_key? :show_id
-      text << "#{StaticImage::severity(issue)} " if options.has_key? :icon_severity #TODO
-      text << truncate(issue.resume, limit)
+      text << "#{StaticPicture::severity(issue)} " if options.has_key? :icon_severity
+      text << truncate(issue.resume, :length => limit) if limit > 0
     end
     link_to text, issue_path(issue)
   end
@@ -51,19 +51,6 @@ module IssuesHelper
     link_to issue.full_software_name, path
   end
 
-  # TODO : explain what does this function
-  # TODO : teach the author how to make it understandable
-  # TODO : give an example
-  # TODO : think about replacing case/when by if/else
-  def display(donnee, column)
-    case column
-    when 'workaround','correction'
-      display_days donnee.send(column)
-    else
-      donnee.send(column)
-    end
-  end
-
   def render_table(options)
     render :partial => "report_table", :locals => options
   end
@@ -74,7 +61,7 @@ module IssuesHelper
 
   # Display more nicely change to history table
   # Use it like :
-  #  <%= display_history_changes(issue.ingenieur_id, old_ingenieur_id, Ingenieur) %>
+  #  <%= display_history_changes(issue.engineer_id, old_engineer_id, User) %>
   def display_history_changes(field, old_field, model)
     if field
       if old_field and old_field == field
@@ -109,31 +96,13 @@ module IssuesHelper
 
   # Link to access a ticket
   def link_to_comment(ar)
-      link_to StaticImage::view, issue_path(ar)
+      link_to StaticPicture::view, issue_path(ar)
   end
 
   def link_to_unlink_contribution( demand_id )
     link_to(_('Unlink the contribution'),
             unlink_contribution_issue_path(demand_id),
             :method => :post)
-  end
-
-  # Display a css bar for graphic representation of a ticket timeline
-  # Need adequat CSS stylesheet
-  def show_cns_bar(issue)
-    #done, limit = 0, 100
-    return '' unless issue.is_a?(Issue)
-    done = issue.temps_correction
-    limit = issue.delais_correction
-    return '' unless done.is_a?(Numeric) && limit.is_a?(Numeric) && done <= limit
-
-    out = ''
-    progress = (100*(done.to_f / limit.to_f)).round
-    remains = (100 - progress)
-    out << '<span class="progress-border">'
-    out << '  <div class="progress-correction tooltip" style="width: '+progress.to_s+'%;" title="'+progress.to_s+'%  écoulé"> </div>'
-    out << '  <div class="progress-restant tooltip" style="width: '+remains.to_s+'%;" title="'+remains.to_s+'%  restant"> </div>'
-    out << '</span>'
   end
 
   # TODO : Some patches can be refused by the community, and this
@@ -146,8 +115,7 @@ module IssuesHelper
         _("The %s has been submitted by the community") % link)
   end
 
-  # TODO : beaucoup trop de copier coller, c'est honteux !
-  # TODO/MLO : me taper sur les doigts et faire une version propre
+  # TODO : Too much copy/paste
   # begining of factorisation in softwares_helper
   def remote_link_to_active_issue
     ajax_call =  PagesHelper::AJAX_OPTIONS.dup.update(:url => issues_path)
@@ -198,7 +166,6 @@ module IssuesHelper
       image_tag("icons/question_mark.gif") <<
     '</a>'
   end
-
 
   @@help_on_severity = nil
   # Show the '?' icon with the link on severity explanation on the wiki

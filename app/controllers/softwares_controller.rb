@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -18,8 +18,8 @@
 #
 
 class SoftwaresController < ApplicationController
-  helper :filters, :versions, :issues, :competences, :contributions,
-    :licenses, :groupes
+  helper :versions, :issues, :skills, :contributions,
+    :licenses, :groups, :hyperlinks
 
   # Not used for the moment
   # auto_complete_for :software, :name
@@ -28,12 +28,13 @@ class SoftwaresController < ApplicationController
   def index
     scope = nil
     @title = _('List of software')
-    if @recipient && params['active'] != '0'
+    if @session_user and @session_user.recipient? && params['active'] != '0'
       scope = :supported
       @title = _('List of your supported software')
     end
 
-    options = { :per_page => 10, :order => 'softwares.name', :include => [:groupe] }
+    options = { :order => 'softwares.name', :include =>
+      [:group,:picture,:skills], :page => params[:page] }
     conditions = []
 
     if params.has_key? :filters
@@ -55,7 +56,7 @@ class SoftwaresController < ApplicationController
       conditions = Filters.build_conditions(software_filters, [
         [:software, 'softwares.name', :like ],
         [:description, 'softwares.description', :like ],
-        [:groupe_id, 'softwares.groupe_id', :equal ],
+        [:group_id, 'softwares.group_id', :equal ],
         [:contract_id, ' cv.contract_id', :in ]
       ])
       @filters = software_filters
@@ -64,8 +65,8 @@ class SoftwaresController < ApplicationController
 
     # optional scope, for customers
     begin
-      Software.set_scope(@recipient.contract_ids) if scope
-      @software_pages, @softwares = paginate :softwares, options
+      Software.set_scope(@session_user.contract_ids) if scope
+      @softwares = Software.paginate options
     ensure
       Software.remove_scope if scope
     end
@@ -75,18 +76,17 @@ class SoftwaresController < ApplicationController
       render :layout => false
     else
       _panel
-      @partial_for_summary = 'software_info'
+      @partial_panel = 'index_panel'
     end
   end
 
   def show
     @software = Software.find(params[:id])
-    if @recipient
-      @issues = @recipient.issues.find(:all, :conditions =>
-                                              ['issues.software_id=?', params[:id]])
+    conditions = { :conditions => ['issues.software_id=?', params[:id]] }
+    if @session_user.recipient?
+      @issues = @session_user.assigned_issues.all(conditions)
     else
-      @issues = Issue.find(:all, :conditions =>
-                               ['issues.software_id=?',params[:id]])
+      @issues = Issue.all(conditions)
     end
   end
 
@@ -142,34 +142,31 @@ class SoftwaresController < ApplicationController
 
 private
   def _form
-    @competences = Competence.find_select
-    @groupes = Groupe.find_select
+    @skills = Skill.find_select
+    @groups = Group.find_select
     @licenses = License.find_select
   end
 
   def _panel
-    @contracts = Contract.find_select(Contract::OPTIONS) if @ingenieur
-    @technologies = Competence.find_select
-    @groupes = Groupe.find_select
-
-    stats = Struct.new(:technologies, :versions, :software)
-    @count = stats.new(Competence.count, Version.count, Software.count)
+    @contracts = Contract.find_select(Contract::OPTIONS) if @session_user and @session_user.engineer?
+    @technologies = Skill.find_select
+    @groups = Group.find_select
   end
 
   def add_logo
-    image = params[:image]
+    image = params[:picture]
     unless image.nil? || image[:image].blank?
       image[:description] = @software.name
-      @software.image = Image.new(image)
-      return @software.image.save
+      @software.picture = Picture.new(image)
+      return @software.picture.save
     end
     return true
   end
 
   # because :save resets @software.errors
   def add_image_errors
-    unless @software.image.nil?
-      @software.image.errors.each do |attr, msg|
+    unless @software.picture.nil?
+      @software.picture.errors.each do |attr, msg|
         @software.errors.add :image, msg
       end
     end

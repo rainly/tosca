@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -19,7 +19,7 @@
 class Rules::ComponentsController < ApplicationController
 
   def index
-    @component_pages, @components = paginate Rules::Component, :per_page => 10
+    @components = Rules::Component.paginate :page => params[:page]
   end
 
   def show

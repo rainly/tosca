@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -30,6 +30,6 @@ class LoadPackageSystems < ActiveRecord::Migration
   end
 
   def self.down
-    Conteneur.find(:all).each{ |c| c.destroy }
+    Conteneur.all.each{ |c| c.destroy }
   end
 end

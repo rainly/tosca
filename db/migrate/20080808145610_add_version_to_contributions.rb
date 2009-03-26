@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -60,7 +60,7 @@ class AddVersionToContributions < ActiveRecord::Migration
               v.generic = false
             end
           end
-          existing_version = Version.find(:first, :conditions => version.attributes)
+          existing_version = Version.first(:conditions => version.attributes)
           if existing_version
             version = existing_version
           else

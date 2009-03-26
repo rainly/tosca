@@ -1,5 +1,5 @@
-#
-# Copyright (c) 2006-2008 Linagora
+# encoding: utf-8
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -56,7 +56,7 @@ end
 
 #Found here
 #http://blog.yanime.org/articles/2005/10/10/html2text-function-in-ruby
-#TODO : Faire la numérotation pour les listes numérotée
+#TODO : Make ordered list
 def html2text(html)
   text = html.
     gsub(/(&nbsp;)+/im, ' ').squeeze(' ').strip.gsub("\n",'').gsub(/(&lsquo;)+/, "'").
@@ -85,6 +85,9 @@ def html2text(html)
       gsub(/<\/?u[^>]*>/i, "").
       gsub(/<[^>]*>/, '')
   )
+  # OOo does not know the Unbreakable UTF-8 char, as of OOo 2.4.1, Hardy.
+  text.gsub!(/\x240/, ' ')
+
   for i in (0...links.size).to_a
     text = text + "\n  [#{i+1}] <#{CGI.unescapeHTML(links[i])}>" unless links[i].nil?
   end
@@ -93,7 +96,7 @@ def html2text(html)
 end
 
 def _ordinalize(number)
-  if Locale.get.language =~ /fr/
+  if I18n.locale.to_s =~ /fr/
     case number
     when 1; "#{number}er"
     when 2; "#{number}nd"
@@ -112,9 +115,6 @@ def _ordinalize(number)
     end
   end
 end
-
-
-
 
 module Utils
   # Used to help a newcomer

@@ -1,0 +1,9 @@
+fr:
+  roles:
+    Index: "Liste des rôles"
+    index:
+      a_role: "un rôle"
+      associated_permissions: "permissions associées"
+    New: "Nouveau rôle"
+    Edit: "Modifier un rôle"
+    Show: "Rôle"

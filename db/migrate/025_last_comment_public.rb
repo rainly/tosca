@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -17,17 +17,24 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 class LastCommentPublic < ActiveRecord::Migration
+
+  class Demande < ActiveRecord::Base; end
+  class Commentaire < ActiveRecord::Base; end
+
   def self.up
-    update("UPDATE demandes d SET d.last_comment_id = (" +
-           "SELECT id FROM commentaires c WHERE c.prive = 0 AND c.demande_id = d.id " +
-           "ORDER BY created_on DESC LIMIT 1" +
-           ")")
+    Demande.all.each do |i|
+      i.last_comment_id = Commentaire.first(
+        :conditions => { :prive => false, :demande_id => i.id },
+        :order_by => 'created_on DESC').id
+      i.save!
+    end
   end
 
   def self.down
-    update("UPDATE demandes d SET last_comment_id = (" +
-           "SELECT id FROM commentaires c WHERE c.demande_id = d.id  " +
-           "ORDER BY created_on DESC LIMIT 1" +
-           ")")
+    Demande.all.each do |i|
+      i.last_comment_id = Commentaire.first(:conditions => { :demande_id => i.id },
+        :order_by => 'created_on DESC').id
+      i.save!
+    end
   end
 end

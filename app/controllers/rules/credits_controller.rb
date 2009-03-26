@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -19,7 +19,7 @@
 class Rules::CreditsController < ApplicationController
 
   def index
-    @credit_pages, @credits = paginate Rules::Credit, :per_page => 10
+    @credits = Rules::Credit.paginate :page => params[:page]
   end
 
   def show

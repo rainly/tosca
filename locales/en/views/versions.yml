@@ -1,0 +1,8 @@
+en:
+  versions:
+    Show: Version
+    New: "New version"
+    Edit: "Edit version"
+    Index: "Versions list"
+    index:
+      a_version: "a version"

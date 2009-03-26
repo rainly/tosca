@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -25,8 +25,8 @@ class CommentsController < ApplicationController
   cache_sweeper :issue_sweeper, :only => [:comment]
 
   def index
-    @comment_pages, @comments = paginate :comments,
-    :per_page => 10, :include => [:issue]
+    options = { :per_page => 10, :include => [:issue], :page => params[:page] }
+    @comments = Comment.paginate options
   end
 
   def show
@@ -39,7 +39,7 @@ class CommentsController < ApplicationController
     comment, id = params[:comment], params[:id]
     return render(:nothing => true) unless id && comment
 
-    user = session[:user]
+    user = @session_user
     issue = Issue.find(id)
 
     # firewall ;)
@@ -48,7 +48,7 @@ class CommentsController < ApplicationController
     # check on attributes change
     # Find a way to put it in the model despite the access from issue view
     changed = {}
-    %w{statut_id ingenieur_id severity_id}.each do |attr|
+    %w{statut_id engineer_id severity_id}.each do |attr|
       changed[attr] = true unless comment[attr].blank?
     end
     if (changed[:statut_id] or changed[:severity_id]) and params[:comment][:private]
@@ -57,22 +57,21 @@ class CommentsController < ApplicationController
         the <b>status</b> or in the <b>severity</b>")
     end
 
-   @comment = Comment.new(comment) do |c|
+    @comment = Comment.new(comment) do |c|
       c.issue, c.user = issue, user
       c.add_attachment(params)
-      c.elapsed ||= 0 # Nil is not allowed for a heavily-used for computation value
+      # Nil is not allowed for a heavily-used for computation value
+      c.elapsed ||= 0
     end
-    issue.update_attribute :expected_on, Time.now if user.client?
 
+    issue.update_attribute :expected_on, Time.now if user.recipient?
+
+    #We verify and send an email
     if @comment.save
       flash[:notice] = _("Your comment was successfully added.")
-      url_attachment = render_to_string(:layout => false, :template => '/attachment')
-      options = { :issue => issue, :comment => @comment,
-        :name => user.name, :modifications => changed,
-        :url_issue => issue_url(issue), :user => session[:user],
-        :url_attachment => url_attachment
-      }
-      Notifier::deliver_issue_new_comment(options, flash)
+      to = issue.compute_recipients(@comment.private)
+      cc = issue.compute_copy(@comment.private)
+      flash[:notice] += message_notice(to, cc)
     else
       flash[:warn] = _("An error has occured.") + '<br/>' +
         @comment.errors.full_messages.join('<br/>')
@@ -123,13 +122,13 @@ class CommentsController < ApplicationController
 
   private
   def _form
-    @issues = Issue.find(:all)
+    @issues = Issue.all
     @users = User.find_select
     @statuts = Statut.find_select
   end
 
   def _not_allowed?
-    if @recipient and @comment.user_id != @recipient.user_id
+    if @session_user.recipient? and @comment.user_id != @session_user.id
       flash[:warn] = _('You are not allowed to edit this comment')
       redirect_to issue_path(@comment.issue)
       return true

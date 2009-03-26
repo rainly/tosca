@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -33,6 +33,6 @@ class LoadCopyrights < ActiveRecord::Migration
   end
 
   def self.down
-    License.find(:all).each{ |l| l.destroy }
+    License.all.each{ |l| l.destroy }
   end
 end

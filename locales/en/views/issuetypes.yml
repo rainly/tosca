@@ -1,0 +1,6 @@
+en:
+  issuetypes:
+    Show: "Issue's type"
+    New: Nouveau type de demande
+    Edit: Modifier le type de demande
+    Index: Liste des types de demande

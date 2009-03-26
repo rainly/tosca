@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -41,17 +41,15 @@ class FilesController < ApplicationController
     # mapping path
     map = {:attachment => 'file',
            :contribution => 'patch',
-           :document => 'file',
            :archive => 'file' }
 
     # TODO : get model name without hash
     model = { :attachment => Attachment,
               :contribution => Contribution,
-              :document => Document,
               :archive => Archive }
 
     # Login needed for anything but contribution
-    return if (file_type != :contribution && login_required() == false)
+    return if (file_type != :contribution && login_required == false)
 
     # building path
     root = [ App::FilesPath, params[:file_type], map[file_type] ] * '/'
@@ -61,15 +59,16 @@ class FilesController < ApplicationController
     fullpath = [ root, params[:id], params[:filename].gsub(' ','+') ] * '/'
 
     # Attachment has to be restricted.
-    scope_active = (@recipient and file_type == :attachment)
+    scope_active = (@session_user.recipient? and file_type == :attachment)
 
     # Ensure that we can remove scope
     begin
-      Attachment.set_scope(@recipient.client_id) if scope_active
-      #Check if you have the right
+      Attachment.set_scope(@session_user.contract_ids) if scope_active
+      # Check if one have the right to find it : ie to download it,
+      # Using scope model of Tosca
       model[file_type].find(params[:id])
     ensure
-      Attachment.remove_scope() if scope_active
+      Attachment.remove_scope if scope_active
     end
     send_file fullpath
 

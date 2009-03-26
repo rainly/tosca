@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -18,8 +18,8 @@
 #
 require File.dirname(__FILE__) + '/../test_helper'
 
-class CommitmentTest < Test::Unit::TestCase
-  fixtures :commitments, :severities, :typeissues
+class CommitmentTest < ActiveSupport::TestCase
+  fixtures :commitments, :severities, :issuetypes
 
   def test_to_strings
     check_strings Commitment

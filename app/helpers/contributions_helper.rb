@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -49,13 +49,7 @@ module ContributionsHelper
         options[:include] = { :issue => :contract }
         options[:conditions].merge!({'contracts.client_id' => params[:client_id]})
       end
-      # Dirty hack in order to show main client' contributions
-      # TODO : remove it in september.
-      condition = (client_id == '1' ? "contributions.id_mantis IS NOT NULL" : '')
-      scope = { :find => { :conditions => condition } }
-      Contribution.send(:with_scope, scope) do
-        count = Contribution.count(:all,options)
-      end
+      count = Contribution.count(:all,options)
     else
       count = software.contributions.size
     end

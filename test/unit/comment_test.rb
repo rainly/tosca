@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -18,7 +18,7 @@
 #
 require File.dirname(__FILE__) + '/../test_helper'
 
-class CommentTest < Test::Unit::TestCase
+class CommentTest < ActiveSupport::TestCase
   fixtures :comments, :issues, :users
 
   def test_to_strings
@@ -27,7 +27,7 @@ class CommentTest < Test::Unit::TestCase
 
   # We ensure to call all the methods
   def test_helper_methods
-    c = Comment.find :first
+    c = Comment.first(:order => :id)
     c.state
     c.mail_id
     assert !c.add_attachment({})
@@ -36,51 +36,41 @@ class CommentTest < Test::Unit::TestCase
 
   def test_create_comment
     c = Comment.new(:text => 'this is a comment',
-                        :issue => Issue.find(:first),
-                        :user => User.find(:first))
+      :issue => Issue.first(:order => :id),
+      :user => User.first(:order => :id))
     assert c.save!
     c = Comment.new(:text => 'this is a comment',
-                        :issue => Issue.find(:first),
-                        :user => User.find(:first),
-                        :private => false, :statut_id => 1)
+      :issue => Issue.first(:order => :id),
+      :user => User.first(:order => :id),
+      :private => false, :statut_id => 1)
     assert c.save!
     # cannot change privately the status
     c = Comment.new(:text => 'this is a comment',
-                        :issue => Issue.find(:first),
-                        :user => User.find(:first),
-                        :private => true, :statut_id => 1)
+      :issue => Issue.first(:order => :id),
+      :user => User.first(:order => :id),
+      :private => true, :statut_id => 1)
     assert !c.save
     # cannot declare a comment without a issue
     c = Comment.new(:text => 'this is a comment',
-                        :user => User.find(:first),
-                        :private => true, :statut_id => 1)
+      :user => User.first(:order => :id),
+      :private => true, :statut_id => 1)
     assert !c.save
   end
 
   # last call to destroy will cover the special case of update_status
   def test_update_status
-    d = Issue.find(:first)
+    d = Issue.first(:order => :id)
     d.comments.each { d.destroy }
   end
-  
-  def test_create_comment_without_text
-    #Should not work
-    Statut::NEED_COMMENT.each do |s|
-      c = Comment.new(:text => "",
-        :issue => Issue.find(:first),
-        :user => User.find(:first),
-        :private => false, :statut_id => s)
-      assert_equal(false, c.save)
-    end
 
-    #Should work
-    ([1,2,3,4,5,6,7,8] - Statut::NEED_COMMENT).each do |s|
-      c = Comment.new(:text => "",
-        :issue => Issue.find(:first),
-        :user => User.find(:first),
-        :private => false, :statut_id => s)
-      assert c.save!
-    end
+  def test_automatic_subscription
+    issue = Issue.first(:order => :id)
+    user = User.first(:order => :id)
+    c = Comment.new(:text => 'this is a comment',
+      :issue => issue,
+      :user => user)
+    assert c.save!
+    assert issue.subscribed?(user)
   end
 
 end

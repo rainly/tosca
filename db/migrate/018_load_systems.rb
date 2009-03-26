@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -37,6 +37,6 @@ class LoadSystems < ActiveRecord::Migration
   end
 
   def self.down
-    Socle.find(:all).each{ |s| s.destroy }
+    Socle.all.each{ |s| s.destroy }
   end
 end

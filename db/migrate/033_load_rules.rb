@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -27,7 +27,7 @@ class LoadRules < ActiveRecord::Migration
   end
 
   def self.down
-    Ossa.find(:all).each{ |o| o.destroy }
-    TimeTicket.find(:all).each{ |tt| tt.destroy }
+    Ossa.all.each{ |o| o.destroy }
+    TimeTicket.all.each{ |tt| tt.destroy }
   end
 end

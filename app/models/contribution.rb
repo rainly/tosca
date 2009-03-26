@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -18,12 +18,13 @@
 #
 class Contribution < ActiveRecord::Base
   has_one :issue
-  has_many :urlreversements
+  has_many :hyperlinks, :dependent => :destroy, :as => :model
 
-  belongs_to :typecontribution
-  belongs_to :etatreversement
+  belongs_to :contributiontype
+  belongs_to :contributionstate
   belongs_to :software
-  belongs_to :ingenieur
+  belongs_to :engineer, :class_name => 'User',
+    :conditions => 'users.client_id IS NULL'
 
   belongs_to :affected_version, :class_name => "Version"
   belongs_to :fixed_version, :class_name => "Version"
@@ -31,8 +32,7 @@ class Contribution < ActiveRecord::Base
   file_column :patch, :fix_file_extensions => nil
 
   validates_length_of :name, :within => 3..100
-  validates_presence_of :software,
-    :warn => _('You have to specify a software.')
+  validates_presence_of :software
 
   def self.content_columns
     @content_columns ||= columns.reject { |c| c.primary ||
@@ -51,7 +51,7 @@ class Contribution < ActiveRecord::Base
 
   def summary
     out = ''
-    out << typecontribution.name + _(' on ') if typecontribution
+    out << contributiontype.name + _(' on ') if contributiontype
     out << software.name
     out << " #{affected_version}" if affected_version
     out
@@ -87,7 +87,7 @@ class Contribution < ActiveRecord::Base
       -1
     end
   end
-  
+
   # Fake fields, used to prettify _form WUI
   def reverse; contributed_on?; end
   def clos; closed_on?; end

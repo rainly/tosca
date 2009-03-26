@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -22,7 +22,7 @@ module WelcomeHelper
     s.gsub!(/(.{1,#{width}})(\s+|\Z)/, "\\1<br />")
   end
 
-  # List of actions with Icons. They have to be declared in StaticImage::
+  # List of actions with Icons. They have to be declared in StaticPicture::
   Icons = {
     :destroy => :delete,
     :edit => :edit,
@@ -52,7 +52,7 @@ module WelcomeHelper
   def build_bloc(elt, texts, icons)
     controller = elt.first
     elt.last.each do |action|
-      next unless session[:user].authorized? "#{controller}/#{action}"
+      next unless @session_user.authorized? "#{controller}/#{action}"
       options = { :controller => controller, :action => action }
       ### Texts ###
       @@texts.each { |i| case action; when *(i.first)
@@ -63,9 +63,9 @@ module WelcomeHelper
       ### Icons ###
       Icons.each { |i| case action.intern; when *(i.first)
           if i.last.is_a? Array
-            icons.push link_to(StaticImage.send(i.last.first), options)
+            icons.push link_to(StaticPicture.send(i.last.first), options)
           else
-            icons.push StaticImage.send(i.last)
+            icons.push StaticPicture.send(i.last)
           end
         end
       }
@@ -77,7 +77,7 @@ module WelcomeHelper
 
   def preview_image(theme)
     image = image_tag("screenshots/#{theme}_preview.png",
-                      StaticImage.options(_('%s theme') % theme, '258x142'))
+                      StaticPicture.options(_('%s theme') % theme, '258x142'))
     public_link_to(image, theme_welcome_path(:theme => theme), :method => :post)
   end
 

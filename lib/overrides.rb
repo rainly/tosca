@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -66,8 +66,8 @@ class Date
   }
 
   # Dynamic cache for variable holidays, for performance reason
-  @@variable_holidays = Hash.new
-  def self.VariableHolidays(year)
+  @@variable_holidays = {}
+  def self.variable_holidays(year)
     cache = @@variable_holidays[year]
     return cache unless cache.nil?
 
@@ -96,14 +96,14 @@ class Date
   def working?
     return false if self.cwday > 5 # 6,7 => Week End
     return false if FixedHolidays.include? Date.new(0, self.month, self.day)
-    return false if Date.VariableHolidays(self.year).include? self
+    return false if Date.variable_holidays(self.year).include? self
     true
   end
 
 end
 
-
 class Time
+  include FastGettext::Translation
   ##
   # Compute the difference between <tt>start_date</tt> and
   # <tt>end_date</tt> during Working Days, as define in Date::working?
@@ -184,18 +184,7 @@ class Time
   # Time.in_words(10.hours, 5)
   # Time.in_words(2.days + 10.hours)
   # Time.in_words(0.5.days, true)
-  @@first_time = true
   def self.in_words(distance_in_seconds, dayly_time = 24)
-    # Needed for putting libs into the tranlaste world of TOSCA
-    # We cannot load it into config/environnement.rb, current version
-    # of gettext bug with current version of gettext_localize
-    # as of 10/04/08
-    # TODO : find the bug or check it later
-    if @@first_time
-      GetText.bindtextdomain 'tosca'
-      @@first_time = nil
-    end
-
     return _('Immediate') if distance_in_seconds == 0
     return '-' unless distance_in_seconds.is_a?(Numeric) and distance_in_seconds > 0
     return '-' unless dayly_time == true or (dayly_time > 0 and dayly_time < 25)
@@ -273,8 +262,6 @@ class CGI
   end
 end
 
-
-
 class ActionController::Caching::Sweeper
   # Helper, in order to expire fragments, see ActiveRecord#fragments()
   # for more info
@@ -349,7 +336,7 @@ module ActionView::Helpers::UrlHelper
     # does not have access to the page. See the hack to define_url_helper
     # for more information
 
-    user = session[:user]
+    user = @session_user
     unless user.nil? or url.blank?
       required_perm = nil
       if options.is_a?(Hash) and options.has_key? :action
@@ -370,7 +357,6 @@ module ActionView::Helpers::UrlHelper
   end
 
 end
-
 
 
 # This module is overloaded, mainly for performance
@@ -400,24 +386,25 @@ module ActiveRecord
     # /!\ Beware of applying the collect!{|c| [ c.name, c.id ] } before
     #     displaying it /!\
     def self.find_select(options = {}, collect = true)
-      options[:select] = "#{self.table_name}.id, #{self.table_name}.name"
-      options[:order] ||= "#{self.table_name}.name ASC"
-      res = self.find(:all, options)
+      options[:select] = "#{table_name}.id, #{table_name}.name"
+      options[:order] ||= "#{table_name}.name ASC"
+      res = self.all(options)
       res.collect!{ |o| [o.name, o.id] } if collect
       res
     end
 
     # Same as #find_select, but returns only active objects
     def self.find_active4select(options = {}, collect = true)
-      options[:select] = 'id, name'
-      table_name = self.table_name
+      options[:select] = "#{table_name}.id, #{table_name}.name"
       if options.has_key? :conditions
-        options[:conditions] += " AND #{table_name}.inactive = 0"
+        options[:conditions] = [ options[:conditions] ] if options[:conditions].is_a?(String)
+        options[:conditions][0] += " AND #{table_name}.inactive = ?"
+        options[:conditions].concat([false])
       else
-        options[:conditions] = "#{table_name}.inactive = 0"
+        options[:conditions] = [ "#{table_name}.inactive = ?", false ]
       end
       options[:order] ||= "#{table_name}.name ASC"
-      res = self.find(:all, options)
+      res = self.all(options)
       res.collect!{ |o| [o.name, o.id] } if collect
       res
     end
@@ -450,12 +437,23 @@ module ActiveRecord
       end
       res
     end
+
+    # Used to launch or not the scope system. See lib/scope.rb for more details
+    def self.scope_client?
+      false
+    end
+    def self.scope_contract?
+      false
+    end
   end
 end
 
 
 # This one fix a bug encountered with cache + mongrel + prefix.
 # Url was badly rewritten
+# deactivated for rails 2.2.2
+# TODO : see if it's needed or if it can go out
+=begin
 module ActionView
   module Helpers
     module AssetTagHelper
@@ -507,7 +505,7 @@ module ActionView
     end
   end
 end
-
+=end
 
 
 #To have homemade message-id in mails
@@ -522,14 +520,14 @@ module TMail
   end
 end
 
-# Add the possibility to create an aut_complete on methods
+# Add the possibility to create an auto_complete on methods
 module AutoComplete
   module ClassMethods
     def auto_complete_for(object, method, model = nil, field = nil, options = {})
       define_method("auto_complete_for_#{object}_#{method}") do
         if object.to_s.camelize.constantize.methods.include? method.to_s
           search = params[object][method]
-          collection = object.to_s.camelize.constantize.find(:all, options)
+          collection = object.to_s.camelize.constantize.all(options)
           result = []
           collection.each do |c|
             result.push c if c.send(method).downcase.include? search.downcase or search == "*"
@@ -541,10 +539,32 @@ module AutoComplete
             :conditions => [ "LOWER(#{method}) LIKE ?", '%' + params[object][method].downcase + '%' ],
             :order => "#{method} ASC",
             :limit => 10 }.merge!(options)
-          @items = object.to_s.camelize.constantize.find(:all, find_options)
+          @items = object.to_s.camelize.constantize.all(find_options)
         end
         render :inline => "<%= auto_complete_choice('#{object}', '#{method}', @items, '#{model}[#{field}_ids]') %>"
       end
     end
   end
+end
+
+class Test::Unit::TestCase
+
+  class << self
+    #Add loading fixtures from extentions
+    def fixtures(*table_names)
+      if table_names.first == :all
+        table_names = Dir["#{fixture_path}/*.yml"] + Dir["#{fixture_path}/*.csv"] +
+          Dir["#{RAILS_ROOT}/vendor/extensions/*/test/fixtures/*.yml"] +
+          Dir["#{RAILS_ROOT}/vendor/extensions/*/test/fixtures/*.csv"]
+        table_names.map! { |f| File.basename(f).split('.')[0..-2].join('.') }
+      else
+        table_names = table_names.flatten.map { |n| n.to_s }
+      end
+
+      self.fixture_table_names |= table_names
+      require_fixture_classes(table_names)
+      setup_fixture_accessors(table_names)
+    end
+  end
+
 end

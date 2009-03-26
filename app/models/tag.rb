@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -21,19 +21,25 @@ require_dependency 'vendor/plugins/acts_as_taggable_on_steroids/lib/tag.rb'
 class Tag
 
   belongs_to :user
-  belongs_to :competence
+  belongs_to :skill
   belongs_to :contract
 
   def full_name
     name = self.name.dup
     if self.contract_id
       name << " (#{self.contract.name})"
-    elsif self.competence_id
-      name << " (#{self.competence.name})"
+    elsif self.skill_id
+      name << " (#{self.skill.name})"
     else
       #Something ?
     end
     name
+  end
+
+
+  # This model is scoped by Contract
+  def self.scope_contract?
+    true
   end
 
   # See ApplicationController#scope
@@ -45,7 +51,7 @@ class Tag
   end
 
   def self.find_or_create_with_like_by_name(name)
-    find(:first, :conditions => ["name LIKE ?", name]) || create(:name => name)
+    first(:conditions => ["name LIKE ?", name]) || create(:name => name)
   end
 
   def self.find_or_create_with_like_by_name_and_contract_id(name, contract_id)
@@ -54,25 +60,25 @@ class Tag
   end
 
   def self.get_generic_tag
-    return Tag.find(:all, :conditions => ["competence_id IS NULL and contract_id IS NULL"] )
+    return Tag.all(:conditions => ['skill_id IS NULL and contract_id IS NULL'] )
   end
 
-  def self.get_competence_tag(competences = nil)
-    if competences.nil?
-      conditions = ["competence_id IS NOT NULL"]
+  def self.get_skill_tag(skills = nil)
+    if skills.nil?
+      conditions = ['skill_id IS NOT NULL']
     else
-      conditions = ["competence_id IN (?) ", competences ]
+      conditions = ["skill_id IN (?) ", skills ]
     end
-    return Tag.find( :all, :conditions => conditions )
+    return Tag.all(:conditions => conditions )
   end
 
   def self.get_contract_tag(contracts = nil)
     if contracts.nil?
-      conditions = ["contract_id IS NOT NULL"]
+      conditions = ['contract_id IS NOT NULL']
     else
       conditions = ["contract_id IN (?) ", contracts ]
     end
-    return Tag.find( :all, :conditions => conditions )
+    return Tag.all(:conditions => conditions)
   end
 
 end

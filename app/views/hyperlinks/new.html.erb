@@ -1,0 +1,31 @@
+<h1><%= _("A new url") %></h1>
+
+<% form_for(@hyperlink) do |f| %>
+  <%= f.error_messages %>
+
+  <p>
+    <%= f.label :name %><br />
+    <%= f.text_field :name %>
+  </p>
+  <p>
+    <%= f.label :model_type %>
+    <% if @hyperlink.model_type %>
+      <%= @hyperlink.model_type.to_s %><%= f.hidden_field(:model_type) %>
+    <% else %>
+      <br /><%= f.text_field(:model_type) %>
+    <% end %>
+  </p>
+  <p>
+    <%= f.label :model_id %>
+    <% if @hyperlink.model_id %>
+      <%= @hyperlink.model_id.to_s %><%= f.hidden_field(:model_id) %>
+    <% else %>
+      <br /><%= f.text_field(:model_id) %>
+    <% end %>
+  </p>
+  <p>
+    <%= f.submit _("Create") %>
+  </p>
+<% end %>
+
+<%= link_to _('Back'), hyperlinks_path %>

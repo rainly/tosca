@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -32,6 +32,6 @@ class LoadSkills < ActiveRecord::Migration
   end
 
   def self.down
-    Competence.find(:all).each{ |c| c.destroy }
+    Competence.all.each{ |c| c.destroy }
   end
 end

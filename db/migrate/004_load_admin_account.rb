@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -29,6 +29,8 @@ class LoadAdminAccount < ActiveRecord::Migration
     admin_id, manager_id, expert_id, customer_id, viewer_id = 1,2,3,4,5
     # Id must be setted aside, unless it won't works as expected
     ### as of Rails 1.2.x
+    require 'digest'
+    require 'digest/sha1'
     user = Identifiant.new(:login => 'admin', :nom => 'Admin', :role_id =>
                            admin_id, :password =>
                            Digest::SHA1.hexdigest("linagora--#{'admin'}--"),

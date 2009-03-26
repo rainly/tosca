@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -22,6 +22,6 @@ class TagTest < ActiveSupport::TestCase
   fixtures :tags
 
   def test_to_strings
-    check_strings Tag 
+    check_strings Tag
   end
 end

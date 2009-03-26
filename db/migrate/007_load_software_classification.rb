@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -32,6 +32,6 @@ class LoadSoftwareClassification < ActiveRecord::Migration
   end
 
   def self.down
-    Groupe.find(:all).each{ |g| g.destroy }
+    Groupe.all.each{ |g| g.destroy }
   end
 end

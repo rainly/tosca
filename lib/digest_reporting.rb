@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -30,17 +30,15 @@ module DigestReporting
     # We must localise it after getting the (english) helper for the start date
     @period = _(@period)
 
-    options = { :conditions => [ "updated_on >= ? ", updated ],
-     :order => "contract_id ASC", :include => [:typeissue, :severity, :statut]}
-    issues = Issue.find(:all, options)
+    issues = @session_user.issues
 
-    @result = Array.new
+    @result = []
     last_contract_id = nil
     issues.each do |r|
       if last_contract_id != r.contract_id
         dc = DigestContracts.new
         dc.contract = r.contract
-        dc.issues = Array.new
+        dc.issues = []
         @result.push(dc)
       end
 
@@ -49,55 +47,11 @@ module DigestReporting
       dr = DigestIssues.new
       dr.issue = r
       dr.issue_at = r.state_at(updated)
-      dr.comments = r.comments.find(:all, options)
+      dr.comments = r.comments.all(options)
       @result.last.issues.push(dr)
 
       last_contract_id = r.contract_id
     end
-  end
-
-  #important is an array of Issue, other is an array of DigestContracts
-  DigestManagers = Struct.new(:important, :other)
-
-  def digest_managers(period)
-    @period = period
-    @period = "year" if period.blank?
-    updated = Time.now.send("beginning_of_#{@period}")
-    # We must localise it after getting the (english) helper for the start date
-    @period = _(@period)
-
-    options = { :conditions => [ "updated_on >= ? ", updated ],
-     :order => "contract_id ASC", :include => [:typeissue, :severity, :statut]}
-    issues = Issue.find(:all, options)
-
-    @result = DigestManagers.new
-    @result.important = Array.new
-    @result.other = Array.new
-    last_contract_id = nil
-    issues.each do |r|
-      if last_contract_id != r.contract_id and not r.critical?
-        dc = DigestContracts.new
-        dc.contract = r.contract
-        dc.issues = Array.new
-        @result.other.push(dc)
-      end
-
-      if r.critical?
-        @result.important.push(r)
-      else
-
-        options = { :conditions => [ "created_on >= ? ", updated ] }
-
-        dr  = DigestIssues.new
-        dr.issue = r
-        dr.issue_at = r.state_at(updated)
-        dr.comments = r.comments.find(:all, options)
-        @result.other.last.issues.push(dr)
-      end
-
-      last_contract_id = r.contract_id
-    end
-
   end
 
 end

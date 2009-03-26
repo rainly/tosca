@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -20,7 +20,7 @@ ENV["RAILS_ENV"] = "test"
 require File.expand_path(File.dirname(__FILE__) + "/../config/environment")
 require 'test_help'
 
-class Test::Unit::TestCase
+class ActiveSupport::TestCase
   # Transactional fixtures accelerate your tests by wrapping each test method
   # in a transaction that's rolled back on completion.  This ensures that the
   # test database remains unchanged so your fixtures don't have to be reloaded
@@ -120,7 +120,7 @@ class Test::Unit::TestCase
   # Ex : check_strings(Document, :date_delivery_on_formatted)
   # => will call all StringMethods and the additionnal date_delivery_on_formatted
   def check_strings(klass, *methods)
-    klass.find(:all).each { |o|
+    klass.all.each { |o|
       StringMethods.each { |m|
         begin
           assert !o.send(m).blank? if o.respond_to? m
@@ -161,6 +161,10 @@ class Test::Unit::TestCase
         raise Exception.new("check arrays failed on #{m} for model #{klass}")
       end
     }
+  end
+
+  def setup
+    FastGettext.text_domain = 'tosca'
   end
 
 end

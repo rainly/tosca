@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -43,6 +43,6 @@ class LoadCommitments < ActiveRecord::Migration
   end
 
   def self.down
-    Engagement.find(:all).each{ |e| e.destroy }
+    Engagement.all.each{ |e| e.destroy }
   end
 end

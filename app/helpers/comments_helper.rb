@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -26,13 +26,13 @@ module CommentsHelper
       name = "<b>-</b>"
     end
 
-    ingenieur = comment.ingenieur
-    unless ingenieur.nil?
-      if ingenieur.user_id == comment.user_id
+    engineer = comment.engineer
+    unless engineer.nil?
+      if engineer.id == comment.user_id
         out << (_('This issue has been taken into account by %s.') % name )
       else
         out << (_('This issue has been assigned to %s by %s.') %
-                [ "<b>#{ingenieur.name}</b>", name ])
+                [ "<b>#{engineer.name}</b>", name ])
       end
     end
     statut = comment.statut
@@ -61,7 +61,7 @@ module CommentsHelper
     result << c.text
     attachment = c.attachment
     unless attachment.blank? or attachment.file.blank?
-      result << "<br /><br />#{StaticImage::folder} "
+      result << "<br /><br />#{StaticPicture::folder} "
       result << link_to_file(attachment, :file).to_s
       result << " (#{file_size(attachment.file)})"
       result << link_to_file_redbox(attachment, :file).to_s

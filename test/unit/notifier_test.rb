@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -19,7 +19,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 require 'notifier'
 
-class NotifierTest < Test::Unit::TestCase
+class NotifierTest < ActiveSupport::TestCase
   fixtures :users, :issues
   CHARSET = "utf-8"
 
@@ -35,46 +35,35 @@ class NotifierTest < Test::Unit::TestCase
   end
 
   def test_user_signup
-    user = User.find(:first)
+    user = User.first(:order => :id)
+    sender = users(:user_admin)
     newpass = 'newpass'
     user.pwd = newpass
-    response = Notifier::deliver_user_signup :user => user, :password => newpass
+    response = Notifier::deliver_user_signup(user)
     assert_match(/identifiant : #{user.login}/, response.body)
     assert_match(/mot de passe: #{newpass}/, response.body)
     assert_equal user.email, response.to[0]
   end
 
   def test_issue_new
-    issue = Issue.find(:first)
-    options = { :issue => issue, :name => issue.submitter.name,
-      :user => User.first,
-      :url_issue => "www.issue.com", :url_attachment => "www.attachment.com" }
-    response = Notifier::deliver_issue_new(options)
+    issue = Issue.first(:order => :id)
+    response = Notifier::deliver_issue_new(issue)
     assert_match issue.resume, response.subject
     assert_match html2text(issue.description), response.body
-    assert_match options[:url_issue], response.body
-    assert_match options[:url_attachment], response.body
-    assert_match options[:name], response.body
+    assert_match issue.submitter.name, response.body
   end
 
   def test_issue_new_comment
-    issue = Issue.find(:first)
+    issue = Issue.first(:order => :id)
     comment = issue.first_comment
-    options = { :issue => issue, :name => issue.submitter.name,
-      :user => User.first,
-      :url_issue => "www.issue.com", :url_attachment => "www.attachment.com",
-      :modifications => {:statut_id => true, :ingenieur_id => true, :severity_id => true},
-      :comment => comment }
-    response = Notifier::deliver_issue_new_comment(options)
+    response = Notifier::deliver_issue_new_comment(comment)
     assert_match issue.resume, response.subject
     assert_match html2text(comment.text), response.body
-    assert_match options[:url_issue], response.body
-    assert_match options[:url_attachment], response.body
-    assert_match options[:name], response.body
+    assert_match issue.submitter.name, response.body
   end
 
   def test_welcome_idea
-    user = User.find(:first)
+    user = User.first(:order => :id)
     text = "this is an automated test suggestion"
     [:team,:tosca,:bullshit].each { |to|
       response = Notifier::deliver_welcome_idea(text, to, user)

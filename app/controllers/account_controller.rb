@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -18,22 +18,20 @@
 #
 
 class AccountController < ApplicationController
-  helper :knowledges
+  helper :knowledges, :contracts, :issues
 
   cache_sweeper :user_sweeper, :only => [:signup, :update]
 
-  PasswordGenerator
+  include PasswordGenerator
 
   # No clear text password in the log.
   # See http://api.rubyonrails.org/classes/ActionController/Base.html#M000441
   filter_parameter_logging :password
 
-  helper :filters, :ingenieurs, :recipients, :roles, :export
+  helper :roles
 
-  around_filter :scope, :except => [:login, :logout, :lemon]
-
+  # There's no need to check login on those actions
   skip_before_filter :login_required, :only => [:login, :logout]
-
 
   # Only available with POST, see config/routes.rb
   def login
@@ -41,19 +39,15 @@ class AccountController < ApplicationController
     when :post
       # For automatic login from an other web tool,
       # password is provided already encrypted
-      user_crypt = params.has_key?('user_crypt') ? params['user_crypt'] : 'false'
-      if session[:user] = User.authenticate(params['user_login'],
-                                                    params['user_password'],
-                                                    user_crypt)
-        _login(session[:user])
-        # When logged from an other tool, the referer is not a valid page
-        session[:return_to] ||= request.env['HTTP_REFERER'] unless user_crypt
+      user = User.authenticate(params['user_login'], params['user_password'])
+      if user
+        _login(user)
         redirect_back_or_default welcome_path
       else
         clear_sessions
         id = User.find_by_login(params['user_login'])
         flash.now[:warn] = _("Connexion failure")
-        flash.now[:warn] << ", " << _("your account has been desactivated") if id and id.inactive?
+        flash.now[:warn] += _(", your account has been desactivated") if id and id.inactive?
       end
     else # Display form
     end
@@ -68,7 +62,7 @@ class AccountController < ApplicationController
 
     # in case of "su" style use, relog to previous one
     _login(last_user) if last_user
-    redirect_to "/"
+    redirect_to '/'
   end
 
   def new
@@ -79,37 +73,25 @@ class AccountController < ApplicationController
   def signup
     case request.method
     when :get # Display form
-      @user = User.new(:role_id => 4, :client => true) # Default : customer
-      @user_recipient = Recipient.new
+      @user = User.new(:role_id => 4, :client_id => 0) # Default : customer
+      _form
     when :post # Process form
-      @user = User.new(params['user'])
+      @user = User.new(params[:user])
       @user.generate_password # from PasswordGenerator, see lib/
-      connection = @user.connection
-      begin
-        connection.begin_db_transaction
-        if @user.save
-          associate_user!
-          Notifier::deliver_user_signup({:user => @user, :session_user => session[:user]}, flash)
-          # The commit has to be after sending email, not before
-          connection.commit_db_transaction
-          flash[:notice] = _("Account successfully created.")
-          redirect_to account_path(@user)
-        else
-          # Those variables are used by _form in order to display the correct form
-          associate_user
-          @user_recipient, @user_engineer = @user.recipient, @user.ingenieur
-        end
-      rescue Exception => e
-        connection.rollback_db_transaction
-        flash[:warn] = e.message
+      _associate_user
+      if @user.save
+        # The commit has to be after sending email, not before
+        flash[:notice] = _("Account successfully created.")
+        flash[:notice] += message_notice(@user.email, nil)
+        redirect_to account_path(@user)
+      else
+        _form
       end
     end
-    _form
   end
 
   def show
     @user = User.find(params[:id])
-    @user_recipient, @user_engineer = @user.recipient, @user.ingenieur
     _form
   end
 
@@ -118,7 +100,7 @@ class AccountController < ApplicationController
   # TODO : this method is too long
   def index
     options = { :per_page => 15, :order => 'users.role_id, users.login',
-      :include => [:recipient,:ingenieur,:role] }
+      :include => [:role], :page => params[:page] }
     conditions = []
     @roles = Role.find_select
 
@@ -132,7 +114,7 @@ class AccountController < ApplicationController
       # [ namespace, field, database field, operation ]
       conditions = Filters.build_conditions(accounts_filters, [
         [:name, 'users.name', :like ],
-        [:client_id, 'recipients.client_id', :equal ],
+        [:client_id, 'users.client_id', :equal ],
         [:role_id, 'users.role_id', :equal ]
       ])
       flash[:conditions] = options[:conditions] = conditions
@@ -142,46 +124,44 @@ class AccountController < ApplicationController
     # Experts does not need to be scoped on accounts, but they can filter
     # only on their contract.
     scope = {}
-    if @recipient
-      scope = User.get_scope(session[:user].contract_ids)
+    if @session_user.recipient?
+      scope = User.get_scope(@session_user.contract_ids)
     end
     User.send(:with_scope, scope) do
-      @user_pages, @users = paginate :users, options
+      @users = User.paginate options
     end
     # panel on the left side. cookies is here for a correct 'back' button
     if request.xhr?
       render :layout => false
     else
       _panel
-      @partial_for_summary = 'users_info'
+      @partial_panel = 'index_panel'
     end
   end
 
   def edit
     @user = User.find(params[:id])
-    @user_recipient, @user_engineer = @user.recipient, @user.ingenieur
     _form
   end
 
   def update
     @user = User.find(params[:id])
-    @user_recipient, @user_engineer = @user.recipient, @user.ingenieur
 
     # Security Wall
-    if session[:user].role_id > 2 # Not a manager nor an admin
+    if @session_user.role_id > 2 # Not a manager nor an admin
       params[:user].delete :role_id
       params[:user].delete :contract_ids
     end
 
     res = @user.update_attributes(params[:user])
-    if res and @user_recipient
-      res &= @user_recipient.update_attributes(params[:user_recipient])
+    if res and @user.recipient?
+      res &= @user.update_attributes(params[:user_recipient])
     end
-    if res and @user_engineer
-      res &= @user_engineer.update_attributes(params[:user_engineer])
+    if res and @user.engineer?
+      res &= @user.update_attributes(params[:user_engineer])
     end
     if res # update of account fully ok
-      set_sessions @user if session[:user] == @user
+      set_sessions @user if @session_user == @user
       flash[:notice]  = _("Edition succeeded")
       redirect_to account_path(@user)
     else
@@ -192,45 +172,19 @@ class AccountController < ApplicationController
     end
   end
 
-  # login with lemon-ldap technology.
-  # Administrator ensures that only authenticated client
-  #  can have access to this page, and provides some HTTP headers
-  #  in order to log in / create an engineer account.
-  def lemon
-    [ [ 'HTTP_AUTH_CN', :name ],
-      [ 'HTTP_AUTH_MAIL', :email ],
-      [ 'HTTP_AUTH_MOBILE', :phone ],
-      [ 'HTTP_AUTH_O', :description ], # Company
-      # Unused : [ 'HTTP_AUTH_SN', :Cherif ],
-      [ 'HTTP_AUTH_USER',  :login ] # TODO : check this field with Bayrem
-    ]
-    redirect_to welcome_path
-=begin
-    login = request.env['HTTP_AUTH_LOGIN']
-    return redirect_to(welcome_path) unless login
-    user = User.find(:first, :conditions => { :login => login })
-    if user
-      _login user
-    end
-    redirect_to(welcome_path)
-=end
-  end
-
   def forgotten_password
-    case request.method
-    when :get
-      # Do nothing
-    when :post
+    if request.method == :post
       user = params[:user]
       return unless user && user.has_key?(:email) && user.has_key?(:login)
       flash[:warn] = _('Unknown account')
       conditions = { :email => user[:email], :login => user[:login] }
-      @user = User.find(:first, :conditions => conditions)
+      @user = User.first(:conditions => conditions)
       return unless @user
       if @user.generate_password and @user.save
         flash[:warn] = nil
         flash[:notice] = _('Your new password has been generated.')
-        Notifier::deliver_user_signup({:user => @user, :session_user => session[:user]}, flash)
+        #TODO : find a way to put it in the model user
+        Notifier::deliver_user_signup(@user)
       end
     end
   end
@@ -238,9 +192,9 @@ class AccountController < ApplicationController
   # Let an Engineer become a client user
   def become
     begin
-      if @ingenieur
-        current_user = session[:user]
-        set_sessions(Recipient.find(params[:id]).user)
+      if @session_user.engineer?
+        current_user = @session_user
+        set_sessions(User.find(params[:id]))
         session[:last_user] = current_user
       else
         flash[:warn] = _('You are not allowed to change your identity')
@@ -255,12 +209,8 @@ class AccountController < ApplicationController
   # Used during creation to display engineer or recipient form
   def ajax_place
     return render(:nothing => true) unless request.xhr? and params.has_key? :client
-    if params[:client] == 'true'
-      @user_recipient = Recipient.new
-    else
-      @user_engineer = Ingenieur.new
-    end
     @user = User.new
+    @user.client_id = (params[:client] == 'true' ? 0 : nil)
     _form
   end
 
@@ -282,10 +232,6 @@ class AccountController < ApplicationController
     @contracts = Contract.find_select(options)
     @user = (user_id.blank? ? User.new : User.find(user_id))
   end
-
-  # Format du fichier CSV
-  COLUMNS = [ _('Full name'), _('Title'), _('Email'), _('Phone'),
-              _('Login'), _('Password'), _('Informations') ]
 
 
 private
@@ -320,8 +266,8 @@ private
 
   # Partial variables used in forms
   def _form
-    conditions = (@user_engineer ?
-                  [ 'roles.id BETWEEN ? AND 3', session[:user].role_id ] :
+    conditions = (@user.engineer? ?
+                  [ 'roles.id BETWEEN ? AND 3', @session_user.role_id ] :
                   'roles.id BETWEEN 4 AND 5')
     options = { :order => 'id', :conditions => conditions }
     @roles = Role.find_select(options)
@@ -329,19 +275,14 @@ private
   end
 
   def _form_recipient
-    return unless @user_recipient
-    @clients = Client.find_select({}, false)
-    client_id = (@user_recipient.client ? @user_recipient.client_id : @clients.first.id)
-    options = { :conditions => ['contracts.client_id = ?', client_id ]}
-
-    @contracts = Contract.find_select(Contract::OPTIONS.merge(options))
-    @clients.collect!{|c| [c.name, c.id] }
+    return unless @user.recipient?
+    @clients = Client.find_select
     @user.role_id = 4 if @user.new_record?
   end
 
   def _form_engineer
-    return unless @user_engineer
-    @competences = Competence.find_select
+    return unless @user.engineer?
+    @competences = Skill.find_select
     @contracts = Contract.find_select(Contract::OPTIONS)
     # For usability matters, list of checkable own_contracts
     # won't contains any already available by the team.
@@ -350,26 +291,22 @@ private
     @user.role_id = 3 if @user.new_record?
   end
 
-  # Variables utilisé par le panneau de gauche
   def _panel
-    @clients = Client.find_select unless session[:user].client?
-    if session[:user].role_id <= 2
+    @clients = Client.find_select if @session_user.expert?
+    if @session_user.manager?
       @count = {}
-
       @count[:users] = User.count
-      @count[:recipients] = Recipient.count
-      @count[:ingenieurs] = Ingenieur.count
+      @count[:recipients] = User.recipients.size
+      @count[:engineers] = User.engineers.size
     end
   end
 
-  # variable utilisateurs; nécessite session[:user]
-  # penser à mettre à jour les pages statiques 404
-  # et 500 en cas de modification
-  # Le menu du layout est inclus pour des raisons de performances
+  # session variables, needs @session_user
+  # DO NOT forget to check 404 & 500 error pages if you change this method
   def set_sessions(user)
     return_to, theme = session[:return_to], session[:theme]
 
-    # clear_session erase session[:user]
+    # clear_session erase @session_user
     clear_sessions
 
     # restoring previously consulted page
@@ -381,23 +318,13 @@ private
 
   # Used during login and logout
   def clear_sessions
-    @recipient = nil
-    @ingenieur = nil
     reset_session
   end
 
   # Used during signup, It saves the associated recipient/expert
   # Put in a separate method in order to improve readiblity of the code
-  def associate_user!
-    associate_user
-    benef, inge = @user.recipient, @user.ingenieur
-    benef.update_attributes(params[:recipient]) if benef
-    inge.update_attributes(params[:ingenieur]) if inge
-  end
-
-  # This one does not save anything, used when form was incorrectly setted
-  def associate_user
-    if params[:user][:client]=='false'
+  def _associate_user
+    if params[:user][:client_form] == 'false'
       @user.associate_engineer
     elsif params.has_key? :user_recipient
       @user.associate_recipient(params[:user_recipient][:client_id])
@@ -406,66 +333,8 @@ private
 
 
   # Bulk import users
-  # TODO : this method is too fat, unused, untested and have a lots
   # of improvements possibility. It's deactivated for now, until
   # someone find some times in order have it work properly
   # require 'fastercsv'
-=begin
-  def multiple_signup
-    _form
-    @user = User.new
-    case request.method
-    when :post
-      if (params['textarea_csv'].to_s.empty?)
-        flash.now[:warn] = _('Enter data under CSV format please')
-      end
-      COLUMNS.each { |key|
-        unless row.include? key
-          flash.now[:warn] = _('The CSV file is not correct')
-        end
-      }
-      if !params.has_key? :user or params[:user][:client].blank?
-        flash.now[:warn] = _('You have to specify a customer')
-      end
-      if !params.has_key? :user or params[:user][:role_ids].blank?
-        flash.now[:warn] = _('Vous must specify a role')
-      end
-
-      return unless flash.now[:warn] == ''
-      flash[:notice] = ''
-
-      FasterCSV.parse(params['textarea_csv'].to_s.gsub("\t", ";"),
-                      { :col_sep => ";", :headers => true }) do |row|
-        user = User.new do |i|
-           logger.debug(row.inspect)
-           i.name = row[_('Full name')].to_s
-           i.title = row[_('Title')].to_s
-           i.email = row[_('Email')].to_s
-           i.phone = row[_('Phone')].to_s
-           i.login = row[_('Login')].to_s
-           i.password = row[_('Password')].to_s
-           i.password_confirmation = row[_('Password')].to_s
-           i.informations = row[_('Informations')].to_s
-           i.client = true
-        end
-        if user.save
-          client = Client.find(params[:client][:id])
-          flash[:notice] += _("The user %s have been successfully created.<br />") % row[_('Full name')]
-          user.create_person(client)
-          options = { :user => user, :controller => self,
-            :password => row[_('Password')].to_s }
-          Notifier::deliver_new_user(options, flash)
-          flash[:notice] += '<br />'
-        else
-          flash.now[:warn] += _('The user %s  has not been created.<br /> ') %
-            user.name
-        end
-
-      end
-      redirect_back_or_default accounts_path
-    when :get
-    end
-  end
-=end
 
 end

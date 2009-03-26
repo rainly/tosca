@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -19,17 +19,6 @@
 class Statut < ActiveRecord::Base
   has_many :issues
 
-  #######################################
-  N_('Submitted') #1  	Enregistrée     #
-  N_('Active')    #2	Prise en compte #
-  N_('Suspended') #3	Suspendue       #
-  N_('Analysed')  #4	Analysée        #
-  N_('Bypassed')  #5 	Contournée      #
-  N_('Fixed')     #6	Corrigée        #
-  N_('Closed')    #7	Clôturée        #
-  N_('Cancelled') #8    Annulée         #
-  #######################################
-
   # used in lib/comex_reporting and models/issue.rb
   # Please be EXTREMELY cautious if you touch them.
   OPENED = [ 1, 2, 3, 4, 5 ] # We need to work on it
@@ -44,33 +33,27 @@ class Statut < ActiveRecord::Base
     xs.each{|x| x.freeze}.freeze
   end
 
-  Active = 2
-  Bypassed = 5
-  Fixed = 6
+  # Used by elapsed cache, see Elapsed model for more info.
+  Active, Bypassed, Fixed= 2, 5, 6
 
-
-  # Give possible status for next step of a request
-  # Even recipient can change some status,
-  # when it's for closed or cancelled an issue.
-  # TODO : allow dynamic editing of this logic in Web Browser
-  def possible(recipient = nil)
-    search =
-      if recipient
-        return [] unless id == 3 || id == 2
-        'id IN (6,7,8)'
-      else
-        case id
-        when 1 then 'id IN (2)'            # Submitted -> Active
-        when 2 then 'id IN (3,4,5,6,7,8)'  # Active -> Suspended, Analysed, Bypassed, Fixed, Closed, Cancelled
-        when 3 then 'id IN (2,4,5,6,7,8)'  # Suspended -> Active, Analysed, Bypassed, Fixed, Closed, Cancelled
-        when 4 then 'id IN (2,3)'          # Analysed -> Active,Suspended
-        when 5 then 'id IN (2,3,6,7,8)'    # Bypassed -> Active, Suspended, Fixed, Closed, Cancelled
-        when 6 then 'id IN (7,2)'          # Fixed -> Closed, Active
-        when 7 then 'id IN (2)'            # Closed -> Active
-        when 8 then 'id IN (2)'            # Cancelled -> Active
-        end
-      end
-    Statut.find_select(:conditions => search, :order => 'statuts.id')
+  # It's one of the rare "heavily used & fixed" AR model,
+  # So we can include it in the translation mechanism
+  def name
+    _(read_attribute(:name))
   end
 
+
+  private
+  def fake4translation
+    #######################################
+    N_('Submitted') #1  Enregistrée       #
+    N_('Accepted')  #2	Accepté           #
+    N_('Suspended') #3	Suspendue         #
+    N_('Analysed')  #4	Analysée          #
+    N_('Bypassed')  #5 	Contournée        #
+    N_('Fixed')     #6	Corrigée          #
+    N_('Closed')    #7	Clôturée          #
+    N_('Cancelled') #8  Annulée           #
+    #######################################
+  end
 end

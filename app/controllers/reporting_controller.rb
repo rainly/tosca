@@ -1,5 +1,5 @@
-#
-# Copyright (c) 2006-2008 Linagora
+  #
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -17,8 +17,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 class ReportingController < ApplicationController
-  helper :issues, :export
-  include WeeklyReporting
+  helper :issues, :contracts, :dates
+
   include DigestReporting
 
   # Default colors are distributed by alphabetical order of severity
@@ -45,7 +45,7 @@ class ReportingController < ApplicationController
 
   # allows to launch activity report
   def configuration
-    @contracts = session[:user].contracts.sort!{|a, b| a.name <=> b.name}
+    @contracts = @session_user.contracts.sort!{|a, b| a.name <=> b.name}
   end
 
   # To display new issues by months
@@ -65,13 +65,13 @@ class ReportingController < ApplicationController
     #   FROM issues
     #   WHERE (created_on BETWEEN '2007-10-01 00:00:00' AND '2008-11-30 23:59:59')
     #   GROUP BY DAYOFMONTH(issues.created_on);
-    issues = Issue.find(:all, :conditions => conditions)
+    issues = Issue.all(:conditions => conditions)
     @number_issues = issues.size
 
     #We build a hash of { number_day => [new issues of the day]}
     @issues = {}
     issues.each do |r|
-      @issues[r.created_on.day] ||= Array.new
+      @issues[r.created_on.day] ||= []
       @issues[r.created_on.day].push(r)
     end
   end
@@ -85,7 +85,7 @@ class ReportingController < ApplicationController
   end
 
   def general
-    _titles()
+    _titles
     redirect_to configuration_reporting_path and return unless
       params[:reporting]
 
@@ -97,8 +97,8 @@ class ReportingController < ApplicationController
 
     init_colors
 
-    #on nettoie
-    # TODO retravailler le nettoyage
+    # we clean
+    # TODO rework the clean
     # reporting = File.expand_path('public/reporting', RAILS_ROOT)
     # rmtree(reporting)
     # Dir.mkdir(reporting)
@@ -123,7 +123,97 @@ class ReportingController < ApplicationController
      @months_col.each { |c| c.gsub!(' \n','&nbsp;') }
   end
 
+  def weekly
+    if params.has_key? 'report' and params['report'].has_key? 'start_date'
+      begin
+        @start_date = Time.parse(params['report']['start_date'])
+      rescue ArgumentError; end
+    end
+    @start_date ||= Time.now
+
+    @start_date = @start_date.beginning_of_week
+    @end_date = @start_date.end_of_week - 2.day
+
+    @title = _('Issues of all your contracts')
+
+    # Specification of a filter f :
+    if params.has_key? :filters
+      session[:weeklyreport_filters] =
+        Filters::WeeklyReport.new(params[:filters])
+      @title = _('Issues of the contract %s') %
+        Contract.find(params[:filters][:contract_id]).name if params[:filters].has_key? :contract_id and
+          not params[:filters][:contract_id].empty?
+    end
+    filters_weekly = session[:weeklyreport_filters]
+
+    created_on_condition = ['comments.created_on BETWEEN ? AND ? AND comments.statut_id IS NOT NULL', @start_date, @end_date ]
+    if filters_weekly
+      filters = [ [:contract_id, 'issues.contract_id', :in ] ]
+      conditions_new = Filters.build_conditions(filters_weekly, filters, created_on_condition)
+    else
+      conditions_new = created_on_condition
+    end
+
+    #TODO : set a :select option ?
+    comments = Comment.all(:conditions => conditions_new,
+      :order => 'comments.issue_id, comments.created_on ASC',
+      :joins => :issue)
+
+    #We build a hash of { "day_hour_minute" => { :new_issues => [[issue, comment], ...],
+    # :updated_issues => [], :running_issues => [] }
+    @issues = {}
+    #We build a hash of { :contract_name => [issues] }
+    @issues_by_contract = {} # Hash.new([])
+    @issues_by_contract.default = []
+
+    @statistics = Hash.new(0)
+
+    last_issue = nil
+    comments.each do |c|
+      key = "#{c.created_on.day}_#{c.created_on.hour}_#{c.created_on.min/30*30}"
+      issue = c.issue
+
+      @issues[key] ||= {}
+      @issues[key][:new_issues] ||= []
+      if c.first_comment?
+        @issues[key][:new_issues].push(issue) if issue != last_issue
+        @statistics[:new_issues] += 1
+      end
+
+      @issues[key][:closed_issues] ||= []
+      if Statut::CLOSED.include? c.statut_id
+        @issues[key][:closed_issues].push(issue) if issue != last_issue
+        @statistics[:closed_issues] += 1
+      end
+
+      @issues[key][:running_issues] ||= []
+      if Statut::Running.include? c.statut_id and issue != last_issue
+        @issues[key][:running_issues].push(issue)
+      end
+
+      @issues_by_contract[issue.contract] ||= []
+      @issues_by_contract[issue.contract].push(issue) if issue != last_issue
+      last_issue = issue
+    end
+
+    @opening_time = Contract.average(:opening_time).to_i - 1
+    @closing_time = Contract.average(:closing_time).to_i + 1
+
+    unless request.xhr?
+      _panel
+      # panel on the left side.
+      @partial_panel = 'weekly_panel'
+      render :template => 'reporting/_weekly_calendar'
+    end
+    # else : Rendering weekly.rjs
+  end
+
   private
+
+  def _panel
+    @contracts = Contract.find_select(Contract::OPTIONS)
+    @teams = Team.find_select
+  end
 
   # initialise toutes les variables de classes nécessaire
   # path stocke les chemins d'accès, @données les données
@@ -232,20 +322,13 @@ class ReportingController < ApplicationController
     # Maintenant on peut mettre à jour @data
     @data.update(middle_report)
     @data.update(total_report)
-    #TODO : se débarrasser de cet héritage legacy
-    #       compute_top5_softwares @data[:top5_softwares]
-    #       Comment.with_scope({ :find => { :conditions => @conditions } }) do
-    #         compute_top5_issues @data[:top5_issues]
-    #       end
-    #     end
   end
-
 
   ##
   # Calcul un tableaux du respect des délais
   # pour les 3 étapes : prise en compte, contournée, corrigée
   def compute_time(data)
-    issues = Issue.find(:all)
+    issues = Issue.all
     phonecalls = data[:callback_time]
     workarounds = data[:workaround_time]
     corrections = data[:correction_time]
@@ -290,7 +373,6 @@ class ReportingController < ApplicationController
     end
   end
 
-
   def init_compute_by_software(report)
     software = Issue.count(:group => "software_id", :conditions =>
                            { :contract_id => @contracts.collect(&:id) })
@@ -330,25 +412,10 @@ class ReportingController < ApplicationController
     report[index].push(others ? others : nil)
   end
 
-  ##
-  # TODO : le faire marcher si y a moins de 5 issues
-  # Sort les 5 issues les plus commentées de l'année
-  def compute_top5_issues(report)
-    comments = Comment.count(:group => 'issue_id')
-    comments = comments.sort {|a,b| a[1]<=>b[1]}
-    5.times do |i|
-      values = comments.pop
-      name = values[0].to_s # "##{values[0]} (#{values[1]})"
-      report.push [ name.intern ]
-      report[i].push values[1]
-    end
-  end
-
-
   def init_compute_by_type
-    @types = Array.new
+    @types = []
     @contracts.each do |c|
-      @types.concat(c.client.typeissues)
+      @types.concat(c.client.issuetypes)
     end
     @types.uniq!
   end
@@ -365,21 +432,21 @@ class ReportingController < ApplicationController
 
     Issue.send(:with_scope, { :find => { :conditions => Issue::OPENED } }) do
       @types.each_with_index do |type, i|
-        conditions = { :conditions => { :typeissue_id => type.id } }
+        conditions = { :conditions => { :issuetype_id => type.id } }
         report[i*2].push Issue.count(conditions)
       end
     end
 
     Issue.send(:with_scope, { :find => { :conditions => Issue::CLOSED } }) do
       @types.each_with_index do |type, i|
-        conditions = { :conditions => { :typeissue_id => type.id } }
+        conditions = { :conditions => { :issuetype_id => type.id } }
         report[i*2+1].push Issue.count(conditions)
       end
     end
 
   end
 
-  def init_compute_by_severity()
+  def init_compute_by_severity
     severities = Severity.all
     severities.each_with_index do |s, i|
       severities[i] = { :conditions => { :severity_id => s.id } }
@@ -429,7 +496,6 @@ class ReportingController < ApplicationController
     report[4].push Issue.count(active)
   end
 
-
   # Lance l'écriture des _3_ graphes
   def write3graph(name, graph)
     __write_graph(name, graph)
@@ -462,24 +528,23 @@ class ReportingController < ApplicationController
     g.labels = @labels
     # g.hide_dots = true if g.respond_to? :hide_dots
     g.hide_legend = true
-    # TODO : mettre ca dans les metadatas
+    # TODO : put this in metadatas
     g.no_data_message = _("No data \navailable")
 
     # this writes the file to the hard drive for caching
     g.write "#{RAILS_ROOT}/public/images/#{@path[name]}"
   end
 
-
   # 3 initialisations are needed : titles, colors & datas.
   def init_data_general
     # [:empty] are needed for helpers, which always consider that first column is a title one.
-    @data[:by_type] = Array.new
-    @data[:by_severity] = Array.new
+    @data[:by_type] = []
+    @data[:by_severity] = []
     @data[:by_status] =
      [ [_('Cancelled')], [_('Bypassed')], [_('Fixed')], [_('Closed')], [_('Active')] ]
     @data[:by_status] =
      [ [_('Cancelled')], [_('Bypassed')], [_('Fixed')], [_('Closed')], [_('Active')] ]
-    @data[:by_software] = Array.new
+    @data[:by_software] = []
 
     # calcul des délais
     @data[:callback_time] =
@@ -514,7 +579,6 @@ class ReportingController < ApplicationController
       end
     end
   end
-
 
   # 3 initialisations are needed : titles, colors & datas.
   def _titles

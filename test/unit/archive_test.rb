@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -18,7 +18,7 @@
 #
 require File.dirname(__FILE__) + '/../test_helper'
 
-class ArchiveTest < Test::Unit::TestCase
+class ArchiveTest < ActiveSupport::TestCase
   fixtures :attachments, :comments, :clients, :issues, :recipients
 
 #  def test_to_strings
@@ -26,8 +26,8 @@ class ArchiveTest < Test::Unit::TestCase
 #  end
 #
 #  def test_scope
-#    Attachment.set_scope(Client.find(:first).id)
-#    Attachment.find(:all)
+#    Attachment.set_scope(Client.first(:order => :id).id)
+#    Attachment.all
 #    Attachment.remove_scope
 #  end
 #

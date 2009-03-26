@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -19,7 +19,7 @@
 class CreateRulesCredits < ActiveRecord::Migration
   def self.up
     rename_table :time_tickets, :credits
-    Contract.find(:all).each { |c|
+    Contract.all.each { |c|
       if c.rule_type == 'TimeTicket'
         c.update_attribute :rule_type, 'Rules::Credit'
       end
@@ -28,7 +28,7 @@ class CreateRulesCredits < ActiveRecord::Migration
 
   def self.down
     rename_table :credits, :time_tickets
-        Contract.find(:all).each { |c|
+        Contract.all.each { |c|
       if c.rule_type == 'Rules::Credit'
         c.update_attribute :rule_type, 'TimeTicket'
       end

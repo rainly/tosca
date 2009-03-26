@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -19,8 +19,8 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class ContributionsControllerTest < ActionController::TestCase
-  fixtures :contributions, :softwares, :etatreversements, :users,
-    :ingenieurs, :typecontributions, :recipients
+  fixtures :contributions, :softwares, :contributionstates, :users,
+    :contributiontypes
 
   def setup
     login 'admin', 'admin'
@@ -75,15 +75,22 @@ class ContributionsControllerTest < ActionController::TestCase
     assert_redirected_to contribution_path(assigns(:contribution))
   end
 
+  # Without params.
+  def test_new
+    get :new
+    assert_template 'new'
+    assert_response :success
+  end
+
   def test_should_be_able_to_create
-    get :new, :issue_id => Issue.find(:first).id,
-              :software_id => Software.find(:first).id
+    get :new, :issue_id => Issue.first(:order => :id).id,
+              :software_id => Software.first(:order => :id).id
     assert_template 'new'
     assert_response :success
 
     form = select_form 'main_form'
     form.contribution.name = 'a new contribution'
-    form.urlreversement.valeur = 'http://www.tosca-project.net'
+    form.hyperlink.name = 'http://www.tosca-project.net'
     form.submit
 
     assert_response :redirect

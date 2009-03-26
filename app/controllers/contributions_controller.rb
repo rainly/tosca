@@ -1,5 +1,5 @@
 #
-# Copyright (c) 2006-2008 Linagora
+# Copyright (c) 2006-2009 Linagora
 #
 # This file is part of Tosca
 #
@@ -17,14 +17,14 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 class ContributionsController < ApplicationController
-  helper :filters, :issues, :versions, :export, :urlreversements, :softwares
+  helper :issues, :versions, :hyperlinks, :softwares
 
   cache_sweeper :contribution_sweeper, :only => [ :create, :update ]
 
   # Show all contribs and who's done 'em
   def experts
-    options = { :order => 'contributions.ingenieur_id, contributions.etatreversement_id' }
-    @contributions = Contribution.find(:all, options)
+    options = { :order => 'contributions.engineer_id, contributions.contributionstate_id' }
+    @contributions = Contribution.all(options)
   end
 
   def index
@@ -33,24 +33,18 @@ class ContributionsController < ApplicationController
   end
 
   def list
-    options = { :order => "contributions.created_on DESC" }
+    options = { :order => "contributions.created_on DESC", :page => params[:page] }
     options[:conditions] = { }
     unless params[:id] == 'all'
       @software = Software.find(params[:id])
-      options[:conditions] = { :software_id => @software.id }
+      options[:conditions] = { 'contributions.software_id' => @software.id }
     end
     client_id = params[:client_id].to_s
-    unless client_id.blank? || client_id == '1' # Main client
-      options[:conditions].merge!({'contracts.client_id' => params[:client_id]})
+    unless client_id.blank?
+      options[:conditions].merge!({'contracts.client_id' => client_id })
       options[:include] = {:issue => :contract}
     end
-    # Dirty hack in order to show main client' contributions
-    # TODO : remove it in september.
-    condition = (client_id == '1' ? "contributions.id_mantis IS NOT NULL" : '')
-    scope = { :find => { :conditions => condition } }
-    Contribution.send(:with_scope, scope) do
-      @contribution_pages, @contributions = paginate :contributions, options
-    end
+    @contributions = Contribution.paginate options
     respond_to do |format|
       format.html
       format.atom
@@ -63,24 +57,18 @@ class ContributionsController < ApplicationController
       options = { :order => 'softwares.name ASC' }
       options[:joins] = :contributions
       options[:select] = 'DISTINCT softwares.*'
-      unless client_id.blank? || client_id == '1'
+      unless client_id.blank?
         options[:conditions] = { 'contracts.client_id' => params[:client_id] }
         options[:joins] = { :contributions => { :issue => :contract } }
       end
-      # Dirty hack in order to show main client' contributions
-      # TODO : remove it in september.
-      condition = (client_id == '1' ? "contributions.id_mantis IS NOT NULL" : '')
-      scope = { :find => { :conditions => condition } }
-      Software.send(:with_scope, scope) do
-        @softwares = Software.find(:all, options)
-      end
+      @softwares = Software.all(options)
     end
   end
 
   def admin
     conditions = []
     options = { :per_page => 10, :order => 'contributions.updated_on DESC',
-      :include => [:software,:etatreversement,:issue] }
+      :include => [:software,:contributionstate,:issue], :page => params[:page] }
 
     if params.has_key? :filters
       session[:contributions_filters] =
@@ -95,34 +83,33 @@ class ContributionsController < ApplicationController
       conditions = Filters.build_conditions(contributions_filters, [
         [:software, 'softwares.name', :like ],
         [:contribution, 'contributions.name', :like ],
-        [:etatreversement_id, 'contributions.etatreversement_id', :equal ],
-        [:ingenieur_id, 'contributions.ingenieur_id', :equal ],
+        [:contributionstate_id, 'contributions.contributionstate_id', :equal ],
+        [:engineer_id, 'contributions.engineer_id', :equal ],
         [:contract_id, 'issues.contract_id', :equal ]
       ])
       @filters = contributions_filters
     end
     flash[:conditions] = options[:conditions] = conditions
 
-    @contribution_pages, @contributions = paginate :contributions, options
+    @contributions = Contribution.paginate options
     # panel on the left side. cookies is here for a correct 'back' button
     if request.xhr?
-      render :partial => 'contributions_admin', :layout => false
+      render :layout => false
     else
       _panel
-      @partial_for_summary = 'contributions_info'
+      @partial_panel = 'admin_panel'
     end
   end
 
   def new
     @contribution = Contribution.new
-    @urlreversement = Urlreversement.new
     # we can precise the software with this, see software/show for more info
     @contribution.software_id = params[:software_id]
     # submitted state, by default
-    @contribution.etatreversement_id = 4
+    @contribution.contributionstate_id = 4
     @contribution.contributed_on = Date.today
-    @issue = Issue.new(); @issue.id = params[:issue_id]
-    @contribution.ingenieur = @ingenieur
+    @issue = Issue.new; @issue.id = params[:issue_id]
+    @contribution.engineer = @session_user
     _form
   end
 
@@ -139,7 +126,6 @@ class ContributionsController < ApplicationController
 
   def edit
     @contribution = Contribution.find(params[:id])
-    @issue = @contribution.issue
     _form
   end
 
@@ -176,19 +162,19 @@ class ContributionsController < ApplicationController
 private
   def _form
     @softwares = Software.find_select
-    @etatreversements = Etatreversement.find_select
-    @ingenieurs = Ingenieur.find_select(User::SELECT_OPTIONS)
-    @typecontributions = Typecontribution.find_select
+    @contributionstates = Contributionstate.find_select
+    @engineers = User.find_select(User::EXPERT_OPTIONS)
+    @contributiontypes = Contributiontype.find_select
     if @contribution.software_id
       @versions = @contribution.software.versions.find_select
     else
-      @versions = []
+      @versions = [] # Version.all.find_select
     end
   end
 
   def _panel
-    @etatreversements = Etatreversement.find_select
-    @ingenieurs = Ingenieur.find_select(User::SELECT_OPTIONS)
+    @contributionstates = Contributionstate.find_select
+    @engineers = User.find_select(User::EXPERT_OPTIONS)
     @softwares = Software.find_select
     @contracts = Contract.find_select(Contract::OPTIONS)
     # count
@@ -198,14 +184,14 @@ private
   end
 
   def _update(contribution)
-    url = params[:urlreversement]
-    contribution.urlreversements.create(url) unless url.blank?
+    url = params[:hyperlink]
+    contribution.hyperlinks.create(url) unless url.blank?
     contribution.contributed_on = nil if params[:contribution][:reverse] == '0'
     contribution.closed_on = nil if params[:contribution][:clos] == '0'
     contribution.save
   end
 
-  def _link2issue()
+  def _link2issue
     begin
       issue = Issue.find(params[:issue][:id].to_i) unless params[:issue][:id].blank?
       @contribution.issue = issue
