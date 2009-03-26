@@ -139,7 +139,7 @@ module ReportingHelper
 
     # TODO : put backgrounded cells into the static image helper ?
     # We can then remove the code below
-    relative_url_root = "#{Static::ActionView.relative_url_root}reporting/"
+    relative_url_root = "#{ActionController::Base.relative_url_root}reporting/"
     size.times do |i|
       index = (twolines ? i*2 : i)
       head = data[i][0].to_s
@@ -265,9 +265,9 @@ module ReportingHelper
 
   # TODO : find 3 images. Maybe include this helper in static image  ??
   def progress_image( status, percent )
-    return StaticPicture.sla_exceeded if percent > 1.0
-    return StaticPicture.sla_ok if status
-    StaticPicture.sla_running
+    return image_sla_exceeded if percent > 1.0
+    return image_sla_ok if status
+    image_sla_running
   end
 
   # Display a progress bar colored according to the percentage given in

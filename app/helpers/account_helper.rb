@@ -22,7 +22,7 @@ module AccountHelper
     if user.recipient?
       logo_client(user.client)
     else
-      StaticPicture::logo_service
+      image_logo_service
     end
   end
 

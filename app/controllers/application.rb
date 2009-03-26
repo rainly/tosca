@@ -81,15 +81,7 @@ protected
   # global variables (not pretty, but those two are really usefull)
   @@first_time = true
   def set_global_shortcuts
-    # this small hack allows to initialize the static url
-    # generator on the first request. We need it 'coz the prefix
-    # (e.g.: /tosca) cannot be known before a request go through.
     if @@first_time
-      require 'static'
-      require 'static_script'
-      require 'static_picture'
-      Static::ActionView.set_url_root
-
       #Used for url in e-mails
       ActionMailer::Base.default_url_options[:host] = request.host_with_port
       @@first_time = false

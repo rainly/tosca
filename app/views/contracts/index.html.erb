@@ -1,21 +1,5 @@
-<h1><%= _("List of contracts") %> <%= StaticPicture::spinner %></h1>
+<h1><%= _("List of contracts") %> <%= image_spinner %></h1>
 
-<<<<<<< HEAD:app/views/contracts/index.html.erb
-<%= show_pages_links(@contract_pages, _('a contract')) %>
-
-<% titles = [_('Name'), _('Mailing list'), _('Start'), _('=>'), _('End')] %>
-<%= show_table(@contracts, Contract, titles) { |c|
-  result = ''
-  result << "<td>#{link_to_contract(c)}</td>"
-  result << "<td>#{mail_to(c.internal_ml)}</td>"
-  result << "<td>#{c.start_date_formatted}</td>"
-  result << '<td></td>' # used for the arrow
-  result << "<td>#{c.end_date_formatted}</td>"
-  result << "#{link_to_actions_table c}"
-}%>
-
-<%= show_pages_links(@contract_pages, _('a contract')) %><br />
-=======
 <% options = { :create_label => _('a contract'), :remote_url => contracts_path }%>
 <% paginated_section(@contracts, options) do %>
  <% titles = [_('Name'), _('Start'), _('=>'), _('End')] %>
@@ -29,5 +13,4 @@
  end %>
  <%= page_entries_info @contracts %><br />
 <% end %><br />
->>>>>>> master:app/views/contracts/index.html.erb
 <%= link_to _('Ordered by end date'), actives_contracts_path %>
