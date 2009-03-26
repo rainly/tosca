@@ -7,7 +7,7 @@
 <%# used for iteration in ajaxified list %>
 <%= hidden_field_tag 'page', '1' %>
 
-<% manager = (session[:user].role_id <= 2) %>
+<% manager = session[:user].manager? %>
 <% if manager %>
  <div class="menu_title" onclick="Element.toggle('menu_action')">
   > <%= _('Action') %></div>
@@ -25,7 +25,7 @@
 <ul id="menu_search">
  <li><b><%= _('Name')%></b><br />
      <%= text_field :filters, :name %></li>
- <% if manager %>
+ <% if !session[:user].client? %>
   <li><b><%= _('Customer ')%></b><br />
       <%=select_filter(@clients, 'client')%></li>
   <li><b><%= _('Roles ')%> </b><br />
