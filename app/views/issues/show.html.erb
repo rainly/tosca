@@ -1,13 +1,14 @@
 <%# It's separated by roles, since viewer & customer see different things %>
 <% cache("issues/#{@issue.id}/front-#{@session_user.role_id}") do %>
  <div class="content">
-     <p style="float: right;"><%= image_expand_all %>
-      <%= link_to_function _('Expand'), 'tosca_expand_all_comments()' %><br />
-      <%= image_collapse_all %>
+     <p style="float: right;">
+      <%= link_to_function _('Expand'), 'tosca_expand_all_comments()' %>
+      <%= image_expand_all %><%= image_expand_all %><br />
       <%= link_to_function _('Collapse'), 'tosca_collapse_all_comments()' %>
-      <% software = @issue.software %></p>
+      <%= image_collapse_all %>
+     </p>
      <div class="software">
-     <p>
+     <p><% software = @issue.software %>
       <% if software %>
         <%= public_link_to(software_logo(software), software_path(software)) %>
       <% end %></p>

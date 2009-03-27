@@ -40,6 +40,13 @@ module IssuesHelper
     public_link_to(_("Status legend"), statuts_path, NEW_WINDOW)
   end
 
+  def link_to_issue_tiny(issue)
+    title = (@session_user.engineer? ?
+             "[#{issue.client}] #{issue.resume}" :
+             issue.resume)
+    link_to("##{issue.id}", issue_path(issue), :title => title)
+  end
+
   # Display a link to the software or version or release
   # of an issue
   def link_to_issue_software(issue)

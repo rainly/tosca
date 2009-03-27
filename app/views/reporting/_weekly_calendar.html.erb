@@ -29,43 +29,43 @@
   key = "#{time.day}_#{time.hour}_#{time.min*30/30}"
   result = '<h3><p>'
 
-  if @issues.has_key? key
-    if @issues[key].has_key? :new_issues
-      res = []
-      @issues[key][:new_issues].each do |i|
-        res.push link_to("##{i.id}", issue_path(i))
-      end
-      unless res.empty?
-        result << "#{image_new}&nbsp;["
-        result << res.join(', ')
-        result << ']'
-      end
+  issues = @issues[key]
+  next unless issues
+  if issues.has_key? :new_issues
+    res = []
+    issues[:new_issues].each do |i|
+      res.push link_to_issue_tiny(i)
     end
-
-    if @issues[key].has_key? :running_issues
-      res = []
-      @issues[key][:running_issues].each do |i|
-        res.push link_to("##{i.id}", issue_path(i))
-      end
-      unless res.empty?
-        result << '<br/>' if @issues[key].has_key? :new_issues
-        result << "#{image_sla_running}&nbsp;["
-        result << res.join(', ')
-        result << ']'
-      end
+    unless res.empty?
+      result << "#{image_new}&nbsp;["
+      result << res.join(', ')
+      result << ']'
     end
+  end
 
-    if @issues[key].has_key? :closed_issues
-      res = []
-      @issues[key][:closed_issues].each do |i|
-        res.push link_to("##{i.id}", issue_path(i))
-      end
-      unless res.empty?
-        result << '<br/>' unless @issues[key].has_key? :new_issues or @issues[key].has_key? :closed_issues
-        result << "#{image_stop}&nbsp;["
-        result << res.join(', ')
-        result << ']'
-      end
+  if issues.has_key? :running_issues
+    res = []
+    issues[:running_issues].each do |i|
+      res.push link_to_issue_tiny(i)
+    end
+    unless res.empty?
+      result << '<br/>' if issues.has_key? :new_issues
+      result << "#{image_sla_running}&nbsp;["
+      result << res.join(', ')
+      result << ']'
+    end
+  end
+
+  if issues.has_key? :closed_issues
+    res = []
+    issues[:closed_issues].each do |i|
+      res.push link_to_issue_tiny(i)
+    end
+    unless res.empty?
+      result << '<br/>' if issues.has_key? :new_issues or issues.has_key? :closed_issues
+      result << "#{image_stop}&nbsp;["
+      result << res.join(', ')
+      result << ']'
     end
   end
   result << '</p></h3>'

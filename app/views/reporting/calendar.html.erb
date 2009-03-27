@@ -22,8 +22,7 @@
 
 
 <%= calendar_month(@time, :title => title) do |time|
-  @issues[time.day].map do |e|
-    title = (@session_user.engineer? ? "[#{e.client}] #{e.resume}" : e.resume)
-    link_to("##{e.id}", issue_path(e), :title => title)
-  end.join(', ') if @issues.has_key? time.day
-end %>
+      if @issues.has_key? time.day
+        @issues[time.day].map{|e| link_to_issue_tiny(e)}.join(', ')
+      end
+    end %>

@@ -134,14 +134,13 @@ class ReportingController < ApplicationController
     @start_date = @start_date.beginning_of_week
     @end_date = @start_date.end_of_week - 2.day
 
-    @title = _('Issues of all your contracts')
+    @title = _('All issues')
 
     # Specification of a filter f :
     if params.has_key? :filters
       session[:weeklyreport_filters] =
         Filters::WeeklyReport.new(params[:filters])
-      @title = _('Issues of the contract %s') %
-        Contract.find(params[:filters][:contract_id]).name if params[:filters].has_key? :contract_id and
+      @title = Contract.find(params[:filters][:contract_id]).name if params[:filters].has_key? :contract_id and
           not params[:filters][:contract_id].empty?
     end
     filters_weekly = session[:weeklyreport_filters]
