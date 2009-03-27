@@ -41,7 +41,7 @@ fieldset legend { font-weight: bold; }
 input:focus { background-color: #ffffcc; }
 textarea:focus { background-color: #ffffcc; }
 table { border-collapse: collapse; }
-table.week-view h3 { text-align: center; }
+table.week-view tr th h3 { text-align: center; }
 
 div.info { width: 100%; }
 table.full { width: 100%; }
