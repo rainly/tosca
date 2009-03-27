@@ -320,9 +320,10 @@ class IssuesController < ApplicationController
   end
 
   def ajax_subscribe_someone
+    @issue = Issue.find(params[:id])
     res = Subscription.create(:user_id => params[:user_id],
-      :model => Issue.find(params[:id]))
-    head(res ? :ok : :error)
+      :model => @issue)
+    render :partial => 'issues/panel/panel_subscribers', :layout => false
   end
 
   private
