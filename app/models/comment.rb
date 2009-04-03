@@ -75,10 +75,12 @@ class Comment < ActiveRecord::Base
   end
 
   # This method search, create and add an attachment to the comment
+  # TODO: change this for multiple attachments
   def add_attachment(params)
     attachment = params[:attachment]
     return false unless attachment and !attachment[:file].blank?
     attachment = Attachment.new(attachment)
+    self.attachment.destroy if self.attachment
     attachment.comment = self
     attachment.save
   end

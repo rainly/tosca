@@ -17,7 +17,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 class CommentsController < ApplicationController
-  helper :issues
+  helper :issues, :account
 
   cache_sweeper :comment_sweeper, :only =>
     [:comment, :update, :destroy]
@@ -101,6 +101,7 @@ class CommentsController < ApplicationController
     @comment = Comment.find(params[:id])
     return if _not_allowed?
     if @comment.update_attributes(params[:comment])
+      @comment.add_attachment(params)
       flash[:notice] = _("The comment was successfully updated.")
       redirect_to comment_path(@comment)
     else
@@ -122,9 +123,13 @@ class CommentsController < ApplicationController
 
   private
   def _form
-    @issues = Issue.all
-    @users = User.find_select
-    @statuts = Statut.find_select
+    @issue = @comment.issue
+    @statuts = @issue.issuetype.allowed_statuses(@issue.statut_id, @session_user)
+    if @session_user.engineer?
+      @severities = Severity.find_select
+      @engineers = User.find_select_by_contract_id(@issue.contract_id)
+      @teams = Team.on_contract_id(@issue.contract_id)
+    end
   end
 
   def _not_allowed?

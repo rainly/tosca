@@ -1,7 +1,7 @@
 <h1><%= _('Edit a comment') %></h1>
 
-<% form_tag comment_path(@comment), :method => :put do %>
-  <%= render :partial => 'form' %>
+<% form_tag comment_path(@comment), :method => :put, :multipart => true do %>
+  <%= render :partial => '/issues/comment_form' %>
   <%= submit_tag _('Validate') %>
 <% end %>
 
