@@ -26,3 +26,9 @@
         @issues[time.day].map{|e| link_to_issue_tiny(e)}.join(', ')
       end
     end %>
+<h2><%= _('Distribution') %></h2>
+<ul>
+ <% @distribution.each_pair do |key, value| %>
+  <li><b><%= Statut.find(key) %>:</b> <%= value.map{|i| link_to_issue_tiny(i)}.join(', ') %></li>
+ <% end%>
+</ul>

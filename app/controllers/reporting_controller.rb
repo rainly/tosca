@@ -74,6 +74,11 @@ class ReportingController < ApplicationController
       @issues[r.created_on.day] ||= []
       @issues[r.created_on.day].push(r)
     end
+    @distribution = {}
+    issues.each do |r|
+      @distribution[r.statut_id] ||= []
+      @distribution[r.statut_id].push(r)
+    end
   end
 
   def digest
