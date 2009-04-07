@@ -14,7 +14,7 @@ class MoveSoftwareIdInPictureToPictureIdInSoftware < ActiveRecord::Migration
       p.software.update_attribute(:picture_id, p.id) if p.software_id
     end
     FileUtils.rm_r "#{RAILS_ROOT}/public/picture"
-    FileUtils.mv "#{RAILS_ROOT}/public/image", "#{RAILS_ROOT}/public/picture"
+    FileUtils.mv "#{RAILS_ROOT}/public/image", "#{RAILS_ROOT}/public/picture", :force => true
 
     remove_column :pictures, :software_id
   end
