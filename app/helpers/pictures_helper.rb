@@ -257,8 +257,9 @@ module PicturesHelper
   # Severity
   # Display an icon matching severity
   # They are stored in an array in order to cover all of 'em
-  @@images_severity = Array.new(Severity.count)
+  @@images_severity = nil
   def image_severity(d)
+    @@image_severity ||= Array.new(Severity.count)
     result = @@images_severity[d.severity_id]
     if result.nil?
       desc = (d.respond_to?(:severities_name) ? d.severities_name : d.severity.name)
