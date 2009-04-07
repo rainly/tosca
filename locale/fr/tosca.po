@@ -13,7 +13,7 @@ msgstr ""
 "Project-Id-Version: 0.8.0beta1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-03-06 10:20+0100\n"
-"PO-Revision-Date: 2009-03-06 10:30+0100\n"
+"PO-Revision-Date: 2009-04-07 14:44+0200\n"
 "Last-Translator: Jonathan Clarke <jclarke@linagora.com>\n"
 "Language-Team: French\n"
 "MIME-Version: 1.0\n"
@@ -698,9 +698,8 @@ msgid "Closed ?"
 msgstr "Fermée ?"
 
 #: app/views/reporting/_weekly_panel.html.erb:44
-#, fuzzy
 msgid "Closed issues are preceded by"
-msgstr "montrer les demandes qui ont déjà été traitées"
+msgstr "Les demandes clôturées sont précédées par"
 
 #: app/views/contributions/_contributions_admin.html.erb:8
 #: app/views/contributions/admin.html.erb:6
@@ -1242,7 +1241,7 @@ msgstr "Fin de l'appel"
 
 #: vendor/extensions/ods_export/app/controllers/export_controller.rb:107
 msgid "End of the call"
-msgstr ""
+msgstr "Fin de l'appel"
 
 #: vendor/extensions/phonecalls/app/views/phonecalls/show.html.erb:20
 msgid "Ended on"
