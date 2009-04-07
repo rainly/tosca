@@ -57,7 +57,7 @@ class LoadPermissions < ActiveRecord::Migration
                [ '^export/', 'All kinds of export' ],
                [ '^files/download$', 'All kinds of download' ],
                [ '^attachments/uv$', 'Attachments preview' ],
-               [ '^reporting/(configuration|general|calendar)$', 'Activity Report' ]
+               [ '^reporting/(configuration|general|calendar|weekly)$', 'Activity Report' ]
              ]
     add_permission.call(roles, access)
 
