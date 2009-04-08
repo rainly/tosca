@@ -1,5 +1,6 @@
 <%
   options = { :method => :get,
+    :url => weekly_reporting_path,
     :with => "Form.serialize(document.forms['filters'])",
     :before => "Element.show('spinner')",
     :success => "Element.hide('spinner')" }
@@ -7,17 +8,17 @@
   #We create next/previous weeks links
   last_week = @start_date - 1.week
   link_text = image_previous_page +
-    _('Week of the %s') % last_week.strftime('%d %B')
-  link_previous = link_to_remote(link_text,
-    options.dup.update(:url => weekly_reporting_path(:report =>
-        { :start_date => last_week.strftime("%Y-%m-%d") })))
+    _('Week of the %s') % I18n.l(last_week, :format => '%d %B')
+  js_call = "document.forms['filters'].elements['report[start_date]'].value='#{last_week.strftime("%Y-%m-%d")}';"
+  js_call << remote_function(options)
+  link_previous = link_to_function(link_text, js_call)
 
   next_week = @start_date + 1.week
-  link_text = _('Week of the %s') % next_week.strftime('%d %B') +
+  link_text = _('Week of the %s') % I18n.l(next_week, :format => '%d %B') +
     image_next_page
-  link_next = link_to_remote(link_text,
-    options.dup.update(:url => weekly_reporting_path(:report =>
-        { :start_date => next_week.strftime("%Y-%m-%d") })))
+  js_call = "document.forms['filters'].elements['report[start_date]'].value='#{next_week.strftime("%Y-%m-%d")}';"
+  js_call << remote_function(options)
+  link_next = link_to_function(link_text, js_call)
 %>
 
 <div style="float: right">
