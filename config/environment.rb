@@ -31,6 +31,7 @@ if RUBY_VERSION >= '1.9'
   Encoding.default_external = Encoding::UTF_8
 end
 
+
 # Bootstrap the Rails environment, frameworks, and default configuration
 require File.join(File.dirname(__FILE__), 'boot')
 
@@ -48,7 +49,7 @@ page_cache_path = File.join RAILS_ROOT, 'public', 'cache'
 # Used to have extension
 # See http://github.com/pivotal/desert/tree/master for more info
 begin
-  gem 'desert', '>= 0.3.4'
+  gem 'desert', '~> 0.3.4'
   require 'desert'
 rescue
   # It cannot be loaded in config.gem, so we need this hack for freezed version
@@ -88,10 +89,9 @@ Rails::Initializer.run do |config|
   config.gem "grosser-fast_gettext", :lib => 'fast_gettext', :source=>"http://gems.github.com/"
 
   # Used to generate graphs of activity report & resize some pictures
-  # We keep 1.15.10 version, coz debian makes an old & staging distribution
-  # config.gem 'rmagick', :version => '1.15.15', :lib => "RMagick"
+  #config.gem 'rmagick', :lib => "RMagick2"
   # Used to load the extension mechanism
-  config.gem 'desert', :version => '0.3.3'
+  config.gem 'desert', :version => '~> 0.3.4'
 
   # Force all environments to use the same logger level
   # (by default production uses :info, the others :debug)

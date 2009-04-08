@@ -38,13 +38,25 @@ namespace :tosca do
     end
   end
 
-
+  # TODO : split this file in more methods
   desc "Configure a new Tosca instance"
   task :install do
     require 'fileutils'
     root = RAILS_ROOT
     FileUtils.mkdir_p "#{root}/log"
 
+    # dependencies
+    puts "You need to install those dependencies : "
+    puts "sudo apt-get install ruby1.8 ri ri1.8 rdoc rake irb rubygems mongrel"
+    puts "Is those dependencies here ? [Y/n]"
+    exit 0 if STDIN.gets.chomp! == 'n'
+
+    # Database #
+    puts "Use default access to mysql [Y/n] ?"
+    if STDIN.gets.chomp! != 'n'
+      FileUtils.cp "#{root}/config/database.yml.sample",
+                   "#{root}/config/database.yml"
+    end
     FileUtils.cp "#{root}/config/config.rb.sample", "#{root}/config/config.rb"
     # needed for dev mode, when stylesheets are not cached in single file.
     FileUtils.ln_s '../../public/images/', 'public/stylesheets/images', :force => true
@@ -66,7 +78,7 @@ namespace :tosca do
       sh "git archive --format=tar --prefix=tosca/ HEAD > tosca.tar"
 	  sh "cd vendor/extensions; git archive --format=tar --prefix=tosca/vendor/extensions/ HEAD > ../../extensions.tar; cd -"
 	  sh "tar -A extensions.tar -f tosca.tar; rm -f extensions.tar"
-      sh "bzip2 -f tosca.tar"
+      sh "bzip2 -f tosca-full.tar"
     end
   end
 

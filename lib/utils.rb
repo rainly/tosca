@@ -128,4 +128,28 @@ module Utils
     end
   end
 
+  # Tailor made method, used to load depencies from config/environment.rb
+  # It tries to load dynamically from system' libs or from gem' libs
+  def self.load_dependencies(config, gem_name, gem_version,
+                             pkg_names, requirements)
+    begin
+      gem gem_name, gem_version
+    rescue Exception
+      begin
+        requirements.each {|r| require r}
+      rescue Exception
+        STDERR.puts "**************************************************"
+        STDERR.puts "You have to install #{gem_name} #{gem_version} for ruby, either with "
+        STDERR.puts "$ sudo apt-get install #{pkg_names}"
+        STDERR.puts " OR with "
+        STDERR.puts "$ sudo gem install gettext (you MUST install RubyGems from rubygems.org)"
+        STDERR.puts "**************************************************"
+        exit -1
+      end
+    else
+      requirements.each{|r| config.gem gem_name, :lib => r }
+    end
+  end
+
+
 end
