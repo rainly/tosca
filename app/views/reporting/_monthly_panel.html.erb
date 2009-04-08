@@ -15,7 +15,8 @@
     <li><b><%= _('By team') %></b><br />
         <%= select_filter(@teams, :team) %></li>
    <% end %>
-    <li><%= select_month(Time.today, {}, :style => 'width: 45%') %>
+    <li><b><%= _('Period') %></b><br />
+        <%= select_month(Time.today, {}, :style => 'width: 45%') %>
         <%= select_year(Time.today, {}, :style => 'width: 45%') %></li>
 
   </ul>
