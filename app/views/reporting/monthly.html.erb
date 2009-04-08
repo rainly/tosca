@@ -1,21 +1,21 @@
 <h1><%= n_("New issue for %s",
-  "New issues %s", @number_issues) % _(@time.strftime('%B %Y')) %></h1>
+           "New issues %s", @number_issues) % _(@time.strftime('%B %Y')) %></h1>
 
 <%
   #We create next/previous month links
   last_month = @time.last_month
   link_previous = link_to(image_previous_page,
-    calendar_reporting_path(:month => last_month.month,
+    monthly_reporting_path(:month => last_month.month,
       :year => last_month.year))
   next_month = @time.next_month
   link_next = link_to(image_next_page,
-    calendar_reporting_path(:month => next_month.month,
+    monthly_reporting_path(:month => next_month.month,
       :year => next_month.year))
 
   title = link_previous
   title << "&nbsp;"
   title << ( n_("%s new issue has been submitted",
-      "%s new issues has been submitted", @number_issues) % @number_issues )
+                "%s new issues has been submitted", @number_issues) % @number_issues )
   title << "&nbsp;"
   title << link_next
 %>
