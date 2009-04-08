@@ -49,26 +49,45 @@ class ReportingController < ApplicationController
   end
 
   # To display new issues by months
-  def calendar
+  # TODO : this method is too long
+  def monthly
     #Get the parameters
-    month = Time.today.month
-    month = params[:month] if params.has_key? :month
-    year = Time.today.year
-    year = params[:year] if params.has_key? :year
-    @time = Time.mktime(year, month)
+    options = {}
 
-    conditions = [ 'created_on BETWEEN ? AND ?',
-      @time.beginning_of_month, @time.end_of_month ]
+    _set_title
+    if params.has_key? :filters
+      session[:monthlyreport_filters] =
+        Filters::MonthlyReport.new(params[:filters])
+    end
+    filters_monthly = session[:monthlyreport_filters]
 
-    # Adapt it ?
-    # SELECT DAYOFMONTH(issues.created_on), GROUP_CONCAT(id), GROUP_CONCAT(resume)
-    #   FROM issues
-    #   WHERE (created_on BETWEEN '2007-10-01 00:00:00' AND '2008-11-30 23:59:59')
-    #   GROUP BY DAYOFMONTH(issues.created_on);
-    issues = Issue.all(:conditions => conditions)
+    if filters_monthly
+      date = params[:date]
+      filters_monthly['month'] = date[:month].to_i if date
+      filters_monthly['year'] = date[:year].to_i if date
+      begin
+        @time = Time.mktime(filters_monthly['year'], filters_monthly['month'])
+      rescue
+        @time = Time.now
+      end
+      default_conditions = [ 'created_on BETWEEN ? AND ?',
+                             @time.beginning_of_month, @time.end_of_month ]
+      unless filters_monthly['team_id'].blank?
+        options[:joins] = 'INNER JOIN contracts_teams ct ON ct.contract_id=issues.contract_id'
+      end
+      filters = [ [:contract_id, 'issues.contract_id', :in ],
+                  [:team_id, 'ct.team_id', :equal] ]
+      options[:conditions] = Filters.build_conditions(filters_monthly, filters, default_conditions)
+    else
+      @time = Time.mktime(Time.today.year, Time.today.month)
+      options[:conditions] =  [ 'created_on BETWEEN ? AND ?',
+                                @time.beginning_of_month, @time.end_of_month ]
+    end
+
+    issues = Issue.all(options)
     @number_issues = issues.size
 
-    #We build a hash of { number_day => [new issues of the day]}
+    # Hashes of { number_day => [new issues of the day]} are used in the views
     @issues = {}
     issues.each do |r|
       @issues[r.created_on.day] ||= []
@@ -78,6 +97,13 @@ class ReportingController < ApplicationController
     issues.each do |r|
       @distribution[r.statut_id] ||= []
       @distribution[r.statut_id].push(r)
+    end
+
+    if request.xhr?
+      render :layout => false
+    else
+      _monthly_panel
+      @partial_panel = 'monthly_panel'
     end
   end
 
@@ -135,33 +161,32 @@ class ReportingController < ApplicationController
       rescue ArgumentError; end
     end
     @start_date ||= Time.now
-
+    options = { :joins => 'INNER JOIN issues ON comments.issue_id = issues.id',
+      :order => 'comments.issue_id, comments.created_on ASC' }
     @start_date = @start_date.beginning_of_week
     @end_date = @start_date.end_of_week - 2.day
 
-    @title = _('All issues')
-
-    # Specification of a filter f :
+    _set_title
     if params.has_key? :filters
       session[:weeklyreport_filters] =
         Filters::WeeklyReport.new(params[:filters])
-      @title = Contract.find(params[:filters][:contract_id]).name if params[:filters].has_key? :contract_id and
-          not params[:filters][:contract_id].empty?
     end
     filters_weekly = session[:weeklyreport_filters]
 
-    created_on_condition = ['comments.created_on BETWEEN ? AND ? AND comments.statut_id IS NOT NULL', @start_date, @end_date ]
+    default_conditions = ['comments.created_on BETWEEN ? AND ? AND comments.statut_id IS NOT NULL', @start_date, @end_date ]
     if filters_weekly
-      filters = [ [:contract_id, 'issues.contract_id', :in ] ]
-      conditions_new = Filters.build_conditions(filters_weekly, filters, created_on_condition)
+      unless filters_weekly['team_id'].blank?
+        options[:joins] = options[:joins] + ' INNER JOIN contracts_teams ct ON ct.contract_id=issues.contract_id'
+      end
+      filters = [ [:contract_id, 'issues.contract_id', :in ],
+                  [:team_id, 'ct.team_id', :equal] ]
+      options[:conditions] = Filters.build_conditions(filters_weekly, filters, default_conditions)
     else
-      conditions_new = created_on_condition
+      options[:conditions] = default_conditions
     end
 
     #TODO : set a :select option ?
-    comments = Comment.all(:conditions => conditions_new,
-      :order => 'comments.issue_id, comments.created_on ASC',
-      :joins => :issue)
+    comments = Comment.all(options)
 
     #We build a hash of { "day_hour_minute" => { :new_issues => [[issue, comment], ...],
     # :updated_issues => [], :running_issues => [] }
@@ -204,7 +229,7 @@ class ReportingController < ApplicationController
     @closing_time = Contract.average(:closing_time).to_i + 1
 
     unless request.xhr?
-      _panel
+      _weekly_panel
       # panel on the left side.
       @partial_panel = 'weekly_panel'
       render :template => 'reporting/_weekly_calendar'
@@ -213,8 +238,29 @@ class ReportingController < ApplicationController
   end
 
   private
+  def _set_title
+    @title = _('All issues')
 
-  def _panel
+    # Specification of a filter f :
+    if params.has_key? :filters
+      contract_id = params[:filters][:contract_id]
+      if contract_id and not contract_id.empty?
+        @title = Contract.find(contract_id).name
+      end
+
+      team_id = params[:filters][:team_id]
+      if team_id and not team_id.empty?
+        @title = Team.find(team_id).name
+      end
+    end
+  end
+
+  def _monthly_panel
+    @contracts = Contract.find_select(Contract::OPTIONS)
+    @teams = Team.find_select
+  end
+
+  def _weekly_panel
     @contracts = Contract.find_select(Contract::OPTIONS)
     @teams = Team.find_select
   end

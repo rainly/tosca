@@ -13,6 +13,10 @@
         <b><%= _('By contract') %></b><br />
         <%= select_filter(@contracts, :contract) %>
       </li>
+      <li>
+        <b><%= _('By team') %></b><br />
+        <%= select_filter(@teams, :team) %>
+      </li>
     <% end %>
   </ul>
 

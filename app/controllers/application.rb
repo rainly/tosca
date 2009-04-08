@@ -73,6 +73,8 @@ protected
   end
 
   def set_gettext_locale
+    # TODO: see if it can be moved to config/initializers/*
+    I18n.load_path += Dir[ File.join(RAILS_ROOT, 'lib', 'locale', '*.{rb,yml}') ]
     FastGettext.text_domain = 'tosca'
     FastGettext.available_locales = ['en','fr'] #all you want to allow
     super
