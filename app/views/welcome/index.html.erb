@@ -27,7 +27,7 @@
         <h3><%= _('Documents')%></h3>
         <% if user %>
           <p><%= _('You can consult your %s online.') % link_to(_('activity report'), general_reporting_path) %></p>
-          <p><%= _("You can also see the %s") % link_to( _('Distribution of issues in time'), calendar_reporting_path) %></p>
+          <p><%= _("You can also see the %s") % link_to( _('Distribution of issues in time'), monthly_reporting_path) %></p>
           <p><%= _("You can see the %s") % link_to( _('weekly report of issues'), weekly_reporting_path) %></p>
         <% else %>
           <p><%= _("When you are %s, you can access an activity report") % connected %><br />
@@ -87,7 +87,7 @@
             <li><%= _('A new search engine is available in contracts list')%></li>
             <li><%= _('A new system, tag-based, allowing to regroup software or issue at your convenience')%></li>
           <% end %>
-          <li><%= _('A new view on issue is available : %s') % link_to( _('Distribution of issues in time'), calendar_reporting_path) %></li>
+          <li><%= _('A new view on issue is available : %s') % link_to( _('Distribution of issues in time'), monthly_reporting_path) %></li>
         </ul>
       </div>
     </div>

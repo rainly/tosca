@@ -18,7 +18,7 @@
  <% unless path.nil? or path.blank? %>
    <li><%= link_to _("Submit an issue"), path %></li>
  <% end %>
- <li><%= link_to( _('Distribution of issues in time'), calendar_reporting_path) %></li>
+ <li><%= link_to( _('Distribution of issues in time'), monthly_reporting_path) %></li>
  <li><%= link_to( _('Weekly report'), weekly_reporting_path) %></li>
  <li><%= link_to _("Activity report"), general_reporting_path %></li>
  <% Issue::actions.each do |a| %>

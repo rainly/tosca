@@ -1,5 +1,6 @@
 <%
   options = { :method => :get,
+    :with => "Form.serialize(document.forms['filters'])",
     :before => "Element.show('spinner')",
     :success => "Element.hide('spinner')" }
 

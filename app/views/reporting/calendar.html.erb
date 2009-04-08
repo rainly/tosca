@@ -1,21 +1,39 @@
 <h1><%= n_("New issue for %s",
-  "New issues %s", @number_issues) % _(@time.strftime('%B %Y')) %></h1>
+           "New issues %s", @number_issues) %
+           I18n.l(@time, :format => '%B %Y').capitalize! %>
+    <%= image_spinner %></h1>
 
 <%
-  #We create next/previous month links
+  xhr_options = { :method => :get, :update => 'col1_content',
+   :url => monthly_reporting_path,
+   :with => "Form.serialize(document.forms['filters'])",
+   :before => "Element.show('spinner')",
+   :success => "Element.hide('spinner')" }
+
+
+  # TODO : refactor this, it's not DRY
   last_month = @time.last_month
-  link_previous = link_to(image_previous_page,
-    calendar_reporting_path(:month => last_month.month,
-      :year => last_month.year))
+  options = xhr_options.dup.update(:url => monthly_reporting_path)
+  js_call = "document.forms['filters'].elements['date[month]'].value=#{last_month.month};"
+  js_call << "document.forms['filters'].elements['date[year]'].value=#{last_month.year};"
+  js_call << remote_function(options)
+  link_previous = link_to_function(image_previous_page, js_call)
+
   next_month = @time.next_month
-  link_next = link_to(image_next_page,
-    calendar_reporting_path(:month => next_month.month,
-      :year => next_month.year))
+  options = xhr_options.dup.update(:url => monthly_reporting_path)
+  js_call = "document.forms['filters'].elements['date[month]'].value=#{next_month.month};"
+  js_call << "document.forms['filters'].elements['date[year]'].value=#{next_month.year};"
+  js_call << remote_function(options)
+  link_next = link_to_function(image_next_page, js_call)
 
   title = link_previous
   title << "&nbsp;"
-  title << ( n_("%s new issue has been submitted",
-      "%s new issues has been submitted", @number_issues) % @number_issues )
+  if @number_issues.zero?
+    title << _('No issue has been submitted')
+  else
+    title << ( n_("%s new issue has been submitted",
+                  "%s new issues has been submitted", @number_issues) % @number_issues )
+  end
   title << "&nbsp;"
   title << link_next
 %>
@@ -26,9 +44,14 @@
         @issues[time.day].map{|e| link_to_issue_tiny(e)}.join(', ')
       end
     end %>
-<h2><%= _('Distribution') %></h2>
-<ul>
+
+
+<% unless @distribution.empty? %>
+ <h2><%= _('Distribution') %></h2>
+ <ul>
  <% @distribution.each_pair do |key, value| %>
-  <li><b><%= Statut.find(key) %>:</b> <%= value.map{|i| link_to_issue_tiny(i)}.join(', ') %></li>
+  <li><b><%= Statut.find(key) %>:</b>
+      <%= value.map{|i| link_to_issue_tiny(i)}.join(', ') %></li>
  <% end%>
-</ul>
+ </ul>
+<% end %>

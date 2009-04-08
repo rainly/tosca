@@ -26,8 +26,7 @@ CalendarGrid::Builder.start_wday = 1
 module DatesHelper
 
   def pretty_date(date)
-    day = sprintf("%02d", date.day)
-    month = _(date.strftime("%b"))
+    day, month = I18n.l(date, :format => '%02d %b').split(' ')
 
     result = ""
     result << '<div class="datestamp">'
@@ -40,13 +39,7 @@ module DatesHelper
   end
 
   def complete_date(date)
-    result = _(date.strftime("%A"))            #day of the week : Monday
-    result << " "
-    result << date.strftime("%d")              #day of the month : 10
-    result << " "
-    result << _(date.strftime("%B"))           #month : December
-    result << " "
-    result << date.strftime("%Y")              #Year : 2007
+    result = I18n.l(date, :format => '%A %d %B %Y')
   end
 
   # Display a BIG calendar for the month of the date in param
@@ -65,13 +58,14 @@ module DatesHelper
     if options.has_key? :title
       result << %(<caption class="month_caption">#{options[:title]}</caption>)
     end
-    result << %(<th width="14%" class="weekdays">#{_('Monday')}</th>)
-    result << %(<th width="14%" class="weekdays">#{_('Tuesday')}</th>)
-    result << %(<th width="14%" class="weekdays">#{_('Wednesday')}</th>)
-    result << %(<th width="14%" class="weekdays">#{_('Thursday')}</th>)
-    result << %(<th width="14%" class="weekdays">#{_('Friday')}</th>)
-    result << %(<th width="14%" class="weekdays">#{_('Saturday')}</th>)
-    result << %(<th width="14%" class="weekdays">#{_('Sunday')}</th>)
+
+    # day_names start on sunday, but all calendar starts on monday
+    day_names = I18n.t('date.day_names')
+    day_names[1..6].each do |d|
+      result << %(<th width="14%" class="weekdays">#{d.capitalize!}</th>)
+    end
+    result << %(<th width="14%" class="weekdays">#{day_names.first.capitalize!}</th>)
+
     month.weeks.each do |week|
       result << %(<tr class="events">)
       week.each do |day|
@@ -79,7 +73,7 @@ module DatesHelper
           result << %(<td valign="top" class="big_calendar_events" style="background-color:#E8E8E8;"></td>)
         else
           result << %(<td valign="top" class="big_calendar_events">)
-          result << %(<div class="big_calendar_date">#{day.strftime("%d")}<br/></div>)
+          result << %(<div class="big_calendar_date">#{I18n.l(day.date, :format => '%d')}<br/></div>)
           result << %(<div class="holidays">)
           #We call to_s to make it work even with nil values
           result << yield(day.date).to_s if block_given?
@@ -109,11 +103,11 @@ module DatesHelper
 
     cal = "<table class=\"#{options[:table_class]}\">"
     cal << '<thead><tr>'
-    week = start_date.strftime(_('W%W %Y'))
+    week = I18n.l(start_date, :format => _('W%W %Y'))
     cal << "<th><h3>#{week}</h3></th>"
     5.times do |d|
       date = start_date.beginning_of_day + d.days
-      cal << "<th><h3>#{date.strftime('%a %d/%m')}</h3></th>"
+      cal << "<th><h3>#{I18n.l(date, :format => '%a %d/%m')}</h3></th>"
     end
     cal << '</tr></thead><tbody>'
     time_range.each do |hour|

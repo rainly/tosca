@@ -54,7 +54,7 @@
   <% links = [
       link_to( _('Digest report'), digest_reporting_path),
       link_to( _('Weekly digest'), weekly_reporting_path),
-      link_to( _('Distribution of issues in time'), calendar_reporting_path) ] %>
+      link_to( _('Distribution of issues in time'), monthly_reporting_path) ] %>
   <%= show_list(links) %>
  </div>
    <% if @session_user.role_id == 1 %>
