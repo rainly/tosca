@@ -25,10 +25,10 @@
          <%= _('and its has been approved on %s') % @contribution.closed_on_formatted %>
       <% end %>.<br/>
       <% if @contribution.affected_version %>
-         <%= _('This bug has been discovered in the version %s ') % link_to_version(@contribution.affected_version) %>
+         <%= _('This patch has been made for version %s ') % link_to_version(@contribution.affected_version) %>
       <% end %>
       <% if @contribution.fixed_version %>
-         <%= _('and has been fixed in the version %s') % link_to_version(@contribution.fixed_version) %>
+         <%= _('and has been merged in version %s') % link_to_version(@contribution.fixed_version) %>
       <% end %>
   <% else %>
       <%= _('This patch was not submitted to the community') %>
