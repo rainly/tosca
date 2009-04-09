@@ -1,7 +1,7 @@
 
 <p><%= _('This report presents the state of the service from the')%>
- <%= @report[:middle_date].strftime('%d %B %Y') %> <%= _('to the')%>
- <%= @report[:end_date].strftime('%d %B %Y') %> <% _('including (') %> (<%= @report[:middle_report] %> <%= _(' months')%>).</p>
+ <%= I18n.l @report[:middle_date], :format => '%d %B %Y' %> <%= _('to the')%>
+ <%= I18n.l @report[:end_date], :format => '%d %B %Y' %> <% _('including (') %> (<%= @report[:middle_report] %> <%= _(' months')%>).</p>
 
 <p><%= _('The beginning of the report is organized in four regions for each type of information: ') %></p>
 <ul>

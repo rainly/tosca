@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.8.0beta1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-04-09 17:50+0200\n"
-"PO-Revision-Date: 2009-04-09 17:55+0200\n"
+"POT-Creation-Date: 2009-04-09 18:14+0200\n"
+"PO-Revision-Date: 2009-04-09 18:16+0200\n"
 "Last-Translator: Jonathan Clarke <jclarke@linagora.com>\n"
 "Language-Team: French\n"
 "MIME-Version: 1.0\n"
@@ -118,12 +118,6 @@ msgstr "%s se sont écoulé(e)s sur cette demande."
 #: app/views/account/login.html.erb:4
 msgid "%s login"
 msgstr "Connection au %s"
-
-#: app/views/reporting/monthly.html.erb:34
-msgid "%s new issue has been submitted"
-msgid_plural "%s new issues has been submitted"
-msgstr[0] "%s nouvelle demande a été soumise"
-msgstr[1] "%s nouvelles demandes ont été soumises"
 
 #: app/helpers/welcome_helper.rb:80
 msgid "%s theme"
@@ -2015,7 +2009,7 @@ msgid "No issue found."
 msgstr "Aucune demande trouvée"
 
 #: app/views/reporting/monthly.html.erb:32
-msgid "No issue has been submitted"
+msgid "No issue have been submitted"
 msgstr "Aucune demande n'a été soumise"
 
 #: app/views/issues/lists/pending.html.erb:29
@@ -2054,6 +2048,12 @@ msgstr "Certifié OSI"
 #: app/views/welcome/index.html.erb:49
 msgid "Offer"
 msgstr "Offre"
+
+#: app/views/reporting/monthly.html.erb:34
+msgid "One issue has been submitted"
+msgid_plural "%s issues have been submitted"
+msgstr[0] "Une demande a été soumise"
+msgstr[1] "%s demandes ont été soumises"
 
 #: app/views/issues/new.html.erb:4
 msgid "One of our consultants will then contact you in less than one hour."
@@ -2884,14 +2884,6 @@ msgstr "Le temps indiqué est celui restant avant la fin de la CNS"
 msgid "The issue has been updated successfully."
 msgstr "La demande a bien été mise à jour."
 
-#: app/models/comment.rb:56
-msgid "The issue is now %s.<br/>"
-msgstr "La demande est désormais %s.<br/>"
-
-#: app/models/comment.rb:59
-msgid "The issue is now managed by %s.<br/>"
-msgstr "Le responsable de la demande est désormais %s.<br/>"
-
 #: app/helpers/issues_helper.rb:204
 msgid "The life cycle of an issue"
 msgstr "Cycle de vie d'une demande"
@@ -3022,7 +3014,7 @@ msgstr "Cette demande a été prise en compte par %s."
 msgid "This issue is no longer linked to a contribution"
 msgstr "La demande n'est plus liée à une contribution"
 
-#: app/models/comment.rb:124
+#: app/models/comment.rb:126
 msgid "This issue seems to be unstable."
 msgstr "Cette demande semble être inconsistante."
 
@@ -3991,7 +3983,7 @@ msgstr "appel"
 msgid "prints the life cycle of an issue"
 msgstr "affiche le cycle de vie d'une demande"
 
-#: app/models/comment.rb:65
+#: app/models/comment.rb:67
 msgid "private"
 msgstr "privé"
 
@@ -3999,7 +3991,7 @@ msgstr "privé"
 msgid "progress bar"
 msgstr "barre de progression"
 
-#: app/models/comment.rb:65
+#: app/models/comment.rb:67
 msgid "public"
 msgstr "public"
 

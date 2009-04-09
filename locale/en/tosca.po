@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.8.0beta1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-04-09 17:50+0200\n"
+"POT-Creation-Date: 2009-04-09 18:14+0200\n"
 "PO-Revision-Date: 2009-04-09 17:56+0200\n"
 "Last-Translator: Jonathan Clarke <jclarke@linagora.com>\n"
 "Language-Team: English\n"
@@ -117,12 +117,6 @@ msgstr ""
 #: app/views/account/login.html.erb:4
 msgid "%s login"
 msgstr ""
-
-#: app/views/reporting/monthly.html.erb:34
-msgid "%s new issue has been submitted"
-msgid_plural "%s new issues has been submitted"
-msgstr[0] ""
-msgstr[1] ""
 
 #: app/helpers/welcome_helper.rb:80
 msgid "%s theme"
@@ -1997,7 +1991,7 @@ msgid "No issue found."
 msgstr ""
 
 #: app/views/reporting/monthly.html.erb:32
-msgid "No issue has been submitted"
+msgid "No issue have been submitted"
 msgstr ""
 
 #: app/views/issues/lists/pending.html.erb:29
@@ -2034,6 +2028,12 @@ msgstr ""
 #: app/views/welcome/index.html.erb:49
 msgid "Offer"
 msgstr ""
+
+#: app/views/reporting/monthly.html.erb:34
+msgid "One issue has been submitted"
+msgid_plural "%s issues have been submitted"
+msgstr[0] ""
+msgstr[1] ""
 
 #: app/views/issues/new.html.erb:4
 msgid "One of our consultants will then contact you in less than one hour."
@@ -2860,14 +2860,6 @@ msgstr ""
 msgid "The issue has been updated successfully."
 msgstr ""
 
-#: app/models/comment.rb:56
-msgid "The issue is now %s.<br/>"
-msgstr ""
-
-#: app/models/comment.rb:59
-msgid "The issue is now managed by %s.<br/>"
-msgstr ""
-
 #: app/helpers/issues_helper.rb:204
 msgid "The life cycle of an issue"
 msgstr ""
@@ -2991,7 +2983,7 @@ msgstr ""
 msgid "This issue is no longer linked to a contribution"
 msgstr ""
 
-#: app/models/comment.rb:124
+#: app/models/comment.rb:126
 msgid "This issue seems to be unstable."
 msgstr ""
 
@@ -3925,7 +3917,7 @@ msgstr ""
 msgid "prints the life cycle of an issue"
 msgstr ""
 
-#: app/models/comment.rb:65
+#: app/models/comment.rb:67
 msgid "private"
 msgstr ""
 
@@ -3933,7 +3925,7 @@ msgstr ""
 msgid "progress bar"
 msgstr ""
 
-#: app/models/comment.rb:65
+#: app/models/comment.rb:67
 msgid "public"
 msgstr ""
 

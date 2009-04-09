@@ -13,10 +13,10 @@
   <%= (client ? client.name : Tosca::App::Name) %><br />
   <%= _("Activity report") %><br />
   <% if @report[:middle_date].month == @report[:end_date].month %>
-    <%= _('of') %> <%= @report[:middle_date].strftime('%B %Y') %>
+    <%= _('of') %> <%= I18n.l(@report[:middle_date], :format => '%B %Y') %>
   <% else %>
-    <%= _('from') %> <%= @report[:middle_date].strftime('%B %Y') %>
-    <%= _('to') %> <%= @report[:end_date].strftime('%B %Y') %>
+    <%= _('from') %> <%= I18n.l(@report[:middle_date], :format => '%B %Y') %>
+    <%= _('to') %> <%= I18n.l(@report[:end_date], :format => '%B %Y') %>
   <% end %>
   (<%= @report[:middle_report] %> <%= _('months') %>)
 </h1>
