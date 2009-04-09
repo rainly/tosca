@@ -33,11 +33,6 @@ class CommentSweeper < ActionController::Caching::Sweeper
 
   private
   def expire_cache_for(record)
-    unless record.issue
-      puts "***************************"
-      p record
-      p Issue.all.collect(&:id)
-    end
     expire_fragments(record.fragments)
     # Comments are displayed in issue view
     expire_fragments(record.issue.fragments)
