@@ -58,7 +58,7 @@
           <% unless access_code.blank? %>
             <p><%= _('Your call number is')%>
               <b><%=App::ContactPhone %></b>,
-            <b><%= _("and your access code is %s") % access_code %></b></p>
+            <b><%= _("and your access code is %s") % access_code %> (<%= user.client.access_code_helper %>)</b></p>
           <% end %>
         </div>
       <% end %>

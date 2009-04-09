@@ -18,11 +18,10 @@
 #
 
 class SoftwaresController < ApplicationController
-  helper :versions, :issues, :skills, :contributions,
-    :licenses, :groups, :hyperlinks
+  helper  :contracts, :contributions, :groups, :hyperlinks,
+    :issues, :licenses, :skills, :versions
 
-  # Not used for the moment
-  # auto_complete_for :software, :name
+  cache_sweeper :software_sweeper, :only => [:update, :destroy]
 
   # ajaxified list
   def index
@@ -82,12 +81,7 @@ class SoftwaresController < ApplicationController
 
   def show
     @software = Software.find(params[:id])
-    conditions = { :conditions => ['issues.software_id=?', params[:id]] }
-    if @session_user.recipient?
-      @issues = @session_user.assigned_issues.all(conditions)
-    else
-      @issues = Issue.all(conditions)
-    end
+    conditions = { :conditions => ['issues.software_id=?', @software.id] }
   end
 
   def card
@@ -155,12 +149,13 @@ private
 
   def add_logo
     image = params[:picture]
-    unless image.nil? || image[:image].blank?
+    if image.nil? || image[:image].blank?
+      true
+    else
       image[:description] = @software.name
       @software.picture = Picture.new(image)
-      return @software.picture.save
+      @software.picture.save and @software.save
     end
-    return true
   end
 
   # because :save resets @software.errors

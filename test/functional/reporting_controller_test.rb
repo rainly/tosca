@@ -40,4 +40,26 @@ class ReportingControllerTest < ActionController::TestCase
     assert_not_nil assigns(:contracts)
   end
 
+  def test_monthly
+    get :monthly
+
+    xhr :get, :monthly, :filters => { :contract_id => Contract.first.id.to_s }
+    assert_response :success
+    xhr :get, :monthly, :filters => { :team_id => Team.first.id.to_s }
+    assert_response :success
+    xhr :get, :monthly, :date => { :month => '1', :year => '2009' }
+    assert_response :success
+  end
+
+  def test_weekly
+    get :weekly
+
+    xhr :get, :weekly, :filters => { :contract_id => Contract.first.id.to_s }
+    assert_response :success
+    xhr :get, :weekly, :filters => { :team_id => Team.first.id.to_s }
+    assert_response :success
+    xhr :get, :weekly, :report => { :start_date => '2008-12-29' }
+    assert_response :success
+  end
+
 end

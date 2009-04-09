@@ -16,25 +16,22 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-class CommentSweeper < ActionController::Caching::Sweeper
-  # All the cache used for comments are in the
-  # 'comment' action of the 'issue' controller.
-  observe Comment
+class SoftwareSweeper < ActionController::Caching::Sweeper
+  # Used to clean up issue cache when logo updated
+  observe Software
 
-  # If our sweeper detects that a Comment was created call this
-  def after_save(comment)
-    expire_cache_for(comment)
+  # If sweeper detects that an Software was created or updated
+  def after_save(record)
+    expire_cache_for(record)
   end
 
-  # If our sweeper detects that a Comment was deleted call this
-  def after_destroy(comment)
-    expire_cache_for(comment)
+  # If sweeper detects that an Software was deleted call this
+  def after_destroy(record)
+    expire_cache_for(record)
   end
 
   private
   def expire_cache_for(record)
-    expire_fragments(record.fragments)
-    # Comments are displayed in issue view
-    expire_fragments(record.issue.fragments)
+    record.issues.each{|i| expire_fragments(i.fragments)}
   end
 end

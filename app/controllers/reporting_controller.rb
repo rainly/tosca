@@ -201,6 +201,7 @@ class ReportingController < ApplicationController
     comments.each do |c|
       key = "#{c.created_on.day}_#{c.created_on.hour}_#{c.created_on.min/30*30}"
       issue = c.issue
+      next if issue.nil?
 
       @issues[key] ||= {}
       @issues[key][:new_issues] ||= []

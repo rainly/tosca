@@ -150,6 +150,7 @@ div.bloc_scroll, div.long_bloc_scroll {
   max-height: 10em;
   overflow: auto;
   background-color: #f2fff2;
+  min-width: 35em;
 }
 div.long_bloc_scroll { max-height: 31em; }
 div.redbox_scroll {
