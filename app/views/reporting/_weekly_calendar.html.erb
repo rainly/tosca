@@ -9,14 +9,16 @@
   last_week = @start_date - 1.week
   link_text = image_previous_page +
     _('Week of the %s') % I18n.l(last_week, :format => '%d %B')
-  js_call = "document.forms['filters'].elements['report[start_date]'].value='#{last_week.strftime("%Y-%m-%d")}';"
+  last_week = last_week.strftime("%Y-%m-%d")
+  js_call = "document.forms['filters'].elements['report[start_date]'].value='#{last_week}';"
   js_call << remote_function(options)
   link_previous = link_to_function(link_text, js_call)
 
   next_week = @start_date + 1.week
   link_text = _('Week of the %s') % I18n.l(next_week, :format => '%d %B') +
     image_next_page
-  js_call = "document.forms['filters'].elements['report[start_date]'].value='#{next_week.strftime("%Y-%m-%d")}';"
+  next_week = next_week.strftime("%Y-%m-%d")
+  js_call = "document.forms['filters'].elements['report[start_date]'].value='#{next_week}';"
   js_call << remote_function(options)
   link_next = link_to_function(link_text, js_call)
 %>
