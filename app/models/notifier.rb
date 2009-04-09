@@ -124,7 +124,7 @@ class Notifier < ActionMailer::Base
 
     case mode.to_sym
     when :day
-      time = now.strftime("%A %d %B %Y")
+      time = I18n.l now, :format => '%A %d %B %Y'
       subject _("Daily digest for ") << time
     when :week
       time = _ordinalize(now.strftime("%U").to_i) << _(" week of ") << now.year.to_s

@@ -29,10 +29,10 @@
   title = link_previous
   title << "&nbsp;"
   if @number_issues.zero?
-    title << _('No issue has been submitted')
+    title << _('No issue have been submitted')
   else
-    title << ( n_("%s new issue has been submitted",
-                  "%s new issues has been submitted", @number_issues) % @number_issues )
+    title << ( n_("One issue has been submitted",
+                  "%s issues have been submitted", @number_issues) % @number_issues )
   end
   title << "&nbsp;"
   title << link_next
@@ -50,7 +50,7 @@
  <h2><%= _('Distribution') %></h2>
  <ul>
  <% @distribution.each_pair do |key, value| %>
-  <li><b><%= Statut.find(key) %>:</b>
+  <li><b>(<%= value.size%>) <%= Statut.find(key) %>:</b>
       <%= value.map{|i| link_to_issue_tiny(i)}.join(', ') %></li>
  <% end%>
  </ul>

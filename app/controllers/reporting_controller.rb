@@ -285,7 +285,7 @@ class ReportingController < ApplicationController
     end_date = @report[:end_date]
     while (current_month <= end_date) do
       # '\n' is used to force nice display in bar graphs
-      @months_col.push current_month.strftime('%b \n%Y')
+      @months_col.push I18n.l(current_month, :format => '%b \n%Y')
       current_month = current_month.advance(:months => 1)
     end
     @labels = {}

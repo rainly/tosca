@@ -52,11 +52,13 @@ class Comment < ActiveRecord::Base
   before_validation do |record|
     #If the status was changed and we do not specify a text, we generate a default text
     text = html2text(record.text).strip
+    # TODO : find a way to make a square round
+    # TODO : or find a good way to translate email
     if record.statut and not Statut::NEED_COMMENT.include? record.statut_id and text.empty?
-      record.text << ( _("The issue is now %s.<br/>") % _(record.statut.name) )
+      record.text << ( "La demande est désormais %s.<br/>" % _(record.statut.name) )
     end
     if record.engineer and text.empty?
-      record.text << ( _("The issue is now managed by %s.<br/>") % _(record.engineer.name))
+      record.text << ( "Le responsable de la demand est désormais %s.<br/>") % _(record.engineer.name))
     end
   end
 
