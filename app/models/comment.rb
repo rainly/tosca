@@ -90,6 +90,7 @@ class Comment < ActiveRecord::Base
   end
 
   def first_comment?
+    return false unless self.issue
     (self.id == self.issue.first_comment_id)
   end
 
