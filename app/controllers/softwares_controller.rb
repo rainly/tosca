@@ -18,8 +18,8 @@
 #
 
 class SoftwaresController < ApplicationController
-  helper :versions, :issues, :skills, :contributions,
-    :licenses, :groups, :hyperlinks
+  helper  :contracts, :contributions, :groups, :hyperlinks,
+    :issues, :licenses, :skills, :versions
 
   cache_sweeper :software_sweeper, :only => [:update, :destroy]
 
@@ -82,11 +82,6 @@ class SoftwaresController < ApplicationController
   def show
     @software = Software.find(params[:id])
     conditions = { :conditions => ['issues.software_id=?', @software.id] }
-    if @session_user.recipient?
-      @issues = @session_user.assigned_issues.all(conditions)
-    else
-      @issues = Issue.all(conditions)
-    end
   end
 
   def card

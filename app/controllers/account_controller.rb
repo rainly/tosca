@@ -319,6 +319,7 @@ private
   # Used during login and logout
   def clear_sessions
     reset_session
+    @session_user = nil
   end
 
   # Used during signup, It saves the associated recipient/expert

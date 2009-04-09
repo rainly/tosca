@@ -62,15 +62,31 @@
     </div>
   </div>
   <div class="c50r">
+    <% if @session_user %>
     <div class="show">
       <table>
+       <% if @session_user.expert? %>
+        <tr>
+          <td colspan="2"><b><%=_('Contracts')%></b><br />
+            <% options[:edit] = nil %>
+            <% options[:public_summarized] = true %>
+            <% contracts = @software.contracts %>
+            <% if contracts.size > 0  %>
+              <div class="bloc_scroll">
+                <%=show_list(contracts, _('Contract'), options) {|d| link_to_contract d}%>
+              </div>
+          <% end %></td>
+        </tr>
+       <% end %>
+
         <tr>
           <td colspan="2"><b><%=_('Issues')%></b> <%= link_to_new_issue(:software_id => @software.id)%> <br />
             <% options[:edit] = nil %>
             <% options[:public_summarized] = true %>
-            <% if @issues.size > 0  %>
+            <% issues = @software.issues %>
+            <% if issues.size > 0  %>
               <div class="bloc_scroll">
-                <%=show_list(@issues, _('Issue'), options) {|d| link_to_issue d}%>
+                <%=show_list(issues, _('Issue'), options) {|d| link_to_issue d}%>
               </div>
           <% end %></td>
         </tr>
@@ -87,6 +103,7 @@
         </tr>
       </table>
     </div>
+     <% end %>
   </div>
 </div>
 

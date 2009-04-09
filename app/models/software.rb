@@ -50,15 +50,6 @@ class Software < ActiveRecord::Base
         :joins => @@scope_joins } } if contract_ids
   end
 
-
-  # See ApplicationController#scope
-  def self.set_scope(contract_ids)
-    @@scope_joins ||= " LEFT OUTER JOIN `versions` ON versions.software_id = softwares.id INNER JOIN contracts_versions ON versions.id = contracts_versions.version_id "
-    self.scoped_methods << { :find => { :conditions =>
-        [ 'contracts_versions.contract_id IN (?)', contract_ids ],
-        :joins => @@scope_joins } } if contract_ids
-  end
-
   # See ApplicationController#scope
   def self.set_public_scope
     self.scoped_methods << { :find => { :conditions =>
@@ -73,6 +64,12 @@ class Software < ActiveRecord::Base
 
   def to_param
     "#{id}-#{name.gsub(/[^a-z1-9]+/i, '-')}"
+  end
+
+  def contracts
+    joins = 'INNER JOIN contracts_versions cv ON cv.contract_id = contracts.id'
+    conditions = [ 'cv.version_id IN (?)', [10, 11, 2, 8, 9] ]
+    Contract.all(:conditions => conditions, :joins => joins )
   end
 
   ReleasesContract = Struct.new(:name, :id, :type)
