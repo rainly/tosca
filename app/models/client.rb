@@ -35,6 +35,7 @@ class Client < ActiveRecord::Base
 
   validates_presence_of :name, :creator
   validates_length_of :name, :in => 3..50
+  validates_uniqueness_of :access_code
 
   SELECT_OPTIONS = { :include => :recipients,
     :conditions => ['clients.inactive = ? AND users.inactive = ?', false, false ] }
@@ -66,7 +67,7 @@ class Client < ActiveRecord::Base
     result = false
     self.contracts.each do |c|
       if c.rule.max == -1
-        result = true 
+        result = true
         break
       end
     end

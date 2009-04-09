@@ -35,7 +35,7 @@
             <td rowspan="2" align="right"><%= logo_client(@client) if @client.picture %></td>
           </tr><tr>
             <td><b><%= _('Access code') %></b></td>
-            <td><%= @client.access_code %></td>
+            <td><%= @client.access_code %> (<%= @client.access_code_helper %>)</td>
           </tr>
           <% unless @client.address.blank? %>
             <tr><td colspan="3">
