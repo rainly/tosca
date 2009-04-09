@@ -58,7 +58,7 @@ class Comment < ActiveRecord::Base
       record.text << ( "La demande est désormais %s.<br/>" % _(record.statut.name) )
     end
     if record.engineer and text.empty?
-      record.text << ( "Le responsable de la demand est désormais %s.<br/>") % _(record.engineer.name))
+      record.text << ( "Le responsable de la demand est désormais %s.<br/>" % _(record.engineer.name))
     end
   end
 
