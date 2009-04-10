@@ -50,7 +50,7 @@ module CommitmentsHelper
       last_cycle = cycle('even', 'odd') if e.severity_id != last_severity_id
       out << "<tr class=\"#{last_cycle}\">"
       out << '<td>'
-      if e.issuetype_id != last_issuetype_id
+      if e.issuetype and e.issuetype_id != last_issuetype_id
         out << "<strong>#{e.issuetype.name}</strong>"
         last_issuetype_id = e.issuetype_id
       end
