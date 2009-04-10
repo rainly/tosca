@@ -36,6 +36,11 @@ class RemoveIngenieurAndRecipient < ActiveRecord::Migration
   class Phonecall < ActiveRecord::Base
   end
 
+  class Comment < ActiveRecord::Base
+    belongs_to :user
+    belongs_to :ingenieur
+  end
+
   def self.up
     remove_column :ingenieurs, :image_id
     remove_column :users, :client
