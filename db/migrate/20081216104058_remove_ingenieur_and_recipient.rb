@@ -41,6 +41,10 @@ class RemoveIngenieurAndRecipient < ActiveRecord::Migration
     belongs_to :ingenieur
   end
 
+  class Issue < ActiveRecord::Base
+    belongs_to :recipient
+  end
+
   def self.up
     remove_column :ingenieurs, :image_id
     remove_column :users, :client
@@ -57,6 +61,9 @@ class RemoveIngenieurAndRecipient < ActiveRecord::Migration
     add_index :comments, :engineer_id
     add_column :contributions, :engineer_id, :integer
     add_index :contributions, :engineer_id
+
+    add_column :issues, :new_recipient_id, :integer
+    add_column :phonecalls, :new_recipient_id, :integer
 
     Ingenieur.all.each do |i|
       user = i.user
@@ -82,12 +89,19 @@ class RemoveIngenieurAndRecipient < ActiveRecord::Migration
       r.user.update_attribute(:client_id, r.client_id)
 
       r.phonecalls.each do |p|
-        p.update_attribute(:recipient_id, r.user.id)
+        p.update_attribute(:new_recipient_id, r.user.id)
       end
       r.issues.each do |i|
-        i.update_attribute(:recipient_id, r.user.id)
+        i.update_attribute(:new_recipient_id, r.user.id)
       end
     end
+
+    remove_column :issues, :recipient_id
+    remove_column :phonecalls, :recipient_id
+    rename_column :issues, :new_recipient_id, :recipient_id
+    rename_column :phonecalls, :new_recipient_id, :recipient_id
+    add_index :issues, :recipient_id
+    add_index :phonecalls, :recipient_id
 
     remove_column :knowledges, :ingenieur_id
     remove_column :issues, :ingenieur_id
