@@ -57,19 +57,19 @@ class RemoveIngenieurAndRecipient < ActiveRecord::Migration
       user = i.user
 
       i.knowledges.each do |k|
-        k.engineer_id = user.id
+        k.update_attribute(:engineer_id, user.id)
       end
 
       i.issues.each do |d|
-        d.engineer_id = user.id
+        d.update_attribute(:engineer_id, user.id)
       end
 
       i.comments.each do |c|
-        c.engineer_id = user.id
+        c.update_attribute(:engineer_id, user.id)
       end
 
       i.contributions.each do |c|
-        c.engineer_id = user.id
+        c.update_attribute(:engineer_id, user.id)
       end
     end
 
@@ -77,10 +77,10 @@ class RemoveIngenieurAndRecipient < ActiveRecord::Migration
       r.user.update_attribute(:client_id, r.client_id)
 
       r.phonecalls.each do |p|
-        p.recipient_id = r.user.id
+        p.update_attribute(:recipient_id, r.user.id)
       end
       r.issues.each do |i|
-        i.recipient_id = r.user.id
+        i.update_attribute(:recipient_id, r.user.id)
       end
     end
 
