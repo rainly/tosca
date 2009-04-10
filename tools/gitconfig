@@ -18,6 +18,7 @@
 [alias]
   ci = commit
   co = checkout
+  cp = cherry-pick
   smu = submodule update
   # list local commits, after fetch, before merge
   lc = log ORIG_HEAD.. --stat --no-merges
