@@ -84,11 +84,11 @@ class User < ActiveRecord::Base
     names = name.split(/ |-/)
     case names.size
     when 0..1 # ["Admin"] => ADM
-      @trigram = self.login[0..2].upcase!
+      @trigram = self.login[0..2].upcase
     when 2 # ["Jon", "Toto"] => JTO
-      @trigram = (b.first.first + b.last.first).upcase!
+      @trigram = (names.first.first + names.last.first).upcase
     else # ["Jon", "Michael", "Toto"] => JMT
-      @trigram = (b.first.first + b[1].first + b.last.first).upcase!
+      @trigram = (names.first.first + names[1].first + names.last.first).upcase
     end
     @trigram
   end
