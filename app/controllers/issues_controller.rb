@@ -167,6 +167,8 @@ class IssuesController < ApplicationController
     return render(:nothing => true) unless params.has_key? :contract_id
     contract = Contract.find(params[:contract_id].to_i)
     _form4contract(contract)
+    # For reinitialising version box.
+    @versions = []
   end
 
   # Used when submitting new issue, in order to select
