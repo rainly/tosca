@@ -8,6 +8,9 @@
     <div class="show">
       <table>
         <tr>
+          <td rowspan="2"><% unless @software.picture.blank? %>
+                <%= software_logo(@software, :size => :thumb) %>
+              <% end %></td>
           <td><b><%= _('Name') %></b> </td>
           <td><%= @software.name %>
             <% if @software.private? and expert %>
@@ -15,14 +18,11 @@
             <% end %>
           </td>
         </tr>
-        <tr><th><%= _('Summary') %></th>
-        <td><%= @software.summary %></td></tr>
         <tr>
-          <td colspan="2">
+         <td colspan="2"><%= @software.summary %></td></tr>
+        <tr>
+          <td colspan="3">
             <fieldset>
-              <% unless @software.picture.blank? %>
-                <div style="float: left; padding: 0.2em 0.5em;"><%= software_logo(@software, :size => :thumb) %></div>
-              <% end %>
               <%= @software.description %>
             </fieldset>
           </td>
@@ -30,30 +30,30 @@
 
         <tr>
           <th><%= _('Copyright') %></th>
-          <td><%=h @software.license.name if @software.license %></td>
+          <td colspan="2"><%=h @software.license.name if @software.license %></td>
         </tr>
 
         <tr>
           <th><%= _('Technologies') %></th>
-          <td><%= @software.skills.collect{|c| c.name}.join(', ') %></td>
+          <td colspan="2"><%= @software.skills.collect{|c| c.name}.join(', ') %></td>
         </tr>
 
         <tr>
           <th><%= _('Group') %></th>
-          <td><%= public_link_to(@software.group.name, group_path(@software.group_id) ) if @software.group %></td>
+          <td colspan="2"><%= public_link_to(@software.group.name, group_path(@software.group_id) ) if @software.group %></td>
         </tr>
 
         <tr>
           <%# collecting before calling .size to versions allows to skip a COUNT(*) request %>
           <% versions = @software.versions.collect{|v| link_to_version v}.join(', ') %>
           <th><%=n_('Version', 'Versions', @software.versions.size)%> <%= link_to_new_version(@software) %></th>
-          <td><%= versions %></td>
+          <td colspan="2"><%= versions %></td>
         </tr>
 
         <tr>
           <td><b><%= _('Links') %></b> <%= link_to_new_hyperlink("software", @software.id) %></td>
           <% options = {:no_title => true, :edit => 'hyperlink'} %>
-          <td><%= show_list(@software.hyperlinks, 'hyperlink', options) {|u|
+          <td colspan="2"><%= show_list(@software.hyperlinks, 'hyperlink', options) {|u|
               "<a href=\"#{u.name.urlize}\" target=\"_blank\">#{u.name}</a>"
             } %>
           </td>

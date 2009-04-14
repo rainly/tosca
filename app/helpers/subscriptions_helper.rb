@@ -23,12 +23,12 @@ module SubscriptionsHelper
     if model.subscribed? @session_user
       url = send("ajax_unsubscribe_#{model_name.underscore}_url", model)
       icon = image_unsubscribe
-      text = _('Unsubscribe')
+      text = _('Unsubscribe me')
       method = :delete
     else
       url = send("ajax_subscribe_#{model_name.underscore}_url", model)
       icon = image_subscribe
-      text = _('Subscribe')
+      text = _('Subscribe me')
       method = :post
     end
 

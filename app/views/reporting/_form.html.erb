@@ -3,8 +3,9 @@
 <p><small><%= _('The management report enables you to consult an overview of the activity.') %></small></p>
 <table>
 <tr>
+  <% start_date = Time.now - 3.month %>
   <td><label for="end_date"><%= _('Start date') %>: </label>
-   <%= select_month(Time.now) %> <%= select_year(Time.now) %></td>
+   <%= select_month(start_date) %> <%= select_year(start_date) %></td>
 </tr><tr>
   <td><label for="reporting_period"> <%= _('Over a period of') %></label>
       <%= text_field 'reporting', 'period', :size => 3,:value => 3 %> <%= _('months') %></td>

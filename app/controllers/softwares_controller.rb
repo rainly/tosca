@@ -32,7 +32,7 @@ class SoftwaresController < ApplicationController
       @title = _('List of your supported software')
     end
 
-    options = { :order => 'softwares.name', :include =>
+    options = { :order => 'softwares.name', :per_page => 15, :include =>
       [:group,:picture,:skills], :page => params[:page] }
     conditions = []
 

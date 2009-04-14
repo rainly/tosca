@@ -26,11 +26,15 @@
       <div class="show">
         <h3><%= _('Documents')%></h3>
         <% if user %>
-          <p><%= _('You can consult your %s online.') % link_to(_('activity report'), general_reporting_path) %></p>
-          <p><%= _("You can also see the %s") % link_to( _('Distribution of issues in time'), monthly_reporting_path) %></p>
-          <p><%= _("You can see the %s") % link_to( _('weekly report of issues'), weekly_reporting_path) %></p>
+          <p><%= _('There is 3 kinds of reporting available :') %></p>
+          <ul>
+           <li><%= _("An %s, allowing to see evolution of issues.") % link_to(_('activity report'), general_reporting_path) %></li>
+           <li><%= _("A %s, allowing to see distribution of issues by months") % link_to( _('monthly calendar'), monthly_reporting_path) %></li>
+           <li><%= _("A %s, allowing to see distribution of issues by weeks") % link_to( _('weekly calendar'), weekly_reporting_path) %></li>
+          </ul>
+          <p><%=_("You can consult and follow all the %s done by our team in Open Source communities.") % public_link_to_contributions  %></p>
         <% else %>
-          <p><%= _("When you are %s, you can access an activity report") % connected %><br />
+          <p><%= _("When you are %s, you have access to various activity reports") % connected %><br />
           <%= _("dynamically showing the activity of our service for you in real time.")%></p><br />
         <% end %>
       </div>
@@ -72,22 +76,17 @@
             <%=_("Don't hesitate to")%>
             <%=mail_to(App::TeamEmail, _('contact us.'))%></p><br />
           <% end %>
-        <p><%=_("You can consult and follow all the %s done by our team in Open Source communities.") % public_link_to_contributions  %></p>
       </div>
 
       <div class="show">
-        <h3><%=_('This site has changed')%></h3>
-        <p><%= _("As you can see, this tool has been updated. Here is a shortlist of changes : ") %>
+        <h3><%=_('Last changes')%></h3>
         <ul>
-          <li><%= _('You can now choose a theme between three if you click on this icon %s, in the top bar') % public_link_to_remote_theme %></li>
-          <li><%= _('Your %s is more detailed and include a new section about software')  % link_to(_('activity report'), general_reporting_path) %></li>
-          <li><%= _('Detailed view of your issues is improved, with a new dynamic comment approach') %></li>
+          <li><%= _('A new subscription system allows to follow a subject, like an issue, a whole contract or a software.') %></li>
+          <li><%= _('A detailled view of your contract, with your perimeter.')%></li>
           <% if user and user.engineer? %>
-            <li><%= _('a new alert page is available, allowing all teams to monitor its own contract')%></li>
-            <li><%= _('A new search engine is available in contracts list')%></li>
-            <li><%= _('A new system, tag-based, allowing to regroup software or issue at your convenience')%></li>
+            <li><%= _('A dynamic workflow system allows to have a different terminology for some kind of issues. It can be extended to use ITIL terminology.')%></li>
+            <li><%= _('Contract filters on reporting views.')%></li>
           <% end %>
-          <li><%= _('A new view on issue is available : %s') % link_to( _('Distribution of issues in time'), monthly_reporting_path) %></li>
         </ul>
       </div>
     </div>
