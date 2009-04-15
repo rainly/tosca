@@ -139,7 +139,7 @@ module ReportingHelper
 
     # TODO : put backgrounded cells into the static image helper ?
     # We can then remove the code below
-    relative_url_root = "#{ActionController::Base.relative_url_root}reporting/"
+    relative_url_root = "#{ActionController::Base.relative_url_root}/images/reporting/"
     size.times do |i|
       index = (twolines ? i*2 : i)
       head = data[i][0].to_s

@@ -37,17 +37,11 @@
   <div class="c50r">
  <div class="show">
    <h3><%= _('Plateform')%></h3>
-   <p><%= _('System management')%></p>
   <% links = [
-        link_to( _('Alerts'), alerts_path) ] %>
-  <%= show_list(links) %>
-  <p><%= _('Source management')%></p>
-  <% links = [
+         link_to( _('Alerts on issue submission'), alerts_path),
          link_to( _('Software list'), softwares_path),
-         link_to( _('Software categorization'), groups_path),
-         link_to( _('Versions'), versions_path),
-         link_to( _('Releases'), releases_path) ] %>
-   <%= show_list(links) %>
+         link_to( _('Software categorization'), groups_path) ] %>
+  <%= show_list(links) %>
  </div>
   <div class="show">
   <h3><%= _('Reporting')%></h3>
