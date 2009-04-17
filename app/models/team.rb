@@ -39,15 +39,6 @@ class Team < ActiveRecord::Base
     "#{id}-#{name.gsub(/[^a-z1-9]+/i, '-')}"
   end
 
-  def self.find_select_by_contract_id(contract_id)
-    joins = 'INNER JOIN contracts_users cu ON cu.user_id=users.id'
-    conditions = [ 'cu.contract_id = ?', contract_id ]
-    options = {:find => {:conditions => conditions, :joins => joins}}
-    User.send(:with_scope, options) do
-      User.find_select(User::SELECT_OPTIONS)
-    end
-  end
-
   def engineers_id
     self.engineers_collection_select.collect { |e| e.id }
   end

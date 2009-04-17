@@ -206,7 +206,7 @@ class IssuesController < ApplicationController
       @statuts = @issue.issuetype.allowed_statuses(@issue.statut_id, @session_user)
       if user.engineer?
         @severities = Severity.find_select
-        @engineers = User.find_select_by_contract_id(@issue.contract_id)
+        @engineers = User.find_select_by_contract_ids([@issue.contract_id])
         @teams = Team.on_contract_id(@issue.contract_id)
       end
     end
@@ -385,7 +385,7 @@ class IssuesController < ApplicationController
     result = false if @recipients.empty?
     @softwares = contract.softwares.collect { |l| [ l.name, l.id ] }
     if @session_user.engineer?
-      @engineers = User.find_select_by_contract_id(contract.id)
+      @engineers = User.find_select_by_contract_ids([contract.id])
       @teams = Team.on_contract_id(contract.id)
     end
     result
