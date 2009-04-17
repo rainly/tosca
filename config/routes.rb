@@ -44,7 +44,7 @@ ActionController::Routing::Routes.draw do |map|
   # routing files to prevent download from public access
   # TODO : convert to named route
   options = { :controller => 'files', :action => 'download', :filename => /\w+(.\w+)*/ }
-  %w(file patch archive).each do |file|
+  %w(file patch archive attachment).each do |file|
     map.files(":file_type/#{file}/:id/:filename", options)
   end
 
