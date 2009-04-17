@@ -32,11 +32,11 @@
            <li><%= _("A %s, allowing to see distribution of issues by months") % link_to( _('monthly calendar'), monthly_reporting_path) %></li>
            <li><%= _("A %s, allowing to see distribution of issues by weeks") % link_to( _('weekly calendar'), weekly_reporting_path) %></li>
           </ul>
-          <p><%=_("You can consult and follow all the %s done by our team in Open Source communities.") % public_link_to_contributions  %></p>
         <% else %>
           <p><%= _("When you are %s, you have access to various activity reports") % connected %><br />
           <%= _("dynamically showing the activity of our service for you in real time.")%></p><br />
         <% end %>
+          <p><%=_("You can consult and follow all the %s done by our team in Open Source communities.") % public_link_to_contributions  %></p>
       </div>
       <% if user %>
         <div class="show">

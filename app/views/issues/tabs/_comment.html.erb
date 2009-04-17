@@ -12,8 +12,8 @@
  <div id="comment_<%=comment.id%>"
       class="comment-container <%=class_collapsed%> <%=(private ? 'private' : 'public')%>">
   <div class="comment-header" onclick="tosca_toggle_comment('comment_<%=comment.id%>')">
-    <% if user %><strong><%= user.name %></strong><% end %>
-    - <span><%= comment.created_on.to_s(:short) %></span>
+    (#<%= comment.id %>)<% if user %><strong><%= user.name %></strong><% end %>
+    - <span><%= I18n.l(comment.created_on, :format => :short) %></span>
   </div>
   <div class="comment-content">
     <table class="comment-table">
