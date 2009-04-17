@@ -35,7 +35,7 @@ module WillPaginate::ViewHelpers
   end
 
   # Fix r#58 : restore create_link when there's no page
-  def will_paginate_with_create_link(collection = nil, options = {})
+  def will_paginate_with_create_link(collection = [], options = {})
     options, collection = collection, nil if collection.is_a? Hash
     page_links = will_paginate_without_create_link(collection, options)
     if page_links

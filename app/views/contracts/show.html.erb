@@ -67,6 +67,7 @@
    </fieldset>
   </div>
  </div><div class="c50r">
+   <% if @session_user.expert? %>
    <div class="show">
     <fieldset>
      <legend><%= _("Human ressources") %>:</legend>
@@ -85,6 +86,7 @@
      </table>
     </fieldset>
    </div>
+   <% end %>
    <% if @session_user.expert? or (@session_user.recipient? && !versions.empty?) %>
    <div class="show"><table>
     <tr>
@@ -106,7 +108,7 @@
     <%= link_to image_icon_tag, tags_contract_url(@contract) %></p>
    </div>
    <% end %>
-   <% if @session_user.expert? %>
+   <% if false # TODO : rework subscription %>
    <div class="show" id="subscribers">
      <%= render :partial => 'subscribers' %>
    </div>

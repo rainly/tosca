@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.8.0beta1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-04-14 17:32+0200\n"
+"POT-Creation-Date: 2009-04-17 18:18+0200\n"
 "PO-Revision-Date: 2009-04-09 17:56+0200\n"
 "Last-Translator: Jonathan Clarke <jclarke@linagora.com>\n"
 "Language-Team: English\n"
@@ -194,24 +194,22 @@ msgid ""
 "        the <b>status</b> or in the <b>severity</b>"
 msgstr ""
 
-#: app/views/welcome/index.html.erb:85
-msgid "A detailled view of your contract, with your perimeter."
+#: app/views/welcome/index.html.erb:86
+msgid "A detailled view of your contract(s), with your perimeter."
 msgstr ""
 
-#: app/views/welcome/index.html.erb:87
+#: app/views/welcome/index.html.erb:88
 msgid ""
 "A dynamic workflow system allows to have a different terminology for some "
-"kind of issues. It can be extended to use ITIL terminology."
+"kind of issues. It can be extended to use ITIL terminology,"
 msgstr ""
 
 #: app/views/commitments/new.html.erb:1
 msgid "A new commitment"
 msgstr ""
 
-#: app/views/welcome/index.html.erb:84
-msgid ""
-"A new subscription system allows to follow a subject, like an issue, a whole "
-"contract or a software."
+#: app/views/welcome/index.html.erb:85
+msgid "A new pagination system,"
 msgstr ""
 
 #: app/controllers/contributiontypes_controller.rb:35
@@ -809,7 +807,7 @@ msgstr ""
 msgid "Contract : "
 msgstr ""
 
-#: app/views/welcome/index.html.erb:88
+#: app/views/welcome/index.html.erb:89
 msgid "Contract filters on reporting views."
 msgstr ""
 
@@ -1303,7 +1301,7 @@ msgstr ""
 msgid "Expand all"
 msgstr ""
 
-#: app/views/contracts/show.html.erb:74
+#: app/views/contracts/show.html.erb:75
 #: app/views/account/_edit_account_informations.html.erb:14
 #: app/views/knowledges/show.html.erb:3
 #: vendor/extensions/phonecalls/app/views/phonecalls/_index_panel.html.erb:19
@@ -1440,7 +1438,7 @@ msgstr ""
 msgid "Homepage"
 msgstr ""
 
-#: app/views/contracts/show.html.erb:72
+#: app/views/contracts/show.html.erb:73
 msgid "Human ressources"
 msgstr ""
 
@@ -1822,6 +1820,10 @@ msgstr ""
 
 #: app/views/account/_edit_account_informations.html.erb:70
 msgid "Modify your password"
+msgstr ""
+
+#: app/views/welcome/index.html.erb:84
+msgid "Monthly and weekly views on issues activity,"
 msgstr ""
 
 #: app/models/notifier.rb:134
@@ -2691,7 +2693,7 @@ msgstr ""
 msgid "Summary"
 msgstr ""
 
-#: app/views/contracts/show.html.erb:92
+#: app/views/contracts/show.html.erb:94
 msgid "Supported software"
 msgstr ""
 
@@ -2721,7 +2723,7 @@ msgid_plural "Tags of the contract \"%s\""
 msgstr[0] ""
 msgstr[1] ""
 
-#: app/views/tags/show.html.erb:2 app/views/contracts/show.html.erb:105
+#: app/views/tags/show.html.erb:2 app/views/contracts/show.html.erb:107
 #: app/views/softwares/show.html.erb:101 app/views/softwares/_tags.html.erb:2
 #: app/views/issues/_show_panel.html.erb:46
 #: app/views/issues/_show_panel.html.erb:49
@@ -2741,7 +2743,7 @@ msgstr ""
 msgid "Taken into account"
 msgstr ""
 
-#: app/views/contracts/show.html.erb:75
+#: app/views/contracts/show.html.erb:76
 msgid "Team"
 msgid_plural "Teams"
 msgstr[0] ""

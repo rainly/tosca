@@ -28,7 +28,7 @@ class ToscaRenderer < WillPaginate::LinkRenderer
 
   def create_link(text)
     options =  { :action => 'new' }
-    @template.link_to @template.image_create(text), options
+    @template.link_to(@template.image_create(text), options)
   end
 
   def page_link_or_span(page, span_class, text = nil)
@@ -52,7 +52,7 @@ class ToscaRenderer < WillPaginate::LinkRenderer
     links = @options[:page_links] ? windowed_links : []
     # previous/next buttons
     separator = @options[:separator]
-    html = create_link(@options[:create_label]) << separator
+    html = create_link(@options[:create_label]).to_s << separator
     html << page_link_or_span(@collection.previous_page, %w(disabled prev_page),
                               @template.image_prev_page) << separator
     html << links.join(separator) << separator
