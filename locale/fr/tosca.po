@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.8.0beta1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-04-14 17:32+0200\n"
-"PO-Revision-Date: 2009-04-14 17:33+0200\n"
+"POT-Creation-Date: 2009-04-17 18:18+0200\n"
+"PO-Revision-Date: 2009-04-17 18:26+0200\n"
 "Last-Translator: Jonathan Clarke <jclarke@linagora.com>\n"
 "Language-Team: French\n"
 "MIME-Version: 1.0\n"
@@ -198,30 +198,23 @@ msgstr ""
 "Un commentaire ne peut être privé s'il y a un changement<br/>\\n\"\n"
 "\"        du <b>statut</b> ou de la <b>sévérité</b>\""
 
-#: app/views/welcome/index.html.erb:85
-msgid "A detailled view of your contract, with your perimeter."
-msgstr "Une vue détaillée de votre contract, avec votre périmètre supporté."
+#: app/views/welcome/index.html.erb:86
+msgid "A detailled view of your contract(s), with your perimeter."
+msgstr "Une vue détaillée de votre(vos) contrat(s), avec votre périmètre supporté."
 
-#: app/views/welcome/index.html.erb:87
+#: app/views/welcome/index.html.erb:88
 msgid ""
 "A dynamic workflow system allows to have a different terminology for some "
-"kind of issues. It can be extended to use ITIL terminology."
-msgstr ""
-"Un système de workflow dynamique permettant d'utiliser des terminologies "
-"différentes selon le type de demandes. Ce système peut être étendu pour "
-"utiliser la terminologie ITL."
+"kind of issues. It can be extended to use ITIL terminology,"
+msgstr "Un système de workflow dynamique permettant d'utiliser des terminologies différentes selon le type de demandes. Ce système peut être étendu pour utiliser la terminologie ITL,"
 
 #: app/views/commitments/new.html.erb:1
 msgid "A new commitment"
 msgstr "A nouvel engagement"
 
-#: app/views/welcome/index.html.erb:84
-msgid ""
-"A new subscription system allows to follow a subject, like an issue, a whole "
-"contract or a software."
-msgstr ""
-"Un nouveau système de souscription permet de suivre un sujet, que ce soit "
-"une demande, un logiciel ou l'ensemble des demandes d'un contrat."
+#: app/views/welcome/index.html.erb:85
+msgid "A new pagination system,"
+msgstr "Un nouveau système de pagination,"
 
 #: app/controllers/contributiontypes_controller.rb:35
 msgid "A new type of contribution was successfully created."
@@ -820,7 +813,7 @@ msgstr "Contrat"
 msgid "Contract : "
 msgstr "Contrat : "
 
-#: app/views/welcome/index.html.erb:88
+#: app/views/welcome/index.html.erb:89
 msgid "Contract filters on reporting views."
 msgstr "Filtres sur contrat dans les différents rapports."
 
@@ -1314,7 +1307,7 @@ msgstr "Développer"
 msgid "Expand all"
 msgstr "Tout développer"
 
-#: app/views/contracts/show.html.erb:74
+#: app/views/contracts/show.html.erb:75
 #: app/views/account/_edit_account_informations.html.erb:14
 #: app/views/knowledges/show.html.erb:3
 #: vendor/extensions/phonecalls/app/views/phonecalls/_index_panel.html.erb:19
@@ -1451,7 +1444,7 @@ msgstr "Page d'Accueil"
 msgid "Homepage"
 msgstr "Page d'Accueil"
 
-#: app/views/contracts/show.html.erb:72
+#: app/views/contracts/show.html.erb:73
 msgid "Human ressources"
 msgstr "Ressources humaines"
 
@@ -1838,6 +1831,10 @@ msgstr "Modifier %s"
 #: app/views/account/_edit_account_informations.html.erb:70
 msgid "Modify your password"
 msgstr "Modifier votre mot de passe"
+
+#: app/views/welcome/index.html.erb:84
+msgid "Monthly and weekly views on issues activity,"
+msgstr "Des vues mensuelles et hebdomadaires sur l'activité des demandes,"
 
 #: app/models/notifier.rb:134
 msgid "Monthly digest for "
@@ -2710,7 +2707,7 @@ msgstr "Déposé le"
 msgid "Summary"
 msgstr "Résumé"
 
-#: app/views/contracts/show.html.erb:92
+#: app/views/contracts/show.html.erb:94
 msgid "Supported software"
 msgstr "Mes logiciels supportés"
 
@@ -2740,7 +2737,7 @@ msgid_plural "Tags of the contract \"%s\""
 msgstr[0] "Tag du contrat \"%s\""
 msgstr[1] "Tags du contrat \"%s\""
 
-#: app/views/tags/show.html.erb:2 app/views/contracts/show.html.erb:105
+#: app/views/tags/show.html.erb:2 app/views/contracts/show.html.erb:107
 #: app/views/softwares/show.html.erb:101 app/views/softwares/_tags.html.erb:2
 #: app/views/issues/_show_panel.html.erb:46
 #: app/views/issues/_show_panel.html.erb:49
@@ -2760,7 +2757,7 @@ msgstr "Étiquettes de cette demande"
 msgid "Taken into account"
 msgstr "Prise en compte"
 
-#: app/views/contracts/show.html.erb:75
+#: app/views/contracts/show.html.erb:76
 msgid "Team"
 msgid_plural "Teams"
 msgstr[0] "Équipe"
