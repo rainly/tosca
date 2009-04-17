@@ -155,8 +155,8 @@ module FileColumnHelper
     relative_path = object.send("#{method}_relative_path", subdir)
     return nil unless relative_path
 
-    url = (absolute ? ActionController::Base.relative_url_root : '')
-    url = File.join(url, object.send("#{method}_options")[:base_url], relative_path + file_suffix)
+    url = ActionController::Base.relative_url_root.dup
+    url << File.join('/', object.send("#{method}_options")[:base_url], relative_path + file_suffix)
     url.gsub!('+', '%2b') # needed to download deb package file, with '+' sign
     url
   end
