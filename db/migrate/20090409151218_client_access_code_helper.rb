@@ -7,7 +7,7 @@ class ClientAccessCodeHelper < ActiveRecord::Migration
     add_column :clients, :access_code_helper, :string, :null => true
     Client.all.each do |c|
       code, helper = c.access_code.split(' ') if c.access_code
-      helper = helper[1..-2] if helper[0] == ?( and helper [-1] == ?)
+      helper = helper[1..-2] if helper and helper[0] == ?( and helper [-1] == ?)
       c.update_attributes(:access_code => code, :access_code_helper => helper)
     end
   end
