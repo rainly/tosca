@@ -262,6 +262,7 @@ class CGI
   end
 end
 
+
 class ActionController::Caching::Sweeper
   # Helper, in order to expire fragments, see ActiveRecord#fragments()
   # for more info
@@ -286,17 +287,44 @@ module ActionController
   end
 end
 
+
 module ActionView
   class Base
     include PermissionCache
   end
 end
 
-module ActionView::Helpers::CacheHelper
-  # Overloaded in order to have cache consistency between languages
-  def cache(name = {}, options = nil, &block)
-    @controller.fragment_for(output_buffer, "#{name}_#{I18n.locale}",
-                             options, &block)
+
+module ActionController #:nodoc: all
+  module Caching
+    module Fragments
+      def fragment_cache_key_with_gettext(name)
+        ret = fragment_cache_key_without_gettext(name)
+        if ret.is_a? String
+          ret.gsub(/:/, ".") << "_#{I18n.locale}"
+        else
+          ret
+        end
+      end
+      alias_method_chain :fragment_cache_key, :gettext
+
+      def expire_fragment_with_gettext(key, options = nil)
+        return unless cache_configured?
+
+        key = key.is_a?(Regexp) ? key : fragment_cache_key_without_gettext(key)
+
+        if key.is_a?(Regexp)
+          self.class.benchmark "Expired fragments matching: #{key.source}" do
+            cache_store.delete_matched(key, options)
+          end
+        else
+          self.class.benchmark "Expired fragment: #{key}" do
+            cache_store.delete("#{key}_#{I18n.locale}", options)
+          end
+        end
+      end
+      alias_method_chain :expire_fragment, :gettext
+    end
   end
 end
 
