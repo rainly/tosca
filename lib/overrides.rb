@@ -525,21 +525,22 @@ module AutoComplete
   module ClassMethods
     def auto_complete_for(object, method, model = nil, field = nil, options = {})
       define_method("auto_complete_for_#{object}_#{method}") do
-        if object.to_s.camelize.constantize.methods.include? method.to_s
+        my_object = object.to_s.camelize.constantize
+        if my_object.column_names.include? method.to_s
+          find_options = {
+            :conditions => [ "LOWER(#{method}) LIKE ?", '%' + params[object][method].downcase + '%' ],
+            :order => "#{method} ASC",
+            :limit => 10 }.merge!(options)
+          @items = my_object.all(find_options)
+        else
           search = params[object][method]
-          collection = object.to_s.camelize.constantize.all(options)
+          collection = my_object.all(options)
           result = []
           collection.each do |c|
             result.push c if c.send(method).downcase.include? search.downcase or search == "*"
           end
           limit = options[:limit].nil? ? 10 : options[:limit]
           @items = result.sort_by {|r| r.send(method)}[0..limit]
-        else
-          find_options = {
-            :conditions => [ "LOWER(#{method}) LIKE ?", '%' + params[object][method].downcase + '%' ],
-            :order => "#{method} ASC",
-            :limit => 10 }.merge!(options)
-          @items = object.to_s.camelize.constantize.all(find_options)
         end
         render :inline => "<%= auto_complete_choice('#{object}', '#{method}', @items, '#{model}[#{field}_ids]') %>"
       end
