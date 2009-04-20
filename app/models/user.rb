@@ -318,7 +318,7 @@ class User < ActiveRecord::Base
   #Generate a field for an email
   #like : Toto Tutu <tutu.toto@truc.com>
   def email_name
-    "#{self.name} <#{self.email}>"
+    %Q{"#{self.name}" <#{self.email}>}
   end
 
   def issues
