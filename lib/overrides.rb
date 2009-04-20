@@ -292,6 +292,15 @@ module ActionView
   end
 end
 
+module ActionView::Helpers::CacheHelper
+  # Overloaded in order to have cache consistency between languages
+  def cache(name = {}, options = nil, &block)
+    @controller.fragment_for(output_buffer, "#{name}_#{I18n.locale}",
+                             options, &block)
+  end
+end
+
+
 # This module is overloaded in order to display link_to lazily
 # and efficiently. It display links <b>only</b> if the user
 # has the right access to the ressource.
