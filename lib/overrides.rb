@@ -523,6 +523,8 @@ end
 # Add the possibility to create an auto_complete on methods
 module AutoComplete
   module ClassMethods
+    # :conditions in options HAS to be a conditional string, no hash, no array.
+    # This is because 'like' in sql HAS to be in a string
     def auto_complete_for(object, method, model = nil, field = nil, options = {})
       define_method("auto_complete_for_#{object}_#{method}") do
         my_object = object.to_s.camelize.constantize
@@ -530,7 +532,10 @@ module AutoComplete
           find_options = {
             :conditions => [ "LOWER(#{method}) LIKE ?", '%' + params[object][method].downcase + '%' ],
             :order => "#{method} ASC",
-            :limit => 10 }.merge!(options)
+            :limit => 10 }
+          if options.has_key?(:conditions)
+            find_options[:conditions][0] << " AND #{options[:conditions]}"
+          end
           @items = my_object.all(find_options)
         else
           search = params[object][method]

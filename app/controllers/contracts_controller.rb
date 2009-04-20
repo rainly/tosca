@@ -20,7 +20,7 @@ class ContractsController < ApplicationController
   helper :clients, :commitments, :versions, :issues, :subscriptions, :dates
 
   auto_complete_for :user, :name, :contract, :engineer_user,
-                    :conditions => { :client_id => nil }
+                    :conditions => 'client_id IS NULL'
 
   def index
     options = { :per_page => 25, :include => [:client],
