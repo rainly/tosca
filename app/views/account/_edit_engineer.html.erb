@@ -13,14 +13,16 @@
   <hr />
   <% end %>
 
-  <p><h3><%= _('Subscriptions :') %></h3></p>
-  <% unless @user.contracts_subscribed.empty? %>
-    <%= show_list(@user.contracts_subscribed, 'contract') { |c| link_to_contract c } %>
+  <% if false %>
+   <p><h3><%= _('Subscriptions :') %></h3></p>
+   <% unless @user.contracts_subscribed.empty? %>
+     <%= show_list(@user.contracts_subscribed, 'contract') { |c| link_to_contract c } %>
+   <% end %>
+   <% unless @user.softwares_subscribed.empty? %>
+     <%= show_list(@user.softwares_subscribed, 'software') { |s| link_to_softwares s } %>
+   <% end %>
+   <hr/>
   <% end %>
-  <% unless @user.softwares_subscribed.empty? %>
-    <%= show_list(@user.softwares_subscribed, 'software') { |s| link_to_softwares s } %>
-  <% end %>
-  <hr/>
 
   <% unless @contracts.empty? %>
    <p><h3><%= _('Contracts :')%></h3></p>
