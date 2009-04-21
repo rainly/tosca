@@ -17,7 +17,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-require_dependency 'vendor/plugins/acts_as_taggable_on_steroids/lib/tag.rb'
+#TODO : it should be loaded via init.rb of this plugin, not with this hack
+require_dependency "#{RAILS_ROOT}/vendor/plugins/acts_as_taggable_on_steroids/lib/tag"
 class Tag
 
   belongs_to :user
