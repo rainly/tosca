@@ -162,7 +162,7 @@ class AccountController < ApplicationController
     end
     if res # update of account fully ok
       set_sessions @user if @session_user == @user
-      flash[:notice]  = _("Edition succeeded")
+      flash[:notice] = _("Edition succeeded")
       redirect_to account_path(@user)
     else
       # Don't write this :  _form and render :action => 'edit'
@@ -313,7 +313,7 @@ private
     session[:return_to], session[:theme] = return_to, theme
 
     # Set user properties
-    session[:user] = user
+    @session_user = session[:user] = user
   end
 
   # Used during login and logout
