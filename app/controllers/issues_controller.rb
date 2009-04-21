@@ -385,7 +385,7 @@ class IssuesController < ApplicationController
     result = false if @recipients.empty?
     @softwares = contract.softwares.collect { |l| [ l.name, l.id ] }
     if @session_user.engineer?
-      @engineers = User.find_select_by_contract_id(contract.id)
+      @engineers = User.find_select_engineers_by_contract_id(contract.id)
       @teams = Team.on_contract_id(contract.id)
     end
     result

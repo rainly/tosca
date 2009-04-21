@@ -97,6 +97,7 @@ class Contract < ActiveRecord::Base
     end
     Software.all(:conditions => { "contracts.id" => self.id },
       :joins => { :versions => :contracts },
+      :group => 'softwares.id', # Allows to have uniqueness in results
       :order => 'softwares.name')
   end
 
