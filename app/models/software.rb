@@ -68,8 +68,9 @@ class Software < ActiveRecord::Base
 
   def contracts
     joins = 'INNER JOIN contracts_versions cv ON cv.contract_id = contracts.id'
-    conditions = [ 'cv.version_id IN (?)', [10, 11, 2, 8, 9] ]
-    Contract.all(:conditions => conditions, :joins => joins )
+    conditions = [ 'cv.version_id IN (?)', self.version_ids ]
+    Contract.all(:conditions => conditions, :joins => joins,
+                 :group => 'contracts.id')
   end
 
   ReleasesContract = Struct.new(:name, :id, :type)
