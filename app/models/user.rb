@@ -318,7 +318,10 @@ class User < ActiveRecord::Base
   #Generate a field for an email
   #like : Toto Tutu <tutu.toto@truc.com>
   def email_name
-    %Q{"#{self.name}" <#{self.email}>}
+    self.email
+    # TODO : restore this when name can be correctly encoded in
+    # email rfc format
+    # %Q["#{self.name}" <#{self.email}>]
   end
 
   def issues
