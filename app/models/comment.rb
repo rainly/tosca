@@ -58,7 +58,7 @@ class Comment < ActiveRecord::Base
       record.text << ( "La demande est désormais %s.<br/>" % _(record.statut.name) )
     end
     if record.engineer and text.empty?
-      record.text << ( "Le responsable de la demand est désormais %s.<br/>" % _(record.engineer.name))
+      record.text << ( "Le responsable de la demande est désormais %s.<br/>" % _(record.engineer.name))
     end
   end
 
@@ -181,12 +181,9 @@ class Comment < ActiveRecord::Base
     issue.last_comment_id = self.id unless self.private
 
     issue.save
-
-    #Sending e-mail
-    Notifier::deliver_issue_new_comment(self)
   end
 
-  after_save :automatic_subscribtion
+  # after_save :automatic_subscribtion
   # TODO : this subscription should be communicated, in a way or another
   # e.g. : by email or with the flash box.
   def automatic_subscribtion

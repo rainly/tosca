@@ -149,13 +149,28 @@ module FileColumnHelper
           absolute = options[:absolute]
         when String, Symbol
           subdir = options
+          options = {}
       end
     end
 
     relative_path = object.send("#{method}_relative_path", subdir)
     return nil unless relative_path
 
-    url = (absolute ? '' : ActionController::Base.relative_url_root).dup
+    options = ActionController::UrlWriter.default_url_options.merge(options || {})
+    url = ''
+    unless options.delete(:only_path)
+      url << (options.delete(:protocol) || 'http')
+      url << '://' unless url.match("://")
+
+      raise "Missing host to link to! Please provide :host parameter or set default_url_options[:host]" unless options[:host]
+
+      url << options.delete(:host)
+      url << ":#{options.delete(:port)}" if options.key?(:port)
+#    else
+      # Delete the unused options to prevent their appearance in the query string.
+#      [:protocol, :host, :port, :skip_relative_url_root].each { |k| options.delete(k) }
+    end
+    url << ActionController::Base.relative_url_root.to_s unless absolute
     url << File.join('/', object.send("#{method}_options")[:base_url], relative_path + file_suffix)
     url.gsub!('+', '%2b') # needed to download deb package file, with '+' sign
     url

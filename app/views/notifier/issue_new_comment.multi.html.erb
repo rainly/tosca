@@ -8,7 +8,7 @@
      modified << "assignée à <b>#{@comment.engineer.name}</b>"
    end %>
 
-<% url_issue = url_for(:controller => "issues", :action => "show", :id => @issue.id, 
+<% url_issue = url_for(:controller => "issues", :action => "show", :id => @issue.id,
    :only_path => false)
    link_to_issue = "<a href=\"#{url_issue}\">demande ##{@issue.id}</a>" %>
 <% if @comment.private %>
@@ -23,7 +23,7 @@
 <%= @comment.text %><br />
 <hr noshade size="1px"/>
 <% if @comment.severity_id %>
-  La demande a été requalifiée avec une sévérité <b><%=@comment.severity.name%></b>. <a href="<%= App::Help::IssueSeverityUrl%>">Cette page</a> vous présente en détail la signification de ce changement.<br />
+  La demande est qualifiée avec une sévérité <b><%=@comment.severity.name%></b>. <a href="<%= App::Help::IssueSeverityUrl%>">Cette page</a> vous en présente la signification.<br />
 <% end %>
 
 <%= render :partial => 'end_mail' %>

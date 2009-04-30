@@ -1,10 +1,11 @@
 <%# TODO use instance_variable_defined? when debian will have a better %>
 <%# version of ruby ... :/ %>
 
-<% if defined?(@attachment) and not @attachment.blank? %>
-  <p>
-    Une pièce jointe est disponible. Vous pouvez y accéder dans la demande.
-  </p>
+<% if defined?(@comment) %>
+  <% attachment = @comment.attachment %>
+  <% if attachment and !attachment.file.blank? %>
+    <a href="<%=url_for_file_column(@attachment, :file, :only_path => false)%>">Télécharger la pièce jointe</a>.
+  <% end %>
 <% end %>
 
 <span><font color="#909090">
