@@ -68,10 +68,12 @@ class CommentsController < ApplicationController
 
     #We verify and send an email
     if @comment.save
+      @comment.reload # Needed to see attachment in email views
       flash[:notice] = _("Your comment was successfully added.")
       to = issue.compute_recipients(@comment.private)
       cc = issue.compute_copy(@comment.private)
       flash[:notice] += message_notice(to, cc)
+      Notifier::deliver_issue_new_comment(@comment)
     else
       flash[:warn] = _("An error has occured.") + '<br/>' +
         @comment.errors.full_messages.join('<br/>')

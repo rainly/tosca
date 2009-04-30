@@ -41,7 +41,7 @@ class Notifier < ActionMailer::Base
   def error_message(exception, trace, session, params, env)
     @recipients = App::DeveloppersEmail
     @cc = App::MaintenerEmail
-    @from = App::NoReplyEmail
+    @from = App::FromEmail
     @content_type = HTML_CONTENT
     @subject = "Time to fix this one : #{env['REQUEST_URI']}"
     user = "Nobody"
@@ -62,8 +62,8 @@ class Notifier < ActionMailer::Base
   # with its password
   def user_signup(user)
     recipients  user.email
-    from        App::NoReplyEmail
-    reply_to    App::NoReplyEmail
+    from        App::FromEmail
+    reply_to    _compute_reply_to(user)
     subject     "Accès au Support Logiciel Libre"
 
     html_and_text_body(:user => user)
@@ -106,8 +106,8 @@ class Notifier < ActionMailer::Base
       else
         recipients App::MaintenerEmail
     end
-    from        from.email
-    reply_to    App::NoReplyEmail
+    from        App::FromEmail
+    reply_to    _compute_reply_to(from)
     subject "[Suggestion] => #{to}"
 
     options = {}
@@ -118,8 +118,8 @@ class Notifier < ActionMailer::Base
   end
 
   def reporting_digest(user, data, mode, now)
-    from        App::TeamEmail
-    reply_to    App::NoReplyEmail
+    from        App::FromEmail
+    reply_to    _compute_reply_to(user)
     recipients  user.email
 
     case mode.to_sym
@@ -142,8 +142,8 @@ class Notifier < ActionMailer::Base
 
   def new_user_ldap(user)
     recipients  User.admins.collect(&:email_name).join(', ')
-    from        App::NoReplyEmail
-    reply_to    App::NoReplyEmail
+    from        App::FromEmail
+    reply_to    _compute_reply_to(user)
     subject     "Nouvel utilisateur provenant du LDAP"
 
     html_and_text_body({ :user => user });
@@ -218,8 +218,8 @@ class Notifier < ActionMailer::Base
   def _common_issue_headers(issue, comment, user)
     recipients  issue.compute_recipients(comment.private)
     cc          issue.compute_copy(comment.private)
-    from        user.email_name
-    reply_to    App::NoReplyEmail
+    from        App::FromEmail
+    reply_to    _compute_reply_to(user)
     subject     "[#{issue.id}] #{issue.resume}"
     headers     _headers_mail_issue(issue, comment)
   end
@@ -235,6 +235,15 @@ class Notifier < ActionMailer::Base
     headers[HEADER_XCLIENT]    = issue.client.to_s.asciify
     headers[HEADER_XASSIGNEE]  = issue.engineer.name.asciify if issue.engineer
     return headers
+  end
+
+  def _compute_reply_to(user)
+    email = (user ? user.email : nil)
+    if email.nil? or email.blank?
+      App::NoReplyEmail
+    else
+      email
+    end
   end
 
   def get_text_from_email(part)

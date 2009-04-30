@@ -193,7 +193,7 @@ class Issue < ActiveRecord::Base
 
   # set the default for a new issue
   def set_defaults(user, params)
-    return if self.statut_id
+    return if self.severity_id
     # self-assignment
     if user.engineer?
       self.engineer_id = user.id
@@ -431,8 +431,6 @@ class Issue < ActiveRecord::Base
 
   def do_after_create
     self.first_comment.update_attribute :issue_id, self.id
-    #Sending e-mail when a issue is created
-    Notifier::deliver_issue_new(self)
   end
 
   # This model is scoped by Contract

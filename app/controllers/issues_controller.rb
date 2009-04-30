@@ -146,6 +146,7 @@ class IssuesController < ApplicationController
       @comment = @issue.first_comment
       # needed in order to send properly the email
       @issue.first_comment.issue.reload
+      Notifier::deliver_issue_new_comment(@comment)
       flash[:notice] += message_notice(@issue.compute_recipients, @issue.compute_copy)
       redirect_to _similar_issue
     else
@@ -201,7 +202,7 @@ class IssuesController < ApplicationController
 
 
       @comments = Comment.all(:order => "created_on ASC",
-        :conditions => filter_comments(@issue.id), :include => [:user])
+        :conditions => filter_comments(@issue.id), :include => [:user, :attachment])
 
       @statuts = @issue.issuetype.allowed_statuses(@issue.statut_id, @session_user)
       if user.engineer?
