@@ -63,7 +63,7 @@ class Notifier < ActionMailer::Base
   def user_signup(user)
     recipients  user.email
     from        App::FromEmail
-    reply_to    _compute_reply_to(user)
+    reply_to    App::NoReplyEmail
     subject     "Accès au Support Logiciel Libre"
 
     html_and_text_body(:user => user)
@@ -108,7 +108,7 @@ class Notifier < ActionMailer::Base
     end
     from        App::FromEmail
     reply_to    _compute_reply_to(from)
-    subject "[Suggestion] => #{to}"
+    subject     "[Suggestion] => #{to}"
 
     options = {}
     options[:suggestion] = text
