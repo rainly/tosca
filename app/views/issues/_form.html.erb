@@ -50,9 +50,9 @@
       <td>
        <% if @session_user.engineer? %>
          <%# We have an empty to make sure YOU choose the contract %>
-         <%= select_empty(:issue, :contract_id, @contracts) %>
+         <%= select_empty(:issue, :contract_id, @contracts, :style => "width: 20em;") %>
        <% else #recipient %>
-         <%= select(:issue, :contract_id, @contracts) %>
+         <%= select(:issue, :contract_id, @contracts, :style => "width: 20em;") %>
        <% end %>
        <% options = PagesHelper::SPINNER_OPTIONS.dup.update(:with => "contract_id",
                 :url => ajax_display_contract_issues_path) %>
