@@ -59,7 +59,8 @@ class FilesController < ApplicationController
     fullpath = [ root, params[:id], params[:filename].gsub(' ','+') ] * '/'
 
     # Attachment has to be restricted.
-    scope_active = (@session_user.recipient? and file_type == :attachment)
+    scope_active = (@session_user and @session_user.recipient? and
+                    file_type == :attachment)
 
     # Ensure that we can remove scope
     begin
