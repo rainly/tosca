@@ -44,15 +44,6 @@
   <div class="show tinymce">
    <table>
     <tr>
-     <th><label for="issue_issuetype_id"><%= _("Type") %></label></th>
-     <td><%= select(:issue, :issuetype_id, @issuetypes) %>
-         <% if new_issue %>
-           <%= select(:issue, :severity_id, @severities) %>
-         <% end %>
-     </td>
-    </tr>
-
-    <tr>
      <th><label for="issue_contract_id"><%= _("Concerning") %></label></th>
 
      <% if !@contracts.empty? %>
@@ -70,6 +61,14 @@
      <% else %>
       <td colspan="2"></td>
      <% end %>
+    </tr>
+    <tr>
+     <th><label for="issue_issuetype_id"><%= _("Type") %></label></th>
+     <%# Warning, the code of this cell is also in ajax_display_contract.rjs %>
+     <td nowrap="nowrap">
+      <div id="issuetype"><%= select(:issue, :issuetype_id, @issuetypes) %></div>
+      <%= select(:issue, :severity_id, @severities) if new_issue %>
+     </td>
     </tr>
 
     <tr>
