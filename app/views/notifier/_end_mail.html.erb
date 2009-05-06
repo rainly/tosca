@@ -4,7 +4,7 @@
 <% if defined?(@comment) %>
   <% attachment = @comment.attachment %>
   <% if attachment and !attachment.file.blank? %>
-    <a href="<%=url_for_file_column(@attachment, :file, :only_path => false)%>">Télécharger la pièce jointe</a>.
+    <a href="<%=url_for_file_column(@attachment, :file, :only_path => false)%>">Télécharger la pièce jointe</a>.<br />
   <% end %>
 <% end %>
 
