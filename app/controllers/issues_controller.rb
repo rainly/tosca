@@ -145,7 +145,7 @@ class IssuesController < ApplicationController
       @issue.first_comment.add_attachment(params)
       @comment = @issue.first_comment
       # needed in order to send properly the email
-      @issue.first_comment.issue.reload
+      @comment.reload
       Notifier::deliver_issue_new_comment(@comment)
       flash[:notice] += message_notice(@issue.compute_recipients, @issue.compute_copy)
       redirect_to _similar_issue
