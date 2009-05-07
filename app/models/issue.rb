@@ -193,7 +193,7 @@ class Issue < ActiveRecord::Base
 
   # set the default for a new issue
   def set_defaults(user, params)
-    return if self.severity_id
+    return unless self.new_record?
     # self-assignment
     if user.engineer?
       self.engineer_id = user.id
