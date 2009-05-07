@@ -185,7 +185,7 @@ private
 
   def _update(contribution)
     url = params[:hyperlink]
-    contribution.hyperlinks.create(url) unless url.blank?
+    contribution.hyperlinks.create(url) unless url.nil? or url[:name].blank?
     contribution.contributed_on = nil if params[:contribution][:reverse] == '0'
     contribution.closed_on = nil if params[:contribution][:clos] == '0'
     contribution.save
