@@ -69,6 +69,7 @@ class LoadPermissions < ActiveRecord::Migration
                [ '^issues/(?!destroy)', 'Manage issues' ],
                [ '^reporting/', 'Access to all kinds of reporting' ],
                [ '^hyperlinks/(?!destroy)', 'Manage the urls' ],
+               [ '^softwares/(?!destroy)', 'Manage software' ],
                [ '^archives/(?!destroy)', 'Manage release files' ]
              ]
     add_permission.call(roles, access)
@@ -84,7 +85,6 @@ class LoadPermissions < ActiveRecord::Migration
                [ '^commitments/(?!destroy)', 'Manage Service Level Agreement' ],
                [ '^groups/(?!destroy)', 'Manage groups of software' ],
                [ '^images/(?!destroy)', 'Manage logos of software & clients' ],
-               [ '^softwares/(?!destroy)', 'Manage software' ],
                [ '^releases/(?!destroy)', 'Manage releases' ],
                [ '^teams/(?!destroy)', 'Manage teams' ],
                [ '^tags/', 'Manage tags' ],
@@ -97,7 +97,6 @@ class LoadPermissions < ActiveRecord::Migration
                [ '^clients/show$', 'Read-only access to clients offers' ] ,
                [ '^contracts/(index|show)$', 'Read-only access to contracts'],
                [ '^issues/(index|print|show)$', 'Read access to issues' ],
-               [ '^softwares/(index|show)$', 'Read-only access to software' ],
                [ '^paquets/(index|show)$', 'Read-only access to package' ],
                [ '^teams/show$', 'Read-only access to teams' ],
                [ '^releases/(index|show)$', 'Read-only access to versions' ],
@@ -122,6 +121,11 @@ class LoadPermissions < ActiveRecord::Migration
                 [ '^issues/(new|create|pending)$',
                    'Write access to issues & Pending View' ] ]
     add_permission.call(roles, access)
+
+    roles = [ customer_id, viewer_id ]
+    access = [ [ '^softwares/(index|show)$', 'Read-only access to software' ] ]
+    add_permission.call(roles, access)
+
 
     roles = [ public_id ]
     access = [ [ '^alerts/(show|ajax_on_submit)', 'Alert page' ],
