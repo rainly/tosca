@@ -1,7 +1,7 @@
 <table style="width: 100%;"><tr>
   <td><b><u><%= _("Your answer :") %></u></b></td>
 
-  <% unless @statuts.empty? %>
+  <% unless @statuts.nil? or @statuts.empty? %>
   <td align="center">
     <label for="comment_statut_id"><%= _("Status") %></label>
     <%= select_empty(:comment, :statut_id, @statuts) %>
