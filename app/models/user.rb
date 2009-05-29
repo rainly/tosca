@@ -86,7 +86,7 @@ class User < ActiveRecord::Base
     when 0..1 # ["Admin"] => ADM
       @trigram = self.login[0..2].upcase
     when 2 # ["Jon", "Toto"] => JTO
-      @trigram = (names.first.first + names.last.first).upcase
+      @trigram = (names.first.first + names.last[0..1]).upcase
     else # ["Jon", "Michael", "Toto"] => JMT
       @trigram = (names.first.first + names[1].first + names.last.first).upcase
     end
