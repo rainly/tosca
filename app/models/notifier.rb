@@ -69,17 +69,6 @@ class Notifier < ActionMailer::Base
     html_and_text_body(:user => user)
   end
 
-  # This function require 1 parameter : the issue
-  def issue_new(issue)
-    options = {}
-    options[:issue] = issue
-    options[:comment] = issue.first_comment
-    options[:attachment] = issue.first_comment.attachment
-
-    _common_issue_headers(issue, issue.first_comment, issue.submitter)
-    html_and_text_body(options);
-  end
-
   # This function require 1 parameter : the comment
   def issue_new_comment(comment)
     issue = comment.issue
