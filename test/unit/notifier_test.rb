@@ -45,14 +45,6 @@ class NotifierTest < ActiveSupport::TestCase
     assert_equal user.email, response.to[0]
   end
 
-  def test_issue_new
-    issue = Issue.first(:order => :id)
-    response = Notifier::deliver_issue_new(issue)
-    assert_match issue.resume, response.subject
-    assert_match html2text(issue.description), response.body
-    assert_match issue.submitter.name, response.body
-  end
-
   def test_issue_new_comment
     issue = Issue.first(:order => :id)
     comment = issue.first_comment

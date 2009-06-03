@@ -66,7 +66,7 @@ class ClientsControllerTest < ActionController::TestCase
 
     assert flash.has_key?(:notice)
     assert_response :redirect
-    assert_redirected_to new_contract_path(:id => assigns(:client).id)
+    assert_redirected_to new_contract_path(:client_id => assigns(:client).id)
   end
 
   def test_edit

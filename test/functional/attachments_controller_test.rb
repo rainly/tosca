@@ -45,7 +45,7 @@ class AttachmentsControllerTest < ActionController::TestCase
   end
 
   def test_destroy
-    attachment = Attachment.find(1)
+    attachment = Attachment.find(1).clone
     assert_not_nil attachment
 
     post :destroy, :id => 1
