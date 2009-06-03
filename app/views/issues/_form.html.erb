@@ -47,26 +47,22 @@
      <th><label for="issue_contract_id"><%= _("Concerning") %></label></th>
 
      <% if !@contracts.empty? %>
-      <td>
-       <% if @session_user.engineer? %>
-         <%# We have an empty to make sure YOU choose the contract %>
-         <%= select_empty(:issue, :contract_id, @contracts, :style => "width: 20em;") %>
-       <% else #recipient %>
-         <%= select(:issue, :contract_id, @contracts, :style => "width: 20em;") %>
-       <% end %>
+      <td colspan="3">
+       <%= select(:issue, :contract_id, @contracts, :style => "width: 20em;") %>
        <% options = PagesHelper::SPINNER_OPTIONS.dup.update(:with => "contract_id",
                 :url => ajax_display_contract_issues_path) %>
        <%= observe_field "issue_contract_id", options %>
       </td>
      <% else %>
-      <td colspan="2"></td>
+      <td colspan="3"></td>
      <% end %>
     </tr>
     <tr>
      <th><label for="issue_issuetype_id"><%= _("Type") %></label></th>
      <%# Warning, the code of this cell is also in ajax_display_contract.rjs %>
-     <td nowrap="nowrap">
+     <td>
       <div id="issuetype"><%= select(:issue, :issuetype_id, @issuetypes) %></div>
+     </td><td>
       <%= select(:issue, :severity_id, @severities) if new_issue %>
      </td>
     </tr>
@@ -74,13 +70,13 @@
     <tr>
      <th><label for="issue_recipient_id"><%= _("Recipient") %></label></th>
      <%# Warning, the code of this cell is also in ajax_display_contract.rjs %>
-     <td><div id="recipient"><%= select(:issue, :recipient_id, @recipients) %></div></td>
+     <td colspan="2"><div id="recipient"><%= select(:issue, :recipient_id, @recipients) %></div></td>
     </tr>
 
     <% if @session_user.engineer? %>
      <tr>
       <th><label for="issue_engineer_id"><%=_("Assigned to")%></label></th>
-      <td>
+      <td colspan="2">
        <div id="engineer">
         <select id="issue_engineer_id" name="issue[engineer_id]"><option value="">» </option>
          <%= options_from_collection_for_select(@engineers, :last, :first, @issue.engineer_id) %>
@@ -91,10 +87,10 @@
      </tr>
     <% end %>
 
-    <tr><td colspan="2"><hr /></td></tr>
+    <tr><td colspan="3"><hr /></td></tr>
     <tr>
      <th><label for="issue_software_id"><%= _("Software") %></label></th>
-     <td><%= render :partial => 'software' %></td>
+     <td colspan="2"><%= render :partial => 'software' %></td>
     </tr>
 
     <tr id="version"><%= render :partial => 'version' %></tr>
@@ -103,13 +99,13 @@
      <tr><td colspan="2"><hr /></td></tr>
      <tr>
        <th><label for="issue_mail_cc"><%= _("CC") %></label></th>
-       <td><%= text_field :issue, :mail_cc, :size => 20 %></td>
+       <td colspan="2"><%= text_field :issue, :mail_cc, :size => 20 %></td>
      </tr>
 
      <% unless new_issue %>
      <tr>
       <th><label for="issue_expected_on"><%= _("Issue|Expected on") %></label></th>
-      <td>
+      <td colspan="2">
        <%= text_field :issue, :expected_on, :size => 20 %>
        <span class="calendarPicker"><%= script_date_from %></span>
        <%= script_date('issue_expected_on', 'date_from') %>
@@ -118,11 +114,11 @@
      <% end %>
     <% end %>
 
-    <tr><td colspan="2"><hr /></td></tr>
+    <tr><td colspan="3"><hr /></td></tr>
 
     <tr>
      <th><%= _("Commitments") %></th>
-     <td><div id="commitment"><%= display_commitment(@issue)%></div></td>
+     <td colspan="2"><div id="commitment"><%= display_commitment(@issue)%></div></td>
     </tr>
    </table>
   </div>
