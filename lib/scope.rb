@@ -28,7 +28,7 @@ module Scope
     begin
       yield
     ensure
-      remove_scope user
+      remove_scopes user
     end
   end
 
@@ -43,7 +43,7 @@ module Scope
 
     if !user.nil?
       # You can NOT change this condition without looking at remove_scope
-      if ((user.engineer? and user.restricted?) || user.recipient?)
+      if ((user.engineer? && user.restricted?) || user.recipient?)
         contract_ids = user.contract_ids
         client_ids = user.client_ids
         if contract_ids.empty?
@@ -51,7 +51,7 @@ module Scope
           client_ids = [ user.client_id ] if user.recipient?
         end
         @@scope_contract.each {|m| m.set_scope(contract_ids) }
-        @@scope_client.each {|m| m.set_scope(client_ids) }
+        @@scope_client.each {|m| m.set_scope(client_ids, user) }
         # Forbid access to private comments for recipients. It's just paranoia.
         Comment.set_private_scope if user.recipient?
       end
