@@ -42,7 +42,7 @@
   </td><td class="text" align="center" style="width:100%;">
    <%= text_area :comment, :text, :style => 'width:100%;' %>
      <%= file_column_field('attachment', 'file', :size => 45) %><br />
-     <%= submit_tag(controller.action_name = 'edit' ? _('Validate') : _('Answer')) %>
+     <%= submit_tag(controller.action_name == 'edit' ? _('Validate') : _('Answer')) %>
   </td>
  </tr>
 </table>
