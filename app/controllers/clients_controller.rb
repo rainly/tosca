@@ -55,7 +55,7 @@ class ClientsController < ApplicationController
     if add_logo && @client.save
       flash[:notice] = _('Client created successfully.') + '<br />' +
         _('You have now to create the associated contract.')
-      redirect_to new_contract_path(:id => @client.id)
+      redirect_to new_contract_path(:client_id => @client.id)
     else
       render :action => 'new'
     end
