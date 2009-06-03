@@ -35,7 +35,7 @@ class Client < ActiveRecord::Base
 
   validates_presence_of :name, :creator
   validates_length_of :name, :in => 3..50
-  validates_uniqueness_of :access_code
+  validates_uniqueness_of :access_code, :allow_nil => true, :allow_blank => true
 
   SELECT_OPTIONS = { :include => :recipients,
     :conditions => ['clients.inactive = ? AND users.inactive = ?', false, false ] }
@@ -55,9 +55,13 @@ class Client < ActiveRecord::Base
   end
 
   # don't use this function outside of an around_filter
-  def self.set_scope(client_ids)
-    self.scoped_methods << { :find => { :conditions =>
+  def self.set_scope(client_ids, user)
+    if user.recipient?
+      self.scoped_methods << { :find => { :conditions =>
         [ 'clients.id IN (?)', client_ids ]} }
+    else # an entry is needed for remove_scope call
+      self.scoped_methods << {}
+    end
   end
 
   # TODO : it's slow & ugly
