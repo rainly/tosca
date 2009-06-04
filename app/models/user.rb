@@ -205,6 +205,10 @@ class User < ActiveRecord::Base
     return match
   end
 
+  def admin?
+    role_id == 1
+  end
+
   def recipient?
     not engineer?
   end
@@ -229,7 +233,7 @@ class User < ActiveRecord::Base
   end
 
   def self.find_select_by_contract_id(contract_id)
-    conditions = [ 'contracts_users.contract_id = ?', contract_id ]
+    conditions = [ 'contracts_users.contract_id IN (?)', contract_id ]
     options = {:find => {:conditions => conditions, :joins => :own_contracts}}
     User.send(:with_scope, options) do
       User.find_select(User::SELECT_OPTIONS)

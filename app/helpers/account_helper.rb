@@ -52,7 +52,9 @@ module AccountHelper
 
   def form_become(user)
     result = ''
-    if @session_user.engineer? && user && !user.inactive?
+    if (@session_user.admin?) or (@session_user.engineer? and
+                                  user.recipient? and
+                                  !user.inactive?)
       result << %Q{<form action="#{become_account_path(user)}" method="post">}
       result << %Q{<input name="commit" value='#{_('Become')}' type="submit" /></form>}
     end

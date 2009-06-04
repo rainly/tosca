@@ -115,7 +115,7 @@ class IssuesController < ApplicationController
     unless @issue
       @issue = Issue.new(params.has_key?(:issue) ? params[:issue] : nil)
     end
-    _form @recipient
+    _form @session_user
 
     @issue.statut_id = (@session_user.engineer? ? 2 : 1)
     unless params.has_key? :issue
@@ -150,7 +150,7 @@ class IssuesController < ApplicationController
       flash[:notice] += message_notice(@issue.compute_recipients, @issue.compute_copy)
       redirect_to _similar_issue
     else
-      _form @recipient
+      _form @session_user
       render :action => 'new'
     end
   end
@@ -182,7 +182,7 @@ class IssuesController < ApplicationController
 
   def edit
     @issue = Issue.find(params[:id])
-    _form @recipient
+    _form @session_user
   end
 
   def show
@@ -383,8 +383,10 @@ class IssuesController < ApplicationController
   def _form4contract(contract)
     result = true
     @recipients = contract.find_recipients_select
+    @issuetypes = contract.issuetypes.collect!{|td| [td.name, td.id]}
+
     result = false if @recipients.empty?
-    @softwares = contract.softwares.collect { |l| [ l.name, l.id ] }
+    @softwares = contract.softwares.collect!{ |l| [ l.name, l.id ] }
     if @session_user.engineer?
       @engineers = User.find_select_engineers_by_contract_id(contract.id)
       @teams = Team.on_contract_id(contract.id)
@@ -394,7 +396,7 @@ class IssuesController < ApplicationController
 
   def _form4versions
     software_id, contract_id = @issue.software_id.to_i, @issue.contract_id.to_i
-    if software_id == 0 || contract_id == 0
+    if software_id == 0 or contract_id == 0
       @versions = []
     else
       software = Software.find(software_id)
@@ -412,24 +414,18 @@ class IssuesController < ApplicationController
   end
 
   #TODO : redo
-  def _form(recipient)
+  def _form(user)
     @contracts = Contract.find_active4select(Contract::OPTIONS)
     if @contracts.empty?
       flash[:warn] = _("It seems that you are not associated to a contract, which prevents you from filling an issue. Please contact %s if you think it's not normal") % App::TeamEmail
       return redirect_to(welcome_path)
     end
-    if recipient and recipient.recipient?
-      client = recipient.client
-      @issuetypes = client.issuetypes.collect{|td| [td.name, td.id]}
-    else
-      @engineers = User.find_select(User::EXPERT_OPTIONS)
-      @issuetypes = Issuetype.find_select
-    end
+    @engineers = User.find_select(User::EXPERT_OPTIONS) if user and user.expert?
     _form4versions
     @severities = Severity.find_select
     first_comment = @issue.first_comment
     @issue.description = first_comment.text if first_comment
-    @issue.recipient = recipient if recipient
+    @issue.recipient = user if user and user.recipient?
     if @issue.contract
       _form4contract(@issue.contract)
     elsif !@contracts.empty?

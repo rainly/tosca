@@ -44,6 +44,22 @@ class ApplicationControllerTest < ActionController::TestCase
   controllers = Object.subclasses_of(ActionController::Base).map(&:to_s)
   models = Object.subclasses_of(ActiveRecord::Base).map(&:to_s)
 
+  define_method("test_attachment_create 4 uv testing") do
+    # Ensure there is a valid attachment on id 1 for uv testing
+    begin
+      attachment = Attachment.find(1)
+      attachment.destroy
+    rescue # no problem to create one if it's not present
+    end
+    attachment = fixture_file_upload('../../app/models/attachment.rb')
+    options = { :file => attachment, :comment => comments(:comment_00001) }
+    attachment = Attachment.new(options)
+    attachment.id = 1
+    assert attachment.save
+    assert_not_nil Attachment.find(1)
+  end
+
+
   Permission.all.each do |p|
     perm = Regexp.compile(p.name)
 

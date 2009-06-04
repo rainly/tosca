@@ -33,11 +33,10 @@ class ApplicationController < ActionController::Base
   # * Wiki for more generic Info,
   # * lib/scope.rb for deep protection
   # * lib/login_system.rb for account protection
-  before_filter :set_gettext_locale, :set_global_shortcuts, :login_required, :before_scope
-  after_filter :after_scope
+  before_filter :set_gettext_locale, :set_global_shortcuts, :login_required
 
   # Limited perimeter for specific roles
-  # around_filter :scope
+  around_filter :scope
 
   # Authentification system
   include ACLSystem
@@ -80,7 +79,7 @@ protected
     super
   end
 
-  # global variables (not pretty, but those two are really usefull)
+  # global variables (not pretty, but this one is really useful)
   @@first_time = true
   def set_global_shortcuts
     if @@first_time
@@ -93,12 +92,9 @@ protected
     true
   end
 
-  def before_scope()
-    set_scopes(@session_user)
-  end
-
-  def after_scope()
-    remove_scopes(@session_user)
+  # Do not put scope in before / after filter. It breaks on action like log in/out.
+  def scope(&block)
+    define_scope(@session_user, &block)
   end
 
 

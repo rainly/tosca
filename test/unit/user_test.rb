@@ -229,10 +229,10 @@ class UserTest < ActiveSupport::TestCase
 
   def test_find_select_by_contract_id
     Contract.all.each do |c|
-      User.find_select_by_contract_id(c.id).each do |u|
+      User.find_select_by_contract_id([c.id]).each do |u|
         user = User.find(u.last)
         assert_equal user.name, u.first
-        assert user.contracts.collect { |contract| contract.id == c.id }.include?(true)
+        assert user.contracts.include?(c)
       end
     end
   end
@@ -243,7 +243,7 @@ class UserTest < ActiveSupport::TestCase
         user = User.find(u.last)
         assert_equal user.name, u.first
         assert user.engineer?
-        assert user.contracts.collect { |contract| contract.id == c.id }.include?(true)
+        assert user.contracts.include?(c)
       end
     end
   end
@@ -271,7 +271,7 @@ class UserTest < ActiveSupport::TestCase
       end
     end
   end
-  
+
   def test_admins
     User.admins.each do |u|
       assert u.role_id == 1

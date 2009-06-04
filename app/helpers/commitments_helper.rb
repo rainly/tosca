@@ -53,6 +53,7 @@ module CommitmentsHelper
       if e.issuetype and e.issuetype_id != last_issuetype_id
         out << "<strong>#{e.issuetype.name}</strong>"
         last_issuetype_id = e.issuetype_id
+        last_severity_id = 0 # always want to see severity for a new type
       end
       out << '</td><td>'
       if e.severity_id != last_severity_id
@@ -71,7 +72,10 @@ module CommitmentsHelper
         workaround = _('None') if workaround == '-'
         correction = _('None') if correction == '-'
         severities.push ["#{workaround} | #{correction}", e.id]
-        break if commitments.empty? || (commitments.last.severity_id != last_severity_id)
+        if commitments.empty? || (commitments.last.severity_id != last_severity_id)||
+                                 (commitments.last.issuetype_id != last_issuetype_id)
+          break
+        end
         e = commitments.pop
       end
       out << options_for_select(severities, selecteds)

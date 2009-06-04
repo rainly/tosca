@@ -1,3 +1,4 @@
+page.replace_html("issuetype", select(:issue, :issuetype_id, @issuetypes))
 page.replace_html("recipient", select(:issue, :recipient_id, @recipients))
 if @session_user.engineer?
    out = %Q{<select id="issue_engineer_id" name="issue[engineer_id]"><option value="">» </option>}
@@ -7,4 +8,4 @@ if @session_user.engineer?
    page.replace_html("engineer", out )
 end
 page.replace_html("software", :partial => "software")
-page.replace_html("version", :partial => "version")
+# page.replace_html("version", :partial => "version")

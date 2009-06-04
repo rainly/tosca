@@ -54,8 +54,7 @@ class ActiveSupport::TestCase
   def login(login, password)
     controller = @controller
     @controller = AccountController.new
-    post :login, :user_login => login, :user_password => password,
-      :user_crypt => 'false'
+    post :login, :user_login => login, :user_password => password
     @controller = controller
   end
 
