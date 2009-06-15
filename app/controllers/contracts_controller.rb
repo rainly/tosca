@@ -72,6 +72,29 @@ class ContractsController < ApplicationController
     @contract = Contract.find(params[:id])
   end
 
+  # TODO : maybe the model is a better place for this ?
+  def renew
+    old_contract = Contract.find(params[:id])
+    new_contract = Contract.new(old_contract.attributes)
+    new_contract.save! # needed for hbtm relationships safety
+    new_contract.users = old_contract.users;
+    new_contract.teams = old_contract.teams
+    new_contract.commitments = old_contract.commitments
+    new_contract.versions = old_contract.versions
+    new_contract.start_date = old_contract.end_date;
+    new_contract.end_date = old_contract.end_date + (old_contract.end_date - old_contract.start_date)
+    old_year, new_year = old_contract.start_date.year.to_s, new_contract.start_date.year.to_s
+    if old_contract.name.grep(/#{old_year}/)
+      new_contract.name = old_contract.name.gsub(old_year, new_year)
+    else
+      new_contract.name = "#{old_contract.name} #{new_year}"
+    end
+    new_contract.name = new_contract.start_date.year.to_s
+    new_contract.save
+    @contract = new_contract
+    redirect_to edit_contract_path(@contract)
+  end
+
   def new
     # TODO : put default contract into a config yml file ?
     @contract = Contract.new(:client_id => params[:client_id],
