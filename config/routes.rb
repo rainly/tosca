@@ -82,6 +82,7 @@ ActionController::Routing::Routes.draw do |map|
     :ajax_choose_rule_type => :post, :actives => :get, :ajax_add_software => :post,
     :add_software => :post, :auto_complete_for_user_name => :post },
     :member => { :supported_software => :get, :tags => :get,
+    :renew => :post,
     :ajax_subscribe => :post,
     :ajax_unsubscribe => :delete }
   map.resources :contributions,
