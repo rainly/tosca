@@ -303,7 +303,8 @@ module FormTestHelper
       when checked_value, unchecked_value
         super
       else
-        raise "Checkbox value must be one of #{[checked_value, unchecked_value].inspect}."
+        @value = value
+        # raise "Checkbox value must be one of #{[checked_value, unchecked_value].inspect}."
       end
     end
     

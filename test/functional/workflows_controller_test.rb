@@ -23,26 +23,20 @@ class WorkflowsControllerTest < ActionController::TestCase
     login 'admin', 'admin'
   end
 
-  def test_should_get_index
-    get :index
-    assert_response :success
-    assert_template nil
-  end
-
-  def test_should_get_new
-    get :new, :issuetype_id => 1
-    assert_response :success
-    # TODO : test create
-  end
-
   def test_should_create_workflow
-=begin
-    assert_difference('Workflow.count') do
-      post :create, :workflow => { }
-    end
+    workflow = Workflow.find(:first)
+    workflow.destroy
 
-    assert_redirected_to workflow_path(assigns(:workflow))
-=end
+    get :new, :issuetype_id => workflow.issuetype_id
+    assert_response :success
+
+    form = select_form 'new_workflow'
+    form.workflow.allowed_status_ids = workflow.allowed_status_ids
+    form.submit
+
+    assert_response :redirect
+    assert_redirected_to issuetype_path(workflow.issuetype)
+    workflow.save!
   end
 
   def test_should_show_workflow
