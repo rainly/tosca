@@ -228,7 +228,9 @@ module FileColumn # :nodoc:
       after_assign_method = "#{attr}_magick_after_assign".to_sym
 
       klass.send(:define_method, after_assign_method) do
-        if send(state_method).get_content_type =~ /^image\//
+        content_type = send(state_method).get_content_type
+        # SVG is not supported by ImageMagick (like ps & pdf)
+        if content_type =~ /^image\// and content_type !~ /svg/
           self.send(state_method).transform_with_magick
         end
       end
