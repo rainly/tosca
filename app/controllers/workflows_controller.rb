@@ -71,8 +71,10 @@ class WorkflowsController < ApplicationController
 
   private
   def _form
-    @workflow.issuetype_id ||= ( params.has_key? :issuetype_id ? params[:issuetype_id] : [])
-    @workflow.allowed_status_ids ||= []
+    if @workflow.new_record?
+      @workflow.issuetype_id = params[:issuetype_id] || 0
+      @workflow.allowed_status_ids = []
+    end
     @statuses = Statut.find_select(:order => 'statuts.id')
   end
 end
