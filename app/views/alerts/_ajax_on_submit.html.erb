@@ -1,4 +1,7 @@
 <% if @issues_found and not @issues_found.empty?%>
+  <STYLE type="text/css">
+  div#status { background-color: red; text-decoration:blink; }
+  </STYLE>
   <%= play_mp3(App::AlertFile) %>
   <%= show_list(@issues_found, _('New issues')) do |r|
         "##{r.id} #{r.contract} : #{r.resume}"
