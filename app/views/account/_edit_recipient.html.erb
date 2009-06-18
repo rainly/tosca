@@ -5,8 +5,8 @@
 <div class="show">
   <h1><b><%= _('Recipient') %></b></h1><br />
 
-  <p><label for="user_recipient_client_id">Client</label>
-    <%= select(:user_recipient, :client_id, @clients) %>
+  <p><label for="user_client_id">Client</label>
+    <%= select(:user, :client_id, @clients) %>
   </p>
   <hr />
 

@@ -47,7 +47,7 @@ module AccountHelper
   def observe_client_list
     @@contracts_options ||= PagesHelper::SPINNER_OPTIONS.dup.\
       update(:with => "client_id", :url => 'ajax_contracts')
-    observe_field "user_recipient_client_id", @@contracts_options
+    observe_field "user_client_id", @@contracts_options
   end
 
   def form_become(user)
