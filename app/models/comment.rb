@@ -54,7 +54,7 @@ class Comment < ActiveRecord::Base
     text = html2text(record.text).strip
     # TODO : find a way to make a square round
     # TODO : or find a good way to translate email
-    if record.statut and not Statut::NEED_COMMENT.include? record.statut_id and text.empty?
+    if record.statut? and text.blank?
       record.text << ( "La demande est désormais %s.<br/>" % _(record.statut.name) )
     end
     if record.engineer and text.empty?

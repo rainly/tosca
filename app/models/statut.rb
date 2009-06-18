@@ -24,8 +24,6 @@ class Statut < ActiveRecord::Base
   OPENED = [ 1, 2, 3, 4, 5 ] # We need to work on it
   CLOSED = [ 6, 7, 8 ] # The time count is now less/not important
 
-  NEED_COMMENT = [ 3, 4, 8 ] #These status need a comment if you use them, Suspended, Analysed, Cancelled
-
   Running = [ 1, 2, 4, 5 ] # Chrono is up
 
   # We do not want in any case a modification on those ids
