@@ -30,6 +30,7 @@ class Contract < ActiveRecord::Base
   has_many :subscriptions, :as => :model, :dependent => :destroy
 
   has_and_belongs_to_many :versions, :order => 'versions.name DESC', :uniq => true
+
   has_and_belongs_to_many :commitments, :uniq => true, :order =>
     'issuetype_id, severity_id', :include => [:severity,:issuetype]
   has_and_belongs_to_many :users, :order => 'users.name', :uniq => true
@@ -89,12 +90,7 @@ class Contract < ActiveRecord::Base
     closing_time - opening_time
   end
 
-  # We have open clients which can declare
-  # issues on everything.
   def softwares
-    if rule_type == 'Rules::Component' and rule.max == -1
-      return Software.all(:order => 'softwares.name ASC')
-    end
     Software.all(:conditions => { "contracts.id" => self.id },
       :joins => { :versions => :contracts },
       :group => 'softwares.id', # Allows to have uniqueness in results
