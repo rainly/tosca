@@ -222,14 +222,7 @@ class AccountController < ApplicationController
 
     client_id = params[:client_id].to_i
     user_id = (params.has_key?(:id) ? params[:id].to_i : nil)
-    options = Contract::OPTIONS
-    conditions = [ 'contracts.end_date >= ?', Time.now]
-    unless client_id == 0
-      conditions.first << ' AND contracts.client_id = ?'
-      conditions.push(client_id)
-    end
-    options = options.dup.update(:conditions => conditions)
-    @contracts = Contract.find_select(options)
+    _compute_contracts(client_id)
     @user = (user_id.blank? ? User.new : User.find(user_id))
   end
 
@@ -249,6 +242,17 @@ private
         flash[:notice] << message
       end
     end
+  end
+
+  def _compute_contracts(client_id)
+    options = Contract::OPTIONS
+    conditions = [ 'contracts.end_date >= ?', Time.now]
+    unless client_id == 0
+      conditions.first << ' AND contracts.client_id = ?'
+      conditions.push(client_id)
+    end
+    options = options.dup.update(:conditions => conditions)
+    @contracts = Contract.find_select(options)
   end
 
   # Used to restrict operation
@@ -278,6 +282,7 @@ private
     return unless @user.recipient?
     @clients = Client.find_select
     @user.role_id = 4 if @user.new_record?
+    _compute_contracts(@user.client_id.to_i)
   end
 
   def _form_engineer
