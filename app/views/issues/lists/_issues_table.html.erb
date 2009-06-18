@@ -13,13 +13,14 @@
       <% if user.engineer? %>
         <%=_('Owner')%>
       <% else %>
-        <%=_('Submitter')%>
+        <%=_('Recipient')%>
       <% end %>
     </th>
 
     <th width='8%'><%=_('Updated on')%></th>
   </tr>
 
+  <% recipient = User.new %>
   <% for issue in @issues %>
     <tr <%= tr_attributes(issue_path(issue)) %>>
       <td><%= issue.id %></td>
@@ -32,12 +33,11 @@
       <% if user.engineer? %>
         <td><%= issue.client_name %></td>
       <% end %>
-      <% recipient = issue.recipient if user.recipient? and user.id != issue.recipient_id %>
+      <% recipient = issue.recipient if user.recipient? and recipient.id != issue.recipient_id %>
       <td><b><%= link_to_issue issue %></b></td>
       <td>
         <% if user.engineer? %>
-          <% engineer = issue.engineer %>
-          <%= name(engineer) %>
+          <%= name(issue.engineer) %>
         <% else %>
           <%= recipient %>
         <% end %>
