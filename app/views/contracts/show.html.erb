@@ -72,6 +72,18 @@
    </fieldset>
   </div>
  </div><div class="c50r">
+
+   <% unless @contract.recipient_users.empty? %>
+   <div class="show">
+    <p><b><%= _('Recipients') %></b> <%= link_to_new_recipient(@contract.client_id) %> :</p>
+    <div class="bloc_scroll">
+      <%= show_list(@contract.recipient_users, _('Recipient'), :no_title => true) do |u|
+            link_to(u.name, account_path(u))
+          end %>
+    </div>
+   </div>
+   <% end %>
+
    <% if @session_user.expert? %>
    <div class="show">
     <fieldset>
