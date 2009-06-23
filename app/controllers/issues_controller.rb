@@ -429,7 +429,7 @@ class IssuesController < ApplicationController
     if @issue.contract
       _form4contract(@issue.contract)
     elsif !@contracts.empty?
-      Contract.all.each { |c|
+      Contract.all(:conditions => { :inactive => false}).each { |c|
         if _form4contract(c)
           @issue.contract = c
           break
