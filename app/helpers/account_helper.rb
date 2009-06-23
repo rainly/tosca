@@ -61,6 +61,12 @@ module AccountHelper
     result
   end
 
+  def link_to_new_recipient(client_id = nil)
+    path = signup_new_account_path((client_id ? {:client_id => client_id} : {}))
+    text = image_create('Add a recipient')
+    link_to text, path, :target => '_blank'
+  end
+
   def link_to_user(user)
     link_to user.name, account_path(user)
   end

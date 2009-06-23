@@ -73,7 +73,7 @@ class AccountController < ApplicationController
   def signup
     case request.method
     when :get # Display form
-      @user = User.new(:role_id => 4, :client_id => 0) # Default : customer
+      @user = User.new(:role_id => 4, :client_id => params[:client_id].to_i) # Default : customer
       _form
     when :post # Process form
       @user = User.new(params[:user])
