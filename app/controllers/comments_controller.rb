@@ -59,7 +59,6 @@ class CommentsController < ApplicationController
 
     @comment = Comment.new(comment) do |c|
       c.issue, c.user = issue, user
-      c.add_attachment(params)
       # Nil is not allowed for a heavily-used for computation value
       c.elapsed ||= 0
     end
@@ -67,7 +66,7 @@ class CommentsController < ApplicationController
     issue.update_attribute :expected_on, Time.now if user.recipient?
 
     #We verify and send an email
-    if @comment.save
+    if @comment.save && @comment.add_attachments(params)
       @comment.reload # Needed to see attachment in email views
       flash[:notice] = _("Your comment was successfully added.")
       to = issue.compute_recipients(@comment.private)
@@ -102,8 +101,8 @@ class CommentsController < ApplicationController
   def update
     @comment = Comment.find(params[:id])
     return if _not_allowed?
-    if @comment.update_attributes(params[:comment])
-      @comment.add_attachment(params)
+    if @comment.update_attributes(params[:comment]) and
+        @comment.add_attachments(params)
       flash[:notice] = _("The comment was successfully updated.")
       redirect_to comment_path(@comment)
     else

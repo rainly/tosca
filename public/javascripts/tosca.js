@@ -38,3 +38,19 @@ function tosca_generate_hash(id) {
   $(id).value = hex_md5(text);
   return true;
 }
+
+// Coming from Redmine,
+var fileFieldCount = 1;
+
+function addFileField() {
+    if (fileFieldCount >= 10) return false
+    fileFieldCount++;
+    var f = document.createElement("input");
+    f.type = "file";
+    f.name = "attachments[" + fileFieldCount + "][file]";
+    f.size = 45;
+
+    p = document.getElementById("attachments_fields");
+    p.appendChild(document.createElement("br"));
+    p.appendChild(f);
+}
