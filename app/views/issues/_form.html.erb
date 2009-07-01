@@ -31,7 +31,13 @@
     </tr>
 
     <tr>
-      <td colspan="2"><%= file_column_field 'attachment', 'file', :size => 35 %></td>
+      <td colspan="2">
+       <span id="attachments_fields">
+        <%= file_field_tag 'attachments[1][file]', :size => 45, :id => nil  -%>
+       </span>
+       <br />
+       <small><%= link_to _('Add another file'), '#', :onclick => 'addFileField(); return false;' %></small>
+      </td>
     <% else %>
       <td colspan="2"></td>
     <% end %>

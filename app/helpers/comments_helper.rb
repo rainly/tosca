@@ -57,15 +57,17 @@ module CommentsHelper
 
 
   def display_comment(c)
-    result = ''
-    result << c.text
-    attachment = c.attachment
-    unless attachment.blank? or attachment.file.blank?
-      result << %Q[<br /><br />#{image_folder} ]
+    result = c.text
+    result << '<br /><br /><ul>'
+    c.attachments.each do |attachment|
+      next if attachment.blank? or attachment.file.blank?
+      result << "<li>#{image_folder} "
       result << link_to_file(attachment, :file).to_s
       result << " (#{file_size(attachment.file)})"
       result << link_to_file_redbox(attachment, :file).to_s
+      result << '</li>'
     end
+    result << '</ul>'
     result
   end
 end

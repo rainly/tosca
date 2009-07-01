@@ -59,10 +59,10 @@ module LinksHelper
   #Call it like link_to_file
   # TODO : This method clearly needs more work.
   def link_to_file_redbox(record, method)
-    return '-' unless record
+    return '' unless record
 
     file_exec = record.file_options[:file_exec]
-    return '-' unless file_exec
+    return '' unless file_exec
 
     method = method.to_sym if method.is_a? String
 
@@ -82,7 +82,7 @@ module LinksHelper
       elsif mime_type =~ /^text\// && defined?(UvHelper)
         link_to_uv(record, filename)
       else
-        '-' + mime_type
+        ''
       end
     end
   end

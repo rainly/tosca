@@ -80,7 +80,6 @@ class Notifier < ActionMailer::Base
     options = {}
     options[:comment] = comment
     options[:issue] = issue
-    options[:attachment] = comment.attachment
 
     _common_issue_headers(issue, comment, comment.user)
     html_and_text_body(options)

@@ -24,8 +24,7 @@ class Comment < ActiveRecord::Base
   belongs_to :engineer, :class_name => 'User',
     :conditions => 'users.client_id IS NULL'
 
-  #TODO : For multiple attachment change this to has_many
-  has_one :attachment, :dependent => :destroy
+  has_many :attachments, :dependent => :destroy
 
   validates_presence_of :user
 
@@ -77,14 +76,19 @@ class Comment < ActiveRecord::Base
   end
 
   # This method search, create and add an attachment to the comment
-  # TODO: change this for multiple attachments
-  def add_attachment(params)
-    attachment = params[:attachment]
-    return false unless attachment and !attachment[:file].blank?
-    attachment = Attachment.new(attachment)
-    self.attachment.destroy if self.attachment
-    attachment.comment = self
-    attachment.save
+  def add_attachments(params)
+    attachments = params[:attachments]
+    return true unless attachments && attachments.is_a?(Hash)
+    attachments.each_value do |attachment|
+      file = attachment[:file]
+      next unless file && file.size > 0
+      attach = Attachment.new(:file => file, :comment => self)
+      if !attach.save # only error message of comment will be displayed
+        error_message = attach.errors.full_messages.join('<br />')
+        self.errors.add_to_base error_message
+      end
+    end
+    self.errors.empty?
   end
 
   def fragments

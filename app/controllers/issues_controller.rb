@@ -138,11 +138,10 @@ class IssuesController < ApplicationController
     revisions = params[:software][:revision_id] if params[:software]
     @issue.associate_software(revisions)
 
-    if @issue.save
+    if @issue.save and @issue.first_comment.add_attachments(params)
       options = { :conditions => [ 'issues.submitter_id = ?', user.id ]}
       flash[:notice] = _("You have successfully submitted your %s issue.") %
         _ordinalize(Issue.count(options))
-      @issue.first_comment.add_attachment(params)
       @comment = @issue.first_comment
       # needed in order to send properly the email
       @comment.reload
@@ -189,11 +188,10 @@ class IssuesController < ApplicationController
     @issue = Issue.find(params[:id], :include => [:first_comment]) unless @issue
     @page_title = @issue.resume
     @partial_panel = 'show_panel'
+    @comment = Comment.new(:elapsed => 1, :issue => @issue)
+    @comment.text = flash[:old_body] if flash.has_key? :old_body
     user = @session_user
     unless read_fragment "issues/#{@issue.id}/front-#{user.role_id}"
-      @comment = Comment.new(:elapsed => 1, :issue => @issue)
-      @comment.text = flash[:old_body] if flash.has_key? :old_body
-
       # TODO not dry, cf ajax_comments
       options = { :order => 'created_on DESC', :include => [:user],
         :limit => 1, :conditions => { :issue_id => @issue.id } }
@@ -202,7 +200,7 @@ class IssuesController < ApplicationController
 
 
       @comments = Comment.all(:order => "created_on ASC",
-        :conditions => filter_comments(@issue.id), :include => [:user, :attachment])
+        :conditions => filter_comments(@issue.id), :include => [:user, :attachments])
 
       @statuts = @issue.issuetype.allowed_statuses(@issue.statut_id, @session_user)
       if user.engineer?
