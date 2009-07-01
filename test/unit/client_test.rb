@@ -56,7 +56,7 @@ class ClientTest < ActiveSupport::TestCase
   end
 
   def test_scope
-    Client.set_scope([Client.first(:order => :id).id])
+    Client.set_scope([Client.first(:order => :id).id], User.first)
     Client.all
     Client.remove_scope
   end
