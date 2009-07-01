@@ -30,7 +30,8 @@ class CommentTest < ActiveSupport::TestCase
     c = Comment.first(:order => :id)
     c.state
     c.mail_id
-    assert !c.add_attachments({})
+    # TODO : call it with multiple files
+    assert c.add_attachments({})
     c.fragments
   end
 
