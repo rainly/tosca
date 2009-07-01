@@ -30,7 +30,7 @@ class CommentTest < ActiveSupport::TestCase
     c = Comment.first(:order => :id)
     c.state
     c.mail_id
-    assert !c.add_attachment({})
+    assert !c.add_attachments({})
     c.fragments
   end
 
