@@ -15,7 +15,7 @@
   <i><%= h name %></i> a écrit un comment <b>non visible</b> par le bénéficiaire pour la <%= link_to_issue %> :
 <% else %>
   <% modified = modified.empty? ? 'commentée' : modified.join(' et ') %>
-  La <%= link_to_issue %> vient d&lsquo;être <%=modified%> <%= "par <i>#{h(name)}</i>" unless @comment.engineer.name == name %>:
+  La <%= link_to_issue %> vient d&lsquo;être <%=modified%> <%= "par <i>#{h(name)}</i>" unless @comment.engineer.name == name.to_s %>:
 <% end %>
 <br />
 
