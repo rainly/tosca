@@ -1,8 +1,0 @@
-en:
-  severities:
-    Index: "Severities"
-    index:
-      a_severity: "a severity"
-    New: "New severity"
-    Edit: "Edit severity"
-    Show: "Severity"

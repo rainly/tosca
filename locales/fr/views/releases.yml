@@ -1,9 +1,0 @@
-fr:
-  releases:
-    Show: "Révision"
-    New: "Nouvelle révision"
-    Edit: "Modifier la révision"
-    Index: "Liste des révisions"
-    index:
-      a_release: "une révision"
-    conflict_with_generic: "Cette révision ne peut être créée, car elle est associée à une version générique.<br /> Merci de créer une version spécifique."
