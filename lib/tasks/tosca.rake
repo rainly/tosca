@@ -70,15 +70,17 @@ namespace :tosca do
   namespace :dist do
     desc "Generate small tarball for public distribution"
   	task :minimal do
-      sh "git archive --format=tar --prefix=tosca/ HEAD > tosca.tar"
-      sh "bzip2 -f tosca.tar"
+      require 'tosca'
+      sh "git archive --format=tar --prefix=tosca/ HEAD > tosca-#{Tosca::App::Version}.tar"
+      sh "bzip2 -f tosca-#{Tosca::App::Version}.tar"
     end
     desc "Generate full tarball for public distribution"
   	task :all do
-      sh "git archive --format=tar --prefix=tosca/ HEAD > tosca.tar"
-	  sh "cd vendor/extensions; git archive --format=tar --prefix=tosca/vendor/extensions/ HEAD > ../../extensions.tar; cd -"
-	  sh "tar -A extensions.tar -f tosca.tar; rm -f extensions.tar"
-      sh "bzip2 -f tosca-full.tar"
+      require 'tosca'
+      sh "git archive --format=tar --prefix=tosca/ HEAD > tosca-#{Tosca::App::Version}-full.tar"
+	    sh "cd vendor/extensions; git archive --format=tar --prefix=tosca/vendor/extensions/ HEAD > ../../extensions.tar; cd -"
+  	  sh "tar -A extensions.tar -f tosca.tar; rm -f extensions.tar"
+      sh "bzip2 -f tosca-#{Tosca::App::Version}-full.tar"
     end
   end
 
