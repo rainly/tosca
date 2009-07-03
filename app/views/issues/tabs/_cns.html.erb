@@ -24,18 +24,18 @@
     <td><%= progress_bar(progress) %></td>
     <td><%= progress_text(elapsed.taken_into_account, 1.hour, interval) %></td>
    </tr>
-   <% progress = elapsed.workaround_progress %>
+   <% progress = elapsed.workaround_progress(interval) %>
    <tr class="<%= cycle('even', 'odd') %>">
     <% if commitment.workaround <= 0 %>
      <td colspan="4"><%= _("Your issue has no commitment for workaround time") %></td>
     <% else %>
      <td><%= progress_image(elapsed.workaround?, progress) %></td>
      <td><strong><%= _("Workaround") %></strong></td>
-     <td><%= progress_bar(elapsed.workaround_progress) %></td>
+     <td><%= progress_bar(progress) %></td>
      <td><%= progress_text(elapsed.workaround, commitment.workaround.days, interval) %></td>
     <% end %>
    </tr>
-  <% progress = elapsed.correction_progress %>
+  <% progress = elapsed.correction_progress(interval) %>
    <tr class="<%= cycle('even', 'odd') %>">
     <% if commitment.correction <= 0 %>
      <td colspan="4"><%= _("Your issue has no commitment for correction time") %></td>
@@ -43,7 +43,7 @@
      <td><%= progress_image(elapsed.correction?, progress) %></td>
      <td><strong><%= _("Correction") %></strong></td>
      <td><%= progress_bar(progress) %></td>
-     <td><%= progress_text(elapsed.correction, commitment.correction.days, @issue.interval) %></td>
+     <td><%= progress_text(elapsed.correction, commitment.correction.days, interval) %></td>
     <% end %>
    </tr>
   </tbody>

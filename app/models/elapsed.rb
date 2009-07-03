@@ -89,18 +89,18 @@ class Elapsed < ActiveRecord::Base
     progress(self.taken_into_account, (1/24.0))
   end
 
-  def workaround_progress
+  def workaround_progress(interval)
     issue = self.issue
     commitment = issue.commitment
     return 0.0 unless commitment
-    progress(self.workaround, commitment.workaround)
+    progress(self.workaround, commitment.workaround, interval)
   end
 
-  def correction_progress
+  def correction_progress(interval)
     issue = self.issue
     commitment = issue.commitment
     return 0.0 unless commitment
-    progress(self.correction, commitment.correction)
+    progress(self.correction, commitment.correction, interval)
   end
 
   # TODO
@@ -115,9 +115,13 @@ class Elapsed < ActiveRecord::Base
 
   # Compute progress from an 'elapsed' time in "interval" reference,
   # with 'commitment' day
-  def progress(elapsed, commitment)
+  def progress(elapsed, commitment, interval=nil)
     return -1 if commitment == -1
-    elapsed / commitment.days
+    if interval
+      Elapsed.relative2absolute(elapsed, interval) / commitment.days
+    else
+      elapsed / commitment.days
+    end
   end
 
   private
