@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-07-01 14:32+0200\n"
+"POT-Creation-Date: 2009-07-03 09:21+0200\n"
 "PO-Revision-Date: 2009-04-09 17:56+0200\n"
 "Last-Translator: Jonathan Clarke <jclarke@linagora.com>\n"
 "Language-Team: English\n"
@@ -80,12 +80,6 @@ msgid_plural "%d months"
 msgstr[0] ""
 msgstr[1] ""
 
-#: app/models/rules/credit.rb:29
-msgid "%d time-credit"
-msgid_plural "%d time-credits"
-msgstr[0] ""
-msgstr[1] ""
-
 #: app/models/rules/credit.rb:44
 msgid "%d time-credits of %s"
 msgstr ""
@@ -112,6 +106,10 @@ msgstr ""
 
 #: app/helpers/comments_helper.rb:51
 msgid "%s has been spent by %s on this issue."
+msgstr ""
+
+#: app/views/issues/tabs/_comment.html.erb:44
+msgid "%s in"
 msgstr ""
 
 #: app/views/account/login.html.erb:4
@@ -517,7 +515,7 @@ msgstr ""
 msgid "Assign"
 msgstr ""
 
-#: app/views/issues/_show_panel.html.erb:19 app/views/issues/_form.html.erb:83
+#: app/views/issues/_show_panel.html.erb:19 app/views/issues/_form.html.erb:84
 #: vendor/extensions/ods_export/app/controllers/export_controller.rb:184
 msgid "Assigned to"
 msgstr ""
@@ -623,7 +621,7 @@ msgid "Bypassed"
 msgstr ""
 
 #: app/views/issues/_show_panel.html.erb:12
-#: app/views/issues/_form.html.erb:106
+#: app/views/issues/_form.html.erb:107
 msgid "CC"
 msgstr ""
 
@@ -739,7 +737,7 @@ msgstr ""
 msgid "Commitment"
 msgstr ""
 
-#: app/views/contracts/_form.html.erb:35 app/views/issues/_form.html.erb:125
+#: app/views/contracts/_form.html.erb:35 app/views/issues/_form.html.erb:126
 msgid "Commitments"
 msgstr ""
 
@@ -748,7 +746,7 @@ msgstr ""
 msgid "Component|Name"
 msgstr ""
 
-#: app/views/issues/_show_panel.html.erb:30 app/views/issues/_form.html.erb:52
+#: app/views/issues/_show_panel.html.erb:30 app/views/issues/_form.html.erb:53
 msgid "Concerning"
 msgstr ""
 
@@ -1571,7 +1569,7 @@ msgstr ""
 msgid "Issues of this %s"
 msgstr ""
 
-#: app/views/issues/_form.html.erb:112
+#: app/views/issues/_form.html.erb:113
 msgid "Issue|Expected on"
 msgstr "Expected on"
 
@@ -2270,7 +2268,7 @@ msgstr ""
 #: app/views/account/index.html.erb:13 app/views/contracts/show.html.erb:80
 #: app/views/issues/lists/_pending_table.html.erb:14
 #: app/views/issues/lists/_issues_table.html.erb:16
-#: app/views/issues/_form.html.erb:76
+#: app/views/issues/_form.html.erb:77
 #: vendor/extensions/phonecalls/app/views/phonecalls/_index_panel.html.erb:21
 #: vendor/extensions/phonecalls/app/views/phonecalls/show.html.erb:14
 #: vendor/extensions/phonecalls/app/views/phonecalls/index.html.erb:5
@@ -2522,7 +2520,7 @@ msgstr ""
 #: app/views/softwares/show.html.erb:2 app/views/welcome/index.html.erb:71
 #: app/views/issues/lists/_pending_table.html.erb:17
 #: app/views/issues/lists/_issues_table.html.erb:6
-#: app/views/issues/_show_panel.html.erb:5 app/views/issues/_form.html.erb:97
+#: app/views/issues/_show_panel.html.erb:5 app/views/issues/_form.html.erb:98
 #: vendor/extensions/ods_export/app/controllers/export_controller.rb:182
 msgid "Software"
 msgstr ""
@@ -3097,7 +3095,7 @@ msgstr ""
 #: app/views/contracts/_form.html.erb:45
 #: app/views/issues/lists/_issues_table.html.erb:7
 #: app/views/issues/_index_panel.html.erb:50
-#: app/views/issues/_show_panel.html.erb:8 app/views/issues/_form.html.erb:66
+#: app/views/issues/_show_panel.html.erb:8 app/views/issues/_form.html.erb:67
 #: vendor/extensions/ods_export/app/controllers/export_controller.rb:184
 msgid "Type"
 msgstr ""
@@ -4010,6 +4008,12 @@ msgid ""
 "the third graph show another view of the summary through a bar chart showing "
 "the evolution of these data over the duration of the deal"
 msgstr ""
+
+#: app/models/rules/credit.rb:29
+msgid "time-credit"
+msgid_plural "time-credits"
+msgstr[0] ""
+msgstr[1] ""
 
 #: app/views/reporting/_header.html.erb:19
 msgid "to"
