@@ -49,10 +49,10 @@
           <% if commitment.nil? %>
             <td>-</td><td>-</td>
           <% else %>
-            <% progress = elapsed.workaround_progress %>
+            <% progress = elapsed.workaround_progress(interval) %>
             <% desc = progress_text(elapsed.workaround, commitment.workaround.days, interval) if progress > 0 %>
             <td><%= progress_bar(progress, desc) %></td>
-            <% progress = elapsed.correction_progress %>
+            <% progress = elapsed.correction_progress(interval) %>
             <% desc = progress_text(elapsed.correction, commitment.correction.days, interval) if progress > 0 %>
             <td><%= progress_bar(progress, desc) %></td>
           <% end %>
