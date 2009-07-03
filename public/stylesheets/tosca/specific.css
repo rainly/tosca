@@ -66,6 +66,7 @@ th a { color: lightgreen; }
 /* realign radio button. See account form for an example */
 td input.radio { position: relative; top: 2px; }
 p img { vertical-align: middle; }
+small img { vertical-align: middle; }
 label { font-weight: bold; }
 ul { list-style-type: disc; margin: 0 0 1em 0; }
 li img { vertical-align: middle; }
@@ -193,12 +194,21 @@ div.comment-header {
   -webkit-border-radius: 5px 5px 0 0;
 }
 div.comment-content {
-  padding: 10px;
+  padding: 10px 2px 0px 0px;
   margin-bottom: 10px;
   border: 1px solid #777;
   border-top: none;
   -moz-border-radius: 0 0 5px 5px;
   -webkit-border-radius: 0 0 5px 5px;
+}
+div.comment-footnote {
+  width: 100%;
+  text-align:right;
+  color: grey;
+  font-size: 75%;
+  padding:0;
+  margin-top:10px;
+  margin-bottom:0;
 }
 table.comment-table {
   width: 99%;

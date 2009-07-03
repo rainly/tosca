@@ -2,7 +2,7 @@
 <%= render :partial => 'issues/tabs/tab_menu' unless print_mode %>
 <% cache("issues/#{@issue_id || @issue.id}/comments-#{@session_user.kind}") do %>
  <div id="comment-list" class="clearfix">
-  <%= render(:partial => 'issues/tabs/comment', :collection => @comments,
+  <%= render(:partial => 'issues/tabs/comment',
              :locals => { :not_collapsed => false } ) %>
  </div>
 <% end %>

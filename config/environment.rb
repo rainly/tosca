@@ -86,7 +86,8 @@ Rails::Initializer.run do |config|
   config.gem 'mislav-will_paginate', :version => '~> 2.3.7', :lib => 'will_paginate', :source => 'http://gems.github.com'
 
   # l10n & i18n working
-  config.gem "grosser-fast_gettext", :lib => 'fast_gettext', :source=>"http://gems.github.com/"
+  config.gem "grosser-fast_gettext", :version => '~> 0.4.13', :lib => 'fast_gettext', :source=> 'http://gems.github.com/'
+  config.gem 'gettext', :version => '~> 2.0.0'
 
   # Used to generate graphs of activity report & resize some pictures
   #config.gem 'rmagick', :lib => "RMagick2"
@@ -115,7 +116,9 @@ Rails::Initializer.run do |config|
 end
 
 
-FastGettext.add_text_domain 'tosca', :path => File.join(RAILS_ROOT, 'locale')
+if defined?(FastGettext)
+  FastGettext.add_text_domain 'tosca', :path => File.join(RAILS_ROOT, 'locale')
+end
 
 
 # MLO : Type of cache. See http://api.rubyonrails.org/classes/ActionController/Caching.html
