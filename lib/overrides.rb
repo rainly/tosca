@@ -103,7 +103,7 @@ class Date
 end
 
 class Time
-  include FastGettext::Translation
+  include FastGettext::Translation if defined?(FastGettext)
   ##
   # Compute the difference between <tt>start_date</tt> and
   # <tt>end_date</tt> during Working Days, as define in Date::working?

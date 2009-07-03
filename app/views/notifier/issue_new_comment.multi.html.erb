@@ -2,7 +2,7 @@
 
 <% modified = [] %>
 <% if @comment.statut_id
-     modified << "<b>#{@comment.statut.name}</b>"
+     modified << "<b>#{_(@comment.statut.name)}</b>"
    end %>
 <% if @comment.engineer_id
      modified << "assignée à <b>#{@comment.engineer.name}</b>"
