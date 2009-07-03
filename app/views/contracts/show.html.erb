@@ -21,8 +21,11 @@
 
     <% if rule %>
     <tr>
-     <td colspan="2">&nbsp;&nbsp;<%= link_to_edit_rule(rule) %>
-                     <i><%= rule.short_description %> <%= link_to_rule(rule) %></i></td>
+     <td colspan="2">
+       <small>&nbsp;&nbsp;<%= link_to_edit_rule(rule) %>
+       <%= @contract.rule.complete_description(@contract.total_elapsed, @contract) %>
+       <%= link_to_rule(rule) %></small>
+     </td>
     </tr>
     <% end %>
 

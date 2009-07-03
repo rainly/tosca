@@ -42,11 +42,11 @@ class Rules::Component < ActiveRecord::Base
   end
 
   def short_description
-    if max == -1
+#    if max == -1
       _('unlimited offer')
-    else
-      _('unlimited offer covering a maximum of %d components') % max
-    end
+#    else
+#      _('unlimited offer covering a maximum of %d components') % max
+#    end
   end
 
   def complete_description(value, contract)

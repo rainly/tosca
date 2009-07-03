@@ -45,18 +45,13 @@ module CommentsHelper
       out << (_('This issue has been requalified in %s by %s.') %
               [ "<b>#{severity.name}</b>" , name ])
     end
-    elapsed = comment.elapsed
-    unless elapsed.nil? || elapsed == 0
-      elapsed = rule.elapsed_formatted(elapsed, contract)
-      out << (_('%s has been spent by %s on this issue.') %
-              [ "<b>#{elapsed}</b>" , name ])
-    end
     return nil if out.empty?
     '<div class="history">' << out.join('<br />') << '</div>'
   end
 
 
   def display_comment(c)
+    return c.text if c.attachments.empty?
     result = c.text
     result << '<br /><br /><ul>'
     c.attachments.each do |attachment|

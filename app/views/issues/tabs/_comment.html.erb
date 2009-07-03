@@ -1,14 +1,18 @@
 <% delete_ho = { :method => :delete, :confirm =>
   _("Are you sure you want to delete this comment ?") } %>
-<% user = comment.user %>
-<% private = comment.private? %>
-<% class_collapsed = 'collapsed' %>
-<% class_collapsed = '' if not_collapsed %>
 
+<% class_collapsed = ( not_collapsed ? '' : 'collapsed')
+   contract = @issue.contract
+   rule = contract.rule
+   elapsed = 0
+   comments = @comments
+   expert = @session_user.engineer? %>
 
+<% @comments.each do |comment| %>
+<% user, private = comment.user, comment.private? %>
 <% # It should not happen : comments list is filtered before requesting DB %>
 <% # It's a paranoid protection : a private comment won't be displayed. %>
-<% if (!private) or (private and @session_user.engineer?) %>
+ <% if (!private) or (private and expert) %>
  <div id="comment_<%=comment.id%>"
       class="comment-container <%=class_collapsed%> <%=(private ? 'private' : 'public')%>">
   <div class="comment-header" onclick="tosca_toggle_comment('comment_<%=comment.id%>')">
@@ -19,27 +23,40 @@
     <table class="comment-table">
      <tr>
       <td class="infos" align="center">
-        <% display_edit = (@session_user.engineer? or
-            (user and @session_user.recipient? and @session_user.id == user.id)) %>
-        <p>
+        <% display_edit = (expert or (user and @session_user.id == user.id)) %>
+        <small>
          <%= link_to(image_edit, edit_comment_path(comment)) if display_edit %>
          <%= "##{comment.id}" %>
-         <%= link_to(image_delete, comment_path(comment), delete_ho) if @session_user.engineer? %><br />
+         <%= link_to(image_delete, comment_path(comment), delete_ho) if @session_user.engineer? %>
+        </small><br />
         <% if user and user.recipient? %>
           <%= logo_client(user.client) %>
         <% else %>
           <%= image_logo_service %>
         <% end %><br />
-        <% if @session_user.engineer? and user %>
+        <% if expert and user %>
           <%= user.phone %>
         <% end %>
         </p>
       </td>
-      <td class="text">
-        <%= display_comment comment %>
-      </td>
+      <td class="text"><%= display_comment comment %></td>
      </tr>
     </table>
+    <div class="comment-footnote">
+      <% if comment.elapsed.to_i != 0 || comment.id == @issue.first_comment_id %>
+        <small>
+         <% elapsed += comment.elapsed.to_i %>
+         <% if elapsed == 0 %>
+           <%= _(comment.statut.name) %>
+         <% else %>
+           <%= _("%s in") % _(comment.statut.name) if comment.statut %>
+           <%= contract.rule.elapsed_formatted(elapsed, contract) %>
+         <% end %>
+         <%= image_sla_running %>
+        </small>
+      <% end %>
+    </div>
   </div>
  </div>
+ <% end %>
 <% end %>
