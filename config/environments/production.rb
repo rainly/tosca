@@ -36,6 +36,9 @@ config.cache_classes = true
 config.action_controller.consider_all_requests_local = false
 config.action_controller.perform_caching             = true
 
+# TODO : activate in Rails 2.3 : asset caching
+# config.action_view.cache_asset_timestamps = true
+
 config.log_level = :info
 
 # Enable serving of images, stylesheets, and javascripts from an asset server
