@@ -2,7 +2,7 @@ contract_00001:
   opening_time: 9
   name : Server
   rule_id: 2
-  internal_ml: <%= App::MaintenerEmail %>
+  internal_ml: <%= Setting.email_mainteners %>
   closing_time: 18
   client_id: 2
   id: 1
@@ -15,7 +15,7 @@ contract_00002:
   opening_time: 7
   rule_id: 1
   name : Desktop
-  internal_ml: <%= App::MaintenerEmail %>
+  internal_ml: <%= Setting.email_mainteners %>
   closing_time: 20
   client_id: 1
   id: 2
@@ -28,7 +28,7 @@ contract_00003:
   opening_time: "9"
   name: "Desktop 2"
   rule_id: "2"
-  internal_ml: <%= App::MaintenerEmail %>
+  internal_ml: <%= Setting.email_mainteners %>
   closing_time: "18"
   client_id: "2"
   id: "26"
@@ -40,7 +40,7 @@ contract_00004:
   opening_time: "9"
   name: "Desktop 2"
   rule_id: "1"
-  internal_ml: <%= App::MaintenerEmail %>
+  internal_ml: <%= Setting.email_mainteners %>
   closing_time: "18"
   client_id: "3"
   id: "40"
@@ -52,7 +52,7 @@ contract_00005:
   opening_time: "7"
   name: "Server 2"
   rule_id: "2"
-  internal_ml: <%= App::MaintenerEmail %>
+  internal_ml: <%= Setting.email_mainteners %>
   closing_time: "19"
   client_id: "2"
   id: "6"
@@ -64,7 +64,7 @@ contract_00006:
   opening_time: "9"
   name: "Server 3"
   rule_id: "2"
-  internal_ml: <%= App::MaintenerEmail %>
+  internal_ml: <%= Setting.email_mainteners %>
   closing_time: "18"
   client_id: "2"
   id: "9"
@@ -76,7 +76,7 @@ contract_00007:
   opening_time: "9"
   name: "Desktop 3"
   rule_id: "1"
-  internal_ml: <%= App::MaintenerEmail %>
+  internal_ml: <%= Setting.email_mainteners %>
   closing_time: "18"
   client_id: "2"
   id: "18"

@@ -1,6 +1,26 @@
 # DO NOT MODIFY THIS FILE !!!
 # Settings can be defined through the application in Admin -> Settings
 
+
+
+email_server:
+  default: mail.linagora.com
+email_port:
+  default: 25
+email_domain:
+  default: par.lng
+email_charset:
+  default: UTF-8
+email_administrators:
+  default: mloiseleur@linagora.com
+email_mainteners:
+  default: mloiseleur@linagora.com
+email_contact:
+  default: mloiseleur@linagora.com
+email_noreply:
+  default: noreply@tosca-project.net
+
+
 app_title:
   default: Redmine
 app_subtitle:

@@ -51,7 +51,7 @@ class AccountControllerTest < ActionController::TestCase
 
     form = select_form 'main_form'
     form.user.login = 'customer'
-    form.user.email = App::MaintenerEmail
+    form.user.email = Setting.email_mainteners
     form.submit
 
     assert_response :success
@@ -73,7 +73,7 @@ class AccountControllerTest < ActionController::TestCase
     form = select_form 'main_form'
     # 3 fields are mandatory
     form.user.name = "Recipient"
-    form.user.email = App::MaintenerEmail
+    form.user.email = Setting.email_mainteners
     form.user.login = "recipient"
     form.submit
 
@@ -97,7 +97,7 @@ class AccountControllerTest < ActionController::TestCase
     form = select_form 'main_form'
     # 3 fields are mandatory
     form.user.name = "Engineer"
-    form.user.email = App::MaintenerEmail
+    form.user.email = Setting.email_mainteners
     form.user.login = "engineer"
     # field used to indicate that's an expert account
     form.user.client_form = "false"

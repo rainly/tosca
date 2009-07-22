@@ -5,14 +5,43 @@
  <div class="c50l">
   <div class="show">
    <h2><%= _('Mail settings') %></h2>
-   <p><label><%= "setting_app_title" %></label>
-   <%= text_field_tag 'settings[app_title]', Setting.app_title, :size => 30 %></p>
+   <table>
+    <tr>
+     <th><label for="settings_email_server"><%=_('Server')%></label></th>
+     <td><%= text_field_tag 'settings[email_server]', Setting.email_server %></td>
+	</tr><tr>
+     <th><label for="settings_email_port"><%=_('Port')%></label></th>
+     <td><%= text_field_tag 'settings[email_port]', Setting.email_port %></td>
+    </tr><tr>
+     <th><label for="settings_email_domain"><%=_('Domain')%></label></th>
+     <td><%= text_field_tag 'settings[email_domain]', Setting.email_domain %></td>
+    </tr><tr>
+     <th><label for="settings_email_charset"><%=_('Charset')%></label></th>
+     <td><%= text_field_tag 'settings[email_charset]', Setting.email_charset %></td>
+    </tr><tr>
+     <th><label for="settings_email_administrators"><%=_('Administrators email')%></label></th>
+     <td><%= text_field_tag 'settings[email_administrators]', Setting.email_administrators %></td>
+    </tr>
+    <% if ENV["RAILS_ENV"] == 'development'%>
+    <tr>
+     <th><label for="settings_email_mainteners"><%=_('Mainteners email')%></label></th>
+     <td><%= text_field_tag 'settings[email_mainteners]', Setting.email_mainteners %></td>
+    </tr>
+    <% end %>
+    <tr>
+     <th><label for="settings_email_contact"><%=_('Contact email')%></label></th>
+     <td><%= text_field_tag 'settings[email_contact]', Setting.email_contact %></td>
+    </tr><tr>
+     <th><label for="settings_email_noreply"><%=_('Noreply email')%></label></th>
+     <td><%= text_field_tag 'settings[email_noreply]', Setting.email_noreply %></td>
+    </tr>
+   </table>
 
 
   </div>
  </div><div class="c50r">
   <div class="show">
-    lol ptdr mdr
+
   </div>
  </div>
 </div>
