@@ -1,0 +1,22 @@
+<h1><%= _('Settings') %></h1>
+
+<% form_tag :action => 'edit', :id => 'main_form' do %>
+<div class="subcolumns">
+ <div class="c50l">
+  <div class="show">
+   <h2><%= _('Mail settings') %></h2>
+   <p><label><%= "setting_app_title" %></label>
+   <%= text_field_tag 'settings[app_title]', Setting.app_title, :size => 30 %></p>
+
+
+  </div>
+ </div><div class="c50r">
+  <div class="show">
+    lol ptdr mdr
+  </div>
+ </div>
+</div>
+  <%= submit_tag _('Validate') %>
+<% end %>
+
+<%= link_to_show_and_list(@contract) %>

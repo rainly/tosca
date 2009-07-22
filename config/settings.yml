@@ -1,0 +1,24 @@
+# DO NOT MODIFY THIS FILE !!!
+# Settings can be defined through the application in Admin -> Settings
+
+app_title:
+  default: Redmine
+app_subtitle:
+  default: Project management
+welcome_text:
+  default:
+login_required:
+  default: 0
+self_registration:
+  default: '2'
+lost_password:
+  default: 1
+attachment_max_size:
+  format: int
+  default: 5120
+issues_export_limit:
+  format: int
+  default: 500
+activity_days_default:
+  format: int
+  default: 30
