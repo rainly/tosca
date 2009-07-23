@@ -41,7 +41,22 @@
   </div>
  </div><div class="c50r">
   <div class="show">
-
+   <h2><%= _('Company settings') %></h2>
+   <table>
+    <tr>
+     <th><label for="settings_service_name"><%=_('Service name')%></label></th>
+     <td><%= text_field_tag 'settings[service_name]', Setting.service_name %></td>
+	</tr><tr>
+     <th><label for="settings_service_site"><%=_('Service site')%></label></th>
+     <td><%= text_field_tag 'settings[service_site]', Setting.service_site %></td>
+	</tr><tr>
+     <th><label for="settings_company_name"><%=_('Company name')%></label></th>
+     <td><%= text_field_tag 'settings[company_name]', Setting.company_name %></td>
+	</tr><tr>
+     <th><label for="settings_company_site"><%=_('Company site')%></label></th>
+     <td><%= text_field_tag 'settings[company_site]', Setting.company_site %></td>
+	</tr>
+   </table>
   </div>
  </div>
 </div>

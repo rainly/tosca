@@ -20,25 +20,17 @@ email_contact:
 email_noreply:
   default: noreply@tosca-project.net
 
+# TODO : make settings available in plugin system, with UI
+jabber_account:
+  default: tosca@tosca-project.net
+jabber_password:
+  default: tosca
 
-app_title:
-  default: Redmine
-app_subtitle:
-  default: Project management
-welcome_text:
-  default:
-login_required:
-  default: 0
-self_registration:
-  default: '2'
-lost_password:
-  default: 1
-attachment_max_size:
-  format: int
-  default: 5120
-issues_export_limit:
-  format: int
-  default: 500
-activity_days_default:
-  format: int
-  default: 30
+service_name:
+  default: Client
+service_site:
+  default: www.tosca-project.net
+company_name:
+  default: Linagora
+company_site:
+  default: www.linagora.com

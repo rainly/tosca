@@ -18,31 +18,7 @@ module App
   # Used to send test emails. Put your own if you intend to develop on TOSCA
 
   # Used for test on its local computer
-  MaintenerEmail = "tosca@tosca-project.net"
-  # Used for feedback on service
-  TeamEmail = "tosca@tosca-project.net"
-  # Used for feedback on this tool
-  DeveloppersEmail = "tosca@tosca-project.net"
-  #From mail, used for outgoing mails
-  NoReplyEmail = 'noreply@tosca-project.net'
 
-  # Used for jabber notification
-  JabberAccount = "tosca@tosca-project.net"
-  JabberPassword = "tosca"
-
-  # Application
-  FilesPath = File.join RAILS_ROOT, 'files'
-
-  # service
-  ServiceName = "Tosca"
-  ServiceFullName = "Tosca bugtracking".gsub(' ','&nbsp;')
-
-  CompanyName = "Linagora"
-  CompanySite = "http://www.08000linux.com"
-  CompanySitePath = "/tosca"
-
-  # contacts
-  InternetAddress = "tosca-project.net"
 
   ContactPhone = "08000 LINUX (08000 54689)"
   ContactMail = "tosca@tosca-project.com"

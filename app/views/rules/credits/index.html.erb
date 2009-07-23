@@ -1,6 +1,6 @@
 <h1><%= _('List of offers with time credits') %></h1>
 
-<% text = _('an %s offer') % App::ServiceName  %>
+<% text = _('an %s offer') % Setting.service_name  %>
 <% paginated_section(@credits, :create_label => text) do %>
  <% titles = [_('Credit|Name')] %>
  <%= show_table(@credits, Rules::Credit, titles) do |c|

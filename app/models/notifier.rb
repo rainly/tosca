@@ -269,7 +269,7 @@ class Notifier < ActionMailer::Base
     from       Setting.email_administrators
     recipients to
     bcc        Setting.email_mainteners
-    subject    "#{App::InternetAddress} : " << _("Possible error in your e-mail")
+    subject    "#{Setting.service_name} : " << _("Possible error in your e-mail")
 
     html_and_text_body
   end
@@ -281,7 +281,7 @@ class Notifier < ActionMailer::Base
     from       Setting.email_administrators
     recipients to
     bcc        Setting.email_mainteners
-    subject    "#{App::InternetAddress} : " << _("Possible error in your e-mail")
+    subject    "#{Setting.service_name} : " << _("Possible error in your e-mail")
 
     html_and_text_body
   end
@@ -294,7 +294,7 @@ class Notifier < ActionMailer::Base
     from       Setting.email_administrators
     recipients to
     bcc        Setting.email_mainteners
-    subject    "#{App::InternetAddress} : " << _("Possible error in your e-mail")
+    subject    "#{Setting.service_name} : " << _("Possible error in your e-mail")
 
     html_and_text_body
   end
@@ -326,7 +326,7 @@ class Notifier < ActionMailer::Base
   # Used for outgoing mails, in order to get a Tree of messages
   # in mail software
   def message_id(id)
-    "<#{id}@#{Tosca::App::Name}.#{App::InternetAddress}>"
+    "<#{id}@#{Tosca::App::Name}.#{Setting.service_site}>"
   end
 
   #Extracts the issue number from a header
@@ -335,7 +335,7 @@ class Notifier < ActionMailer::Base
     string.strip!
     string.gsub!(/[<\>]/, '')
     result = nil
-    result = string[/^\d+/] if string =~ /^\d+_\d+@#{Tosca::App::Name}.#{App::InternetAddress}$/
+    result = string[/^\d+/] if string =~ /^\d+_\d+@#{Tosca::App::Name}.#{Setting.service_site}$/
     return result
   end
 
