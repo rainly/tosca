@@ -30,6 +30,8 @@ service_name:
   default: Client
 service_site:
   default: www.tosca-project.net
+service_phone:
+  default: 08000 LINUX (08000 54689)
 company_name:
   default: Linagora
 company_site:
