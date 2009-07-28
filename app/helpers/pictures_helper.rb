@@ -200,6 +200,10 @@ module PicturesHelper
     image_tag 'icons/checkbox.gif', image_options(_('Checkbox'), '13x13')
   end
 
+  def image_buglink
+    image_tag 'icons/bug_link.png', image_options(_('Links'), '16x16')
+  end
+
   def image_sla_ok
     image_tag 'icons/accept.png', image_options(_('Time achieved'), '16x16')
   end

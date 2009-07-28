@@ -106,23 +106,25 @@ ActionController::Routing::Routes.draw do |map|
   map.resources :releases
   map.resources :issues,
     :collection => { :pending => :get,
-    :ajax_renew => :post, # in pending view
-    :ajax_display_commitment => :post, # in new/edit form
-    :ajax_display_version => :post, # in new/edit form
-    :ajax_display_contract => :post }, # in new/edit form
-  :member => { :print => :get, # All members are in show view
-    :link_contribution => :post,
-    :unlink_contribution => :post,
-    :tag => :get,
-    :ajax_history => :get,
-    :ajax_attachments => :get,
-    :ajax_cns => :get,
-    :ajax_actions => :get,
-    :ajax_untag => :delete,
-    :ajax_add_tag => :post,
-    :ajax_subscribe => :post,
-    :ajax_unsubscribe => :delete,
-    :ajax_subscribe_someone => :post }
+      :ajax_renew => :post, # in pending view
+      :ajax_display_commitment => :post, # in new/edit form
+      :ajax_display_version => :post, # in new/edit form
+      :ajax_display_contract => :post }, # in new/edit form
+    :member => { :print => :get, # All members are in show view
+      :link_contribution => :post,
+      :unlink_contribution => :post,
+      :tag => :get,
+      :ajax_history => :get,
+      :ajax_attachments => :get,
+      :ajax_cns => :get,
+      :ajax_actions => :get,
+      :ajax_links => :get,
+      :ajax_untag => :delete,
+      :ajax_add_tag => :post,
+      :ajax_subscribe => :post,
+      :ajax_unsubscribe => :delete,
+      :ajax_subscribe_someone => :post }
+  map.resources :issue_references, :only => [:destroy]
   map.resources :roles
 
   # Resources for rules/* controllers
