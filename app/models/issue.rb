@@ -271,8 +271,8 @@ class Issue < ActiveRecord::Base
   def critical?(no_modifications = 15.days.ago)
     return true if self.time_running?
     #We check for correction before, because an issue that was corrected is workarounded in the Elapse model
-    return true if not self.elapsed.correction? and self.elapsed.correction_progress > 0.5
-    return true if not self.elapsed.workaround? and self.elapsed.workaround_progress > 0.5
+    return true if not self.elapsed.correction? and self.elapsed.correction_progress(self.interval) > 0.5
+    return true if not self.elapsed.workaround? and self.elapsed.workaround_progress(self.interval) > 0.5
     return true if self.updated_on <= no_modifications
     return false
   end
