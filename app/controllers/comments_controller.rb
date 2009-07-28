@@ -23,6 +23,7 @@ class CommentsController < ApplicationController
     [:comment, :update, :destroy]
   # A comment is created only from the issue interface
   cache_sweeper :issue_sweeper, :only => [:comment]
+  cache_sweeper :issue_reference_sweeper, :only => [:comment]
 
   def index
     options = { :per_page => 10, :include => [:issue], :page => params[:page] }
@@ -66,14 +67,15 @@ class CommentsController < ApplicationController
     issue.update_attribute :expected_on, Time.now if user.recipient?
     linked_issues = []
     @comment.text.gsub!(/#(\d+)/) do |found|
-      i = nil
+      i, url = nil, nil
       begin
         i = Issue.find($1)
         linked_issues << i
+        url = issue_path(:id => i.id, :only_path => false)
       rescue ActiveRecord::RecordNotFound
         # original text is kept in this case
       end
-      (i ? %Q[<a title="#{i.name}" target="_blank" href="#{issue_path(i)}">##{i.id}</a>] : found)
+      (i ? %Q[<a title="#{i.name}" target="_blank" href="#{url}">##{i.id}</a>] : found)
     end
 
     #We verify and send an email

@@ -118,7 +118,6 @@ ActionController::Routing::Routes.draw do |map|
       :ajax_attachments => :get,
       :ajax_cns => :get,
       :ajax_actions => :get,
-      :ajax_links => :get,
       :ajax_untag => :delete,
       :ajax_add_tag => :post,
       :ajax_subscribe => :post,

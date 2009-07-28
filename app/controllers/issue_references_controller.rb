@@ -18,6 +18,8 @@
 #
 class IssueReferencesController < ApplicationController
 
+  cache_sweeper :issue_reference_sweeper, :only => [:destroy]
+
   def destroy
     IssueReference.find(params[:id]).destroy
     head :ok

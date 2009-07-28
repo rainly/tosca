@@ -19,11 +19,6 @@ issue_id = @issue ? @issue.id : @issue_id %>
     <% desc =  _('SLA') + ' ' + image_sla_running %>
     <%= link_to_remote_tab(desc, 'ajax_cns', options) %>
   </li>
-  <li>
-    <% options[:url] = ajax_links_issue_path(issue_id) %>
-    <% desc =  _('Links') + ' ' + image_buglink %>
-    <%= link_to_remote_tab(desc, 'ajax_links', options) %>
-  </li>
 
   <% if @session_user.engineer? %>
     <li>

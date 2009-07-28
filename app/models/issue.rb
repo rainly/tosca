@@ -43,7 +43,10 @@ class Issue < ActiveRecord::Base
 
   has_many :comments, :order => 'created_on ASC', :dependent => :destroy
   has_many :subscriptions, :as => :model, :dependent => :destroy
-  has_many :issue_references, :order => 'linked_issue_id', :dependent => :destroy
+  has_many :issue_references, :order => 'linked_issue_id',
+    :dependent => :destroy
+  has_many :issue_backreferences, :foreign_key => 'linked_issue_id',
+    :class_name => 'IssueReference', :order => 'issue_id'
 
   named_scope :actives, lambda { |contract_ids| { :conditions =>
       { :statut_id => Statut::OPENED, :contract_id => contract_ids }
