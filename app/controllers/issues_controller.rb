@@ -249,6 +249,12 @@ class IssuesController < ApplicationController
     render :partial => 'issues/tabs/tab_cns', :layout => false
   end
 
+  def ajax_links
+    return render(:text => '') unless request.xhr? and params.has_key? :id
+    @issue = Issue.find(params[:id]) unless @issue
+    render :partial => 'issues/tabs/tab_links', :layout => false
+  end
+
   def update
     @issue = Issue.find(params[:id])
     @issue.versions = Paquet.find(params[:version_ids]) if params[:version_ids]
@@ -355,7 +361,7 @@ class IssuesController < ApplicationController
     if @session_user.engineer?
       @contracts = _panel_build_contracts
       @engineers = [[ _('[ Me ]'), @session_user.id ]].concat(
-        User.find_select(User::EXPERT_OPTIONS))
+        User.find_select(User::EXPERT_OPTIONS.dup))
     end
   end
 

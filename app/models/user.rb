@@ -236,7 +236,7 @@ class User < ActiveRecord::Base
     conditions = [ 'contracts_users.contract_id IN (?)', contract_id ]
     options = {:find => {:conditions => conditions, :joins => :own_contracts}}
     User.send(:with_scope, options) do
-      User.find_select(User::SELECT_OPTIONS)
+      User.find_select(User::SELECT_OPTIONS.dup) # dup needed to keep constant
     end
   end
 
@@ -245,7 +245,7 @@ class User < ActiveRecord::Base
     conditions = [ 'cu.contract_id = ?', contract_id ]
     options = {:find => {:conditions => conditions, :joins => joins}}
     User.send(:with_scope, options) do
-      User.find_select(User::EXPERT_OPTIONS)
+      User.find_select(User::EXPERT_OPTIONS.dup) # dup needed to keep constant
     end
   end
 

@@ -64,9 +64,25 @@ class CommentsController < ApplicationController
     end
 
     issue.update_attribute :expected_on, Time.now if user.recipient?
+    linked_issues = []
+    @comment.text.gsub!(/#(\d+)/) do |found|
+      i = nil
+      begin
+        i = Issue.find($1)
+        linked_issues << i
+      rescue ActiveRecord::RecordNotFound
+        # original text is kept in this case
+      end
+      (i ? %Q[<a title="#{i.name}" href="#{issue_path(i)}">##{i.id}</a>] : found)
+    end
 
     #We verify and send an email
     if @comment.save && @comment.add_attachments(params)
+      linked_issues.each do |linked_issue|
+        IssueReference.create!(:issue_id => issue.id,
+                               :comment_id => @comment.id,
+                               :linked_issue_id => linked_issue.id)
+      end
       @comment.reload # Needed to see attachment in email views
       flash[:notice] = _("Your comment was successfully added.")
       to = issue.compute_recipients(@comment.private)

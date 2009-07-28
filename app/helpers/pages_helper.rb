@@ -53,6 +53,15 @@ module PagesHelper
         :confirm => _('Do you really want to destroy this object ?')
   end
 
+  # remote version
+  def link_to_remote_delete(ar, element)
+    return nil unless ar
+    url = (ar.is_a?(String) ? ar : { :action => 'destroy', :id => ar })
+    link_to_remote(image_delete, :url => url, :method => :delete,
+      :before => "Element.show('spinner');",
+      :success => "tosca_remove('#{element}');Element.hide('spinner');")
+  end
+
   def link_to_back
     link_to(image_back, :action =>'index')
   end
