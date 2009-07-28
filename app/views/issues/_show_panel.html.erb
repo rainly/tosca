@@ -43,6 +43,18 @@
     <% end %>
   </ul>
 
+  <%= div_toggle _('Linked issues'), 'links_menu', :class => "menu_title", :hide => true %>
+  <ul id="links_menu" style="display: none">
+    <% (@issue.issue_references + @issue.issue_backreferences).each do |ref| %>
+      <% li_id = "reference_#{ref.id}" %>
+      <li id="<%=li_id%>">
+        <%= link_to_issue((@issue.id == ref.issue_id ? ref.linked_issue : ref.issue),
+                          {}, :target => '_blank') %>
+        <%= link_to_remote_delete(issue_reference_path(ref), li_id) %>
+      </li>
+    <% end %>
+  </ul>
+
   <%= div_toggle _("Tags"), 'tags_menu', :class => "menu_title", :hide => true %>
   <ul id="tags_menu" style="display: none">
     <% unless @issue.tag_list.empty? %>

@@ -85,6 +85,7 @@ protected
     if @@first_time
       #Used for url in e-mails
       ActionMailer::Base.default_url_options[:host] = request.host_with_port
+      ActionMailer::Base.default_url_options[:protocol] = request.protocol
       @@first_time = false
     end
     # useful variable : allows to test both if one is logged & get is account

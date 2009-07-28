@@ -23,7 +23,7 @@ module IssuesHelper
   #  * :show_id display the id
   #  * :icon_severity display severity icon
   #  * :limit display only :limit caracters
-  def link_to_issue(issue, options = {})
+  def link_to_issue(issue, options = {}, html_options = {})
     return '-' unless issue
     text = options[:text]
     if text.nil?
@@ -33,7 +33,7 @@ module IssuesHelper
       text << "#{image_severity(issue)} " if options.has_key? :icon_severity
       text << truncate(issue.resume, :length => limit) if limit > 0
     end
-    link_to text, issue_path(issue)
+    link_to text, issue_path(issue), html_options
   end
 
   def public_link_to_status_legend
