@@ -434,6 +434,7 @@ module ActiveRecord
     def self.find_active4select(options = {}, collect = true)
       options[:select] = "#{table_name}.id, #{table_name}.name"
       if options.has_key? :conditions
+        options[:conditions] = options[:conditions].dup
         options[:conditions] = [ options[:conditions] ] if options[:conditions].is_a?(String)
         options[:conditions][0] += " AND #{table_name}.inactive = ?"
         options[:conditions].concat([false])
