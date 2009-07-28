@@ -26,6 +26,8 @@ class WelcomeController < ApplicationController
 
   # Display all method that user can access
   def plan
+    # TODO : fix plan action/view and delete this line
+    render(:nothing => true) and return
     _plan
   end
 
@@ -41,14 +43,14 @@ class WelcomeController < ApplicationController
   def theme
     case request.method
     when :get
-      render :nothing unless request.xhr?
+      render(:nothing => true) unless request.xhr?
       render :layout => false
     when :post
       theme = params[:theme]
       session[:theme] = "themes/#{theme}.css" unless theme.blank?
       redirect_to welcome_path
     else
-      render :nothing
+      render(:nothing => true)
     end
   end
 
@@ -68,8 +70,8 @@ class WelcomeController < ApplicationController
       redirect_to_home
     end
   end
-  
-  #Action to clear the cache of Tosca 
+
+  #Action to clear the cache of Tosca
   # !! ONLY FOR ADMINS !!
   def clear_cache
     if session[:user].role_id == 1

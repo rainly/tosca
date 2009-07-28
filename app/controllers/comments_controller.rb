@@ -73,7 +73,7 @@ class CommentsController < ApplicationController
       rescue ActiveRecord::RecordNotFound
         # original text is kept in this case
       end
-      (i ? %Q[<a title="#{i.name}" href="#{issue_path(i)}">##{i.id}</a>] : found)
+      (i ? %Q[<a title="#{i.name}" target="_blank" href="#{issue_path(i)}">##{i.id}</a>] : found)
     end
 
     #We verify and send an email

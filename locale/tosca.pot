@@ -7,7 +7,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: 0.8.0\n"
-"POT-Creation-Date: 2009-07-03 09:21+0200\n"
+"POT-Creation-Date: 2009-07-28 12:34+0200\n"
 "PO-Revision-Date: 2009-03-02 17:05+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -34,7 +34,7 @@ msgstr ""
 msgid " or "
 msgstr ""
 
-#: app/helpers/pages_helper.rb:125
+#: app/helpers/pages_helper.rb:134
 msgid " to "
 msgstr ""
 
@@ -100,11 +100,7 @@ msgstr ""
 msgid "%s has already been spent on your %s"
 msgstr ""
 
-#: app/helpers/comments_helper.rb:51
-msgid "%s has been spent by %s on this issue."
-msgstr ""
-
-#: app/views/issues/tabs/_comment.html.erb:44
+#: app/views/issues/tabs/_comment.html.erb:52
 msgid "%s in"
 msgstr ""
 
@@ -120,7 +116,7 @@ msgstr ""
 msgid "%s time-credits of %s have already been spent"
 msgstr ""
 
-#: app/helpers/pages_helper.rb:126
+#: app/helpers/pages_helper.rb:135
 msgid "&nbsp; on "
 msgstr ""
 
@@ -303,7 +299,7 @@ msgstr ""
 msgid "Active clients"
 msgstr ""
 
-#: app/controllers/issues_controller.rb:472 app/helpers/issues_helper.rb:130
+#: app/controllers/issues_controller.rb:478 app/helpers/issues_helper.rb:130
 msgid "Active issues"
 msgstr ""
 
@@ -460,7 +456,7 @@ msgstr ""
 msgid "An error has occured"
 msgstr ""
 
-#: app/controllers/comments_controller.rb:77
+#: app/controllers/comments_controller.rb:93
 msgid "An error has occured."
 msgstr ""
 
@@ -520,7 +516,7 @@ msgstr ""
 msgid "Attachment"
 msgstr ""
 
-#: app/helpers/pictures_helper.rb:220
+#: app/helpers/pictures_helper.rb:224
 #: app/views/issues/tabs/_tab_menu.html.erb:14
 msgid "Attachments"
 msgstr ""
@@ -621,8 +617,8 @@ msgstr ""
 msgid "CC"
 msgstr ""
 
-#: app/controllers/welcome_controller.rb:78
-#: app/controllers/welcome_controller.rb:89
+#: app/controllers/welcome_controller.rb:80
+#: app/controllers/welcome_controller.rb:91
 msgid "Cache cleared !"
 msgstr ""
 
@@ -665,7 +661,7 @@ msgstr ""
 msgid "Checkbox"
 msgstr ""
 
-#: app/helpers/pictures_helper.rb:283 app/helpers/pictures_helper.rb:289
+#: app/helpers/pictures_helper.rb:287 app/helpers/pictures_helper.rb:293
 msgid "Choose a date"
 msgstr ""
 
@@ -725,7 +721,7 @@ msgstr ""
 msgid "Collapse all"
 msgstr ""
 
-#: app/helpers/pictures_helper.rb:216 app/views/issues/print.html.erb:5
+#: app/helpers/pictures_helper.rb:220 app/views/issues/print.html.erb:5
 msgid "Comments"
 msgstr ""
 
@@ -842,7 +838,7 @@ msgstr ""
 msgid "Contracts of the team"
 msgstr ""
 
-#: app/views/contracts/show.html.erb:70
+#: app/views/contracts/show.html.erb:73
 msgid "Contractual commitments"
 msgstr ""
 
@@ -945,7 +941,7 @@ msgstr ""
 msgid "Customer "
 msgstr ""
 
-#: app/views/contracts/show.html.erb:51 app/views/contracts/_form.html.erb:20
+#: app/views/contracts/show.html.erb:54 app/views/contracts/_form.html.erb:20
 msgid "Customer mailing list"
 msgstr ""
 
@@ -985,7 +981,7 @@ msgstr ""
 msgid "Delivery"
 msgstr ""
 
-#: app/helpers/pictures_helper.rb:228
+#: app/helpers/pictures_helper.rb:232
 #: app/views/contributions/_form.html.erb:56
 #: app/views/pictures/index.html.erb:4 app/views/pictures/_form.html.erb:6
 #: app/views/roles/index.html.erb:4
@@ -1104,7 +1100,7 @@ msgstr ""
 #: app/views/severities/show.html.erb:7
 #: app/views/contributiontypes/edit.html.erb:5
 #: app/views/contributiontypes/show.html.erb:7
-#: app/views/comments/show.html.erb:8 app/views/attachments/edit.html.erb:6
+#: app/views/comments/show.html.erb:9 app/views/attachments/edit.html.erb:6
 #: app/views/permissions/edit.html.erb:5 app/views/hyperlinks/show.html.erb:17
 #: app/views/hyperlinks/index.html.erb:16
 msgid "Edit"
@@ -1234,7 +1230,7 @@ msgstr ""
 msgid "Email"
 msgstr ""
 
-#: app/views/contracts/show.html.erb:59 app/views/contracts/index.html.erb:5
+#: app/views/contracts/show.html.erb:62 app/views/contracts/index.html.erb:5
 #: app/views/contracts/_form.html.erb:29
 msgid "End"
 msgstr ""
@@ -1304,7 +1300,7 @@ msgstr ""
 msgid "Expand all"
 msgstr ""
 
-#: app/views/contracts/show.html.erb:92
+#: app/views/contracts/show.html.erb:95
 #: app/views/account/_edit_account_informations.html.erb:14
 #: app/views/knowledges/show.html.erb:3
 #: vendor/extensions/phonecalls/app/views/phonecalls/_index_panel.html.erb:19
@@ -1331,11 +1327,11 @@ msgstr ""
 msgid "Finished"
 msgstr ""
 
-#: app/controllers/issues_controller.rb:475 app/helpers/issues_helper.rb:137
+#: app/controllers/issues_controller.rb:481 app/helpers/issues_helper.rb:137
 msgid "Finished issues"
 msgstr ""
 
-#: app/helpers/pages_helper.rb:116 app/helpers/pictures_helper.rb:91
+#: app/helpers/pages_helper.rb:125 app/helpers/pictures_helper.rb:91
 msgid "First page"
 msgstr ""
 
@@ -1417,7 +1413,7 @@ msgstr ""
 msgid "Hide"
 msgstr ""
 
-#: app/helpers/pictures_helper.rb:232 app/views/issues/print.html.erb:9
+#: app/helpers/pictures_helper.rb:236 app/views/issues/print.html.erb:9
 #: app/views/issues/tabs/_tab_menu.html.erb:9
 msgid "History"
 msgstr ""
@@ -1441,7 +1437,7 @@ msgstr ""
 msgid "Homepage"
 msgstr ""
 
-#: app/views/contracts/show.html.erb:90
+#: app/views/contracts/show.html.erb:93
 msgid "Human ressources"
 msgstr ""
 
@@ -1498,7 +1494,7 @@ msgstr ""
 msgid "Interlocutor"
 msgstr ""
 
-#: app/views/contracts/show.html.erb:45 app/views/contracts/_form.html.erb:17
+#: app/views/contracts/show.html.erb:48 app/views/contracts/_form.html.erb:17
 msgid "Internal mailing list"
 msgstr ""
 
@@ -1523,6 +1519,7 @@ msgstr ""
 #: app/views/contributions/_contributions_admin.html.erb:7
 #: app/views/account/_menu.html.erb:11 app/views/comments/index.html.erb:4
 #: app/views/softwares/show.html.erb:89
+#: app/views/issues/tabs/_links.html.erb:11
 #: vendor/extensions/phonecalls/app/views/phonecalls/show.html.erb:8
 msgid "Issue"
 msgstr ""
@@ -1573,7 +1570,7 @@ msgstr ""
 msgid "It is now an Open Source software you can get at "
 msgstr ""
 
-#: app/controllers/issues_controller.rb:418
+#: app/controllers/issues_controller.rb:424
 msgid ""
 "It seems that you are not associated to a contract, which prevents you from "
 "filling an issue. Please contact %s if you think it's not normal"
@@ -1600,7 +1597,7 @@ msgstr ""
 msgid "Last comment"
 msgstr ""
 
-#: app/helpers/pages_helper.rb:132 app/helpers/pictures_helper.rb:105
+#: app/helpers/pages_helper.rb:141 app/helpers/pictures_helper.rb:105
 msgid "Last page"
 msgstr ""
 
@@ -1641,7 +1638,8 @@ msgstr ""
 msgid "Link to the alert page"
 msgstr ""
 
-#: app/views/softwares/show.html.erb:54
+#: app/helpers/pictures_helper.rb:204 app/views/softwares/show.html.erb:54
+#: app/views/issues/tabs/_tab_menu.html.erb:24
 msgid "Links"
 msgstr ""
 
@@ -1895,7 +1893,7 @@ msgstr ""
 msgid "Name of the Team"
 msgstr ""
 
-#: app/helpers/pictures_helper.rb:249
+#: app/helpers/pictures_helper.rb:253
 msgid "New"
 msgstr ""
 
@@ -1978,7 +1976,7 @@ msgstr ""
 msgid "Next Page"
 msgstr ""
 
-#: app/helpers/pages_helper.rb:129 app/helpers/pictures_helper.rb:101
+#: app/helpers/pages_helper.rb:138 app/helpers/pictures_helper.rb:101
 msgid "Next page"
 msgstr ""
 
@@ -2175,7 +2173,7 @@ msgstr ""
 msgid "Phonecall of %s on '%s'"
 msgstr ""
 
-#: app/helpers/pictures_helper.rb:224
+#: app/helpers/pictures_helper.rb:228
 #: vendor/extensions/phonecalls/app/helpers/issues_helper.rb:28
 msgid "Phonecalls"
 msgstr ""
@@ -2217,7 +2215,7 @@ msgstr ""
 msgid "Previous Page"
 msgstr ""
 
-#: app/helpers/pages_helper.rb:119 app/helpers/pictures_helper.rb:96
+#: app/helpers/pages_helper.rb:128 app/helpers/pictures_helper.rb:96
 msgid "Previous page"
 msgstr ""
 
@@ -2261,7 +2259,7 @@ msgstr ""
 #: app/views/account/_edit_account_informations.html.erb:12
 #: app/views/account/_edit_recipient.html.erb:6
 #: app/views/account/_show_recipient.html.erb:4
-#: app/views/account/index.html.erb:13 app/views/contracts/show.html.erb:80
+#: app/views/account/index.html.erb:13 app/views/contracts/show.html.erb:83
 #: app/views/issues/lists/_pending_table.html.erb:14
 #: app/views/issues/lists/_issues_table.html.erb:16
 #: app/views/issues/_form.html.erb:77
@@ -2273,7 +2271,7 @@ msgstr ""
 msgid "Recipient"
 msgstr ""
 
-#: app/views/contracts/show.html.erb:78
+#: app/views/contracts/show.html.erb:81
 #: vendor/extensions/phonecalls/app/views/phonecalls/_index_panel.html.erb:46
 msgid "Recipients"
 msgstr ""
@@ -2292,7 +2290,7 @@ msgstr ""
 msgid "Releases list"
 msgstr ""
 
-#: app/views/contracts/show.html.erb:64
+#: app/views/contracts/show.html.erb:67
 msgid "Renew this contract"
 msgstr ""
 
@@ -2312,7 +2310,7 @@ msgstr ""
 msgid "Response time"
 msgstr ""
 
-#: app/views/comments/edit.html.erb:10 app/views/comments/show.html.erb:9
+#: app/views/comments/edit.html.erb:10 app/views/comments/show.html.erb:10
 msgid "Return to the issue"
 msgstr ""
 
@@ -2361,7 +2359,7 @@ msgstr ""
 msgid "SLA report"
 msgstr ""
 
-#: app/views/contracts/show.html.erb:31 app/views/contracts/_form.html.erb:11
+#: app/views/contracts/show.html.erb:34 app/views/contracts/_form.html.erb:11
 msgid "Salesman Contact"
 msgstr ""
 
@@ -2398,7 +2396,7 @@ msgstr ""
 msgid "See the digest"
 msgstr ""
 
-#: app/helpers/pictures_helper.rb:284 app/helpers/pictures_helper.rb:290
+#: app/helpers/pictures_helper.rb:288 app/helpers/pictures_helper.rb:294
 msgid "Select a date"
 msgstr ""
 
@@ -2538,7 +2536,7 @@ msgstr ""
 msgid "Softwares"
 msgstr ""
 
-#: app/views/contracts/show.html.erb:55 app/views/contracts/index.html.erb:5
+#: app/views/contracts/show.html.erb:58 app/views/contracts/index.html.erb:5
 #: app/views/contracts/_form.html.erb:26
 msgid "Start"
 msgstr ""
@@ -2570,6 +2568,7 @@ msgstr ""
 #: app/helpers/reporting_helper.rb:31
 #: app/views/issues/_comment_form.html.erb:6
 #: app/views/issues/_index_panel.html.erb:54
+#: app/views/issues/tabs/_links.html.erb:12
 #: app/views/issues/_show_panel.html.erb:6
 #: vendor/extensions/ods_export/app/controllers/export_controller.rb:183
 msgid "Status"
@@ -2591,7 +2590,7 @@ msgstr ""
 msgid "Step"
 msgstr ""
 
-#: app/helpers/pictures_helper.rb:253
+#: app/helpers/pictures_helper.rb:257
 msgid "Stop"
 msgstr ""
 
@@ -2641,7 +2640,7 @@ msgstr ""
 msgid "Submitter"
 msgstr ""
 
-#: app/helpers/pictures_helper.rb:236
+#: app/helpers/pictures_helper.rb:240
 #: app/views/issues/panel/_panel_subscribers.html.erb:7
 msgid "Subscribe"
 msgstr ""
@@ -2650,7 +2649,7 @@ msgstr ""
 msgid "Subscribe me"
 msgstr ""
 
-#: app/helpers/pictures_helper.rb:244
+#: app/helpers/pictures_helper.rb:248
 msgid "Subscribed"
 msgstr ""
 
@@ -2693,7 +2692,7 @@ msgstr ""
 msgid "Summary"
 msgstr ""
 
-#: app/views/contracts/show.html.erb:111
+#: app/views/contracts/show.html.erb:114
 msgid "Supported software"
 msgstr ""
 
@@ -2719,7 +2718,7 @@ msgid_plural "Tags of the contract \"%s\""
 msgstr[0] ""
 msgstr[1] ""
 
-#: app/views/tags/show.html.erb:2 app/views/contracts/show.html.erb:124
+#: app/views/tags/show.html.erb:2 app/views/contracts/show.html.erb:127
 #: app/views/softwares/show.html.erb:101 app/views/softwares/_tags.html.erb:2
 #: app/views/issues/_show_panel.html.erb:46
 #: app/views/issues/_show_panel.html.erb:49
@@ -2739,7 +2738,7 @@ msgstr ""
 msgid "Taken into account"
 msgstr ""
 
-#: app/views/contracts/show.html.erb:93
+#: app/views/contracts/show.html.erb:96
 msgid "Team"
 msgid_plural "Teams"
 msgstr[0] ""
@@ -2773,7 +2772,7 @@ msgstr ""
 msgid "Teams managing this contract"
 msgstr ""
 
-#: app/views/contracts/show.html.erb:38 app/views/contracts/_form.html.erb:14
+#: app/views/contracts/show.html.erb:41 app/views/contracts/_form.html.erb:14
 msgid "Technical Contact"
 msgstr ""
 
@@ -2785,7 +2784,7 @@ msgstr ""
 msgid "Technologies"
 msgstr ""
 
-#: app/controllers/welcome_controller.rb:67
+#: app/controllers/welcome_controller.rb:69
 msgid ""
 "Thank your for taking time in order to help us to improve this product. Your "
 "comments has been sent successfully."
@@ -2821,17 +2820,17 @@ msgstr ""
 msgid "The call was successfully created."
 msgstr ""
 
-#: app/models/issue.rb:78
+#: app/models/issue.rb:79
 msgid ""
 "The client of this contract is not consistant with the client of this "
 "recipient."
 msgstr ""
 
-#: app/controllers/comments_controller.rb:118
+#: app/controllers/comments_controller.rb:134
 msgid "The comment was successfully destroyed."
 msgstr ""
 
-#: app/controllers/comments_controller.rb:106
+#: app/controllers/comments_controller.rb:122
 msgid "The comment was successfully updated."
 msgstr ""
 
@@ -2861,7 +2860,7 @@ msgstr ""
 msgid "The indicated time is the one elapsed before the end of the SLA."
 msgstr ""
 
-#: app/controllers/issues_controller.rb:260
+#: app/controllers/issues_controller.rb:266
 msgid "The issue has been updated successfully."
 msgstr ""
 
@@ -2964,7 +2963,7 @@ msgstr ""
 msgid "This contribution has been submitted on %s by <b>%s</b>"
 msgstr ""
 
-#: app/controllers/issues_controller.rb:335
+#: app/controllers/issues_controller.rb:341
 msgid "This contribution is now linked"
 msgstr ""
 
@@ -2988,7 +2987,7 @@ msgstr ""
 msgid "This issue has been taken into account by %s."
 msgstr ""
 
-#: app/controllers/issues_controller.rb:333
+#: app/controllers/issues_controller.rb:339
 msgid "This issue is no longer linked to a contribution"
 msgstr ""
 
@@ -3050,7 +3049,7 @@ msgstr ""
 msgid "Tickets spent"
 msgstr ""
 
-#: app/helpers/pictures_helper.rb:204
+#: app/helpers/pictures_helper.rb:208
 msgid "Time achieved"
 msgstr ""
 
@@ -3058,11 +3057,11 @@ msgstr ""
 msgid "Time elapsed"
 msgstr ""
 
-#: app/helpers/pictures_helper.rb:212
+#: app/helpers/pictures_helper.rb:216
 msgid "Time exceeded"
 msgstr ""
 
-#: app/helpers/pictures_helper.rb:208
+#: app/helpers/pictures_helper.rb:212
 msgid "Time is running"
 msgstr ""
 
@@ -3120,7 +3119,7 @@ msgstr ""
 msgid "Unlink the contribution"
 msgstr ""
 
-#: app/helpers/pictures_helper.rb:240
+#: app/helpers/pictures_helper.rb:244
 msgid "Unsubscribe"
 msgstr ""
 
@@ -3360,7 +3359,7 @@ msgstr ""
 msgid "You are not allowed to change your identity"
 msgstr ""
 
-#: app/controllers/comments_controller.rb:137
+#: app/controllers/comments_controller.rb:153
 msgid "You are not allowed to edit this comment"
 msgstr ""
 
@@ -3396,7 +3395,7 @@ msgstr ""
 msgid "You can see the list of %s."
 msgstr ""
 
-#: app/controllers/comments_controller.rb:120
+#: app/controllers/comments_controller.rb:136
 msgid "You cannot delete the first comment"
 msgstr ""
 
@@ -3462,7 +3461,7 @@ msgstr ""
 msgid "Your call number is"
 msgstr ""
 
-#: app/controllers/comments_controller.rb:71
+#: app/controllers/comments_controller.rb:87
 msgid "Your comment was successfully added."
 msgstr ""
 
@@ -3476,6 +3475,10 @@ msgstr ""
 
 #: app/views/issues/tabs/_cns.html.erb:30
 msgid "Your issue has no commitment for workaround time"
+msgstr ""
+
+#: app/views/issues/tabs/_links.html.erb:6
+msgid "Your issue has no links to other issues."
 msgstr ""
 
 #: app/views/issues/tabs/_cns.html.erb:7
@@ -3510,15 +3513,15 @@ msgstr ""
 msgid "Your suggestions on our tool : "
 msgstr ""
 
-#: app/controllers/issues_controller.rb:357
+#: app/controllers/issues_controller.rb:363
 msgid "[ Me ]"
 msgstr ""
 
-#: app/controllers/issues_controller.rb:372
+#: app/controllers/issues_controller.rb:378
 msgid "[ Tam ]"
 msgstr ""
 
-#: app/controllers/issues_controller.rb:368
+#: app/controllers/issues_controller.rb:374
 msgid "[ Team ]"
 msgstr ""
 
@@ -3556,7 +3559,7 @@ msgstr ""
 msgid "a knowledge"
 msgstr ""
 
-#: app/helpers/pictures_helper.rb:365
+#: app/helpers/pictures_helper.rb:369
 msgid "a logo"
 msgstr ""
 
@@ -3743,7 +3746,7 @@ msgstr ""
 msgid "contribution"
 msgstr ""
 
-#: app/models/issue.rb:446
+#: app/models/issue.rb:447
 msgid "day"
 msgstr ""
 
@@ -3843,7 +3846,7 @@ msgstr ""
 msgid "make an issue"
 msgstr ""
 
-#: app/models/issue.rb:444
+#: app/models/issue.rb:445
 msgid "month"
 msgstr ""
 
@@ -4031,10 +4034,6 @@ msgstr ""
 msgid "unlimited offer"
 msgstr ""
 
-#: app/models/rules/component.rb:48
-msgid "unlimited offer covering a maximum of %d components"
-msgstr ""
-
 #: vendor/extensions/ods_export/app/controllers/export_controller.rb:47
 #: vendor/extensions/ods_export/app/controllers/export_controller.rb:49
 msgid "users"
@@ -4044,7 +4043,7 @@ msgstr ""
 msgid "version"
 msgstr ""
 
-#: app/models/issue.rb:445
+#: app/models/issue.rb:446
 msgid "week"
 msgstr ""
 
@@ -4056,6 +4055,6 @@ msgstr ""
 msgid "with a copy to"
 msgstr ""
 
-#: app/models/issue.rb:443
+#: app/models/issue.rb:444
 msgid "year"
 msgstr ""
