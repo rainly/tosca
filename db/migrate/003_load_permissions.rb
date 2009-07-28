@@ -116,10 +116,9 @@ class LoadPermissions < ActiveRecord::Migration
     add_permission.call(roles, access)
 
     roles = [ manager_id, expert_id, customer_id ]
-    access = [ [ '^comments/(comment|show|edit|update)$',
-                  'Hability to comment an issue' ],
-                [ '^issues/(new|create|pending)$',
-                   'Write access to issues & Pending View' ] ]
+    access = [ [ '^comments/(comment|show|edit|update)$', 'Hability to comment an issue' ],
+               [ '^issue_references/destroy$', 'Delete links between issues' ],
+               [ '^issues/(new|create|pending)$', 'Write access to issues & Pending View' ] ]
     add_permission.call(roles, access)
 
     roles = [ customer_id, viewer_id ]
