@@ -162,8 +162,4 @@ class ActiveSupport::TestCase
     }
   end
 
-  def setup
-    FastGettext.text_domain = 'tosca'
-  end
-
 end

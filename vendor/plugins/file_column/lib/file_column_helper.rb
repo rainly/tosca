@@ -156,7 +156,7 @@ module FileColumnHelper
     relative_path = object.send("#{method}_relative_path", subdir)
     return nil unless relative_path
 
-    options = ActionController::UrlWriter.default_url_options.merge(options || {})
+    options = ActionMailer::Base.default_url_options.merge(options || {})
     url = ''
     unless options.delete(:only_path)
       url << (options.delete(:protocol) || 'http')

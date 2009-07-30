@@ -43,7 +43,7 @@ module MapperExtension
   # Mapper for exporting with format, done in a special controller 'export'.
   def formatted_export(actions)
     actions.each { |action|
-      self.send('named_route', "formatted_#{action}_export", "export/#{action}.:format",
+      self.send('named_route', "#{action}_export", "export/#{action}.:format",
                 { :controller => 'export', :action => action,
                   :conditions => { :method => :get }})
     }
