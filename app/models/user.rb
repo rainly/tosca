@@ -66,8 +66,7 @@ class User < ActiveRecord::Base
     self.password = User.sha1(pass)
   end
 
-  #Specific methods used in forms
-  #TODO: find a better way
+  # Fake fields used in signup forms
   def client_form
     recipient?
   end
@@ -93,17 +92,10 @@ class User < ActiveRecord::Base
     @trigram
   end
 
-  # TODO : this formatting method has to be in an helper, a lib or a plugin.
-  # /!\ but NOT here /!\
+  # Normalize phone number like 0140506070 to 01.40.50.60.70
   before_save do |record|
-    ### NUMBERS #########################################################
     number = record.phone.to_s
-    number.upcase!
-    if number =~ /\d{10}/ #0140506070
-      number.gsub!(/(\d\d)/, '\1.').chop!
-    elsif number =~ /\d\d(\D\d\d){4}/ #01.40_50f60$70
-      number.gsub!(/\D/, ".")
-    end
+    number.gsub!(/(\d\d)/, '\1.').chop! if number =~ /\d{10}/
     record.phone = number
     # false will invalidate the save
     true
@@ -123,9 +115,7 @@ class User < ActiveRecord::Base
     true
   end
 
-  # Eck ... We must add message manually in order to
-  # not have the "pwd" prefix ... TODO : find a pretty way ?
-  # TODO : check if gettext is an answer ?
+  # Error messages on password are manual coz of the fake field trick
   def validate
     errors.add(:pwd, _("Password missing")) if password.blank?
     if pwd != pwd_confirmation
@@ -274,7 +264,8 @@ class User < ActiveRecord::Base
     result
   end
 
-  # TODO : provide a cache for those really often used & costly 2 methods
+  # TODO Rails 3 : use "memoize :contract_ids" & :client_ids
+  # see http://ryandaigle.com/articles/2008/7/16/what-s-new-in-edge-rails-memoization
   def contract_ids
     self.contracts.collect(&:id)
   end

@@ -110,7 +110,6 @@ module Filters
   # you MUST use it, if you don't want to burn in hell during your seven next lives
   # special_conditions allows to put additional conditions to the filters.
   # it must be a string !
-  # TODO : rework this helper in order to avoid the :dual_like hacks.
   def self.build_conditions(params, filters, special_conditions = nil)
     conditions = [[]]
     condition_0 = conditions.first

@@ -36,7 +36,7 @@ class Team < ActiveRecord::Base
 
   # Nice URL
   def to_param
-    "#{id}-#{name.gsub(/[^a-z1-9]+/i, '-')}"
+    "#{id}-#{name.asciify}"
   end
 
   def engineers_id

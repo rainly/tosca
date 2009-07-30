@@ -128,7 +128,7 @@ class Client < ActiveRecord::Base
 
   # pretty urls for client
   def to_param
-    "#{id}-#{read_attribute(:name).gsub(/[^a-z1-9]+/i, '-')}"
+    "#{id}-#{read_attribute(:name).asciify}"
   end
 
   # can return an htmled name if deactivated

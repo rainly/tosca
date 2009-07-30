@@ -53,14 +53,11 @@ module StringExtensions
     self.gsub(' ', '&nbsp;')
   end
 
-  # TODO : move it to active support extension ?
-  # TODO : submit upstream ?
+  # TODO : move it to active support extension or submit upstream?
   def asciify
     self.gsub(/[^a-z1-9 ]+/i, '-')
   end
-  def asciify!
-    self.gsub(/[^a-z1-9 ]+/i, '-')
-  end
+
 end
 
 

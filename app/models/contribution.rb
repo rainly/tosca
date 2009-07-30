@@ -58,7 +58,7 @@ class Contribution < ActiveRecord::Base
   end
 
   def to_param
-    "#{id}-#{name.gsub(/[^a-z1-9]+/i, '-')}"
+    "#{id}-#{name.asciify}"
   end
 
   # date de reversement formattée

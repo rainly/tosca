@@ -287,7 +287,6 @@ class Notifier < ActionMailer::Base
   end
 
   #Email when a user has no rights on a contract
-  #TODO
   def email_no_rights_contract(to)
     logger.info("Bad e-mail from #{to}")
 
