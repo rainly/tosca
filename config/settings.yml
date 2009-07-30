@@ -1,8 +1,6 @@
 # DO NOT MODIFY THIS FILE !!!
 # Settings can be defined through the application in Admin -> Settings
 
-
-
 email_server:
   default: mail.linagora.com
 email_port:
@@ -36,3 +34,14 @@ company_name:
   default: Linagora
 company_site:
   default: www.linagora.com
+
+files_path:
+  default : files/
+help_new_issue:
+  default: "http://redmine.tosca-project.net/wiki/tosca/NewIssue"
+help_life_cycle:
+  default: "http://redmine.tosca-project.net/wiki/tosca/LifeCycle"
+help_status:
+  default: "http://redmine.tosca-project.net/wiki/tosca/IssueStatus"
+help_severity:
+  default: "http://redmine.tosca-project.net/wiki/tosca/IssueSeverity"

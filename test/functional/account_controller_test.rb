@@ -165,7 +165,7 @@ class AccountControllerTest < ActionController::TestCase
   end
 
   def test_become
-    %w(admin manager expert).each { |l|
+    %w(admin manager).each { |l|
       login l, l
       post :become, :id => User.recipients.first.id
       assert_response :redirect

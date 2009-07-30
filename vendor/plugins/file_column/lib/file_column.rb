@@ -18,6 +18,11 @@ module FileColumn # :nodoc:
   end
 
   def self.init_options(defaults, model, attr)
+    if Setting.files_path[0] == ?/
+      defaults[:root_path] = Setting.files_path
+    else
+      defaults[:root_path] = File.join(RAILS_ROOT, Setting.files_path)
+    end
     options = defaults.dup
     options[:store_dir] ||= File.join(options[:root_path], model, attr)
     unless options[:store_dir].is_a?(Symbol)
@@ -25,12 +30,15 @@ module FileColumn # :nodoc:
     end
     options[:base_url] ||= options[:web_root] + File.join(model, attr)
 
-    [:store_dir, :tmp_base_dir].each do |dir_sym|
-      if options[dir_sym].is_a?(String) and !File.exists?(options[dir_sym])
-        FileUtils.mkpath(options[dir_sym])
+    begin
+      [:store_dir, :tmp_base_dir].each do |dir_sym|
+        if options[dir_sym].is_a?(String) and !File.exists?(options[dir_sym])
+          FileUtils.mkpath(options[dir_sym])
+        end
       end
+    rescue Exception => e
+      ActiveRecord::Base.logger.fatal "Error on path for files attachment : '#{e.to_s}'"
     end
-
       options
   end
 
@@ -607,8 +615,8 @@ module FileColumn # :nodoc:
 
     # default options. You can override these with +file_column+'s +options+ parameter
     DEFAULT_OPTIONS = {
-      :root_path => File.join(RAILS_ROOT, "files"),
-      :web_root => "",
+      :root_path => '',
+      :web_root => '',
       :mime_extensions => MIME_EXTENSIONS,
       :extensions => EXTENSIONS,
       :fix_file_extensions => true,

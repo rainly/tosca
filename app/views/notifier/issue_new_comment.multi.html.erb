@@ -23,7 +23,7 @@
 <%= @comment.text %><br />
 <hr noshade size="1px"/>
 <% if @comment.severity_id %>
-  La demande est qualifiée avec une sévérité <b><%=@comment.severity.name%></b>. <a href="<%= App::Help::IssueSeverityUrl%>">Cette page</a> vous en présente la signification.<br />
+  La demande est qualifiée avec une sévérité <b><%=@comment.severity.name%></b>. <a href="<%= Setting.help_severity %>">Cette page</a> vous en présente la signification.<br />
 <% end %>
 
 <%= render :partial => 'end_mail' %>

@@ -23,7 +23,7 @@ class TeamsControllerTest < ActionController::TestCase
   fixtures :all
 
   def test_should_get_index
-    %w(admin manager expert customer viewer).each do |l|
+    %w(admin manager expert).each do |l|
       login l, l
       get :index
       assert_response :success

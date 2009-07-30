@@ -1,5 +1,7 @@
 <h1><%= _('Settings') %></h1>
 
+<% red_star = %q[<span style="color: red;">*</span>] %>
+
 <% form_tag :action => 'edit', :id => 'main_form' do %>
 <div class="subcolumns">
  <div class="c50l">
@@ -7,16 +9,16 @@
    <h2><%= _('Mail settings') %></h2>
    <table>
     <tr>
-     <th><label for="settings_email_server"><%=_('Server')%></label></th>
+     <th><label for="settings_email_server"><%=_('Server')%><%= red_star %></label></th>
      <td><%= text_field_tag 'settings[email_server]', Setting.email_server %></td>
 	</tr><tr>
-     <th><label for="settings_email_port"><%=_('Port')%></label></th>
+     <th><label for="settings_email_port"><%=_('Port')%><%= red_star %></label></th>
      <td><%= text_field_tag 'settings[email_port]', Setting.email_port %></td>
     </tr><tr>
-     <th><label for="settings_email_domain"><%=_('Domain')%></label></th>
+     <th><label for="settings_email_domain"><%=_('Domain')%><%= red_star %></label></th>
      <td><%= text_field_tag 'settings[email_domain]', Setting.email_domain %></td>
     </tr><tr>
-     <th><label for="settings_email_charset"><%=_('Charset')%></label></th>
+     <th><label for="settings_email_charset"><%=_('Charset')%><%= red_star %></label></th>
      <td><%= text_field_tag 'settings[email_charset]', Setting.email_charset %></td>
     </tr><tr>
      <th><label for="settings_email_administrators"><%=_('Administrators email')%></label></th>
@@ -36,9 +38,8 @@
      <td><%= text_field_tag 'settings[email_noreply]', Setting.email_noreply %></td>
     </tr>
    </table>
-
-
   </div>
+  <p><%= red_star %> : <%= _('A restart will be needed') %></p>
  </div><div class="c50r">
   <div class="show">
    <h2><%= _('Company settings') %></h2>
@@ -56,6 +57,21 @@
      <th><label for="settings_company_site"><%=_('Company site')%></label></th>
      <td><%= text_field_tag 'settings[company_site]', Setting.company_site %></td>
 	</tr>
+   </table>
+  </div>
+  <div class="show">
+   <h2><%= _('Customization') %></h2>
+   <table>
+    <tr><th><label for="settings_files_path"><%=_('Files storage')%><%= red_star %></label></th></tr>
+    <tr><td><%= text_field_tag 'settings[files_path]', Setting.files_path, :size => 50 %></td></tr>
+    <tr><th><label for="settings_help_new_issue"><%=_('Help on new issue')%></label></th></tr>
+    <tr><td><%= text_field_tag 'settings[help_new_issue]', Setting.help_new_issue, :size => 50 %></td></tr>
+    <tr><th><label for="settings_help_life_cycle"><%=_("Help on issues' life cycle")%></label></th></tr>
+    <tr><td><%= text_field_tag 'settings[help_life_cycle]', Setting.help_life_cycle, :size => 50 %></td></tr>
+    <tr><th><label for="settings_help_status"><%=_("Help on issues' status")%></label></th></tr>
+    <tr><td><%= text_field_tag 'settings[help_status]', Setting.help_status, :size => 50 %></td></tr>
+    <tr><th><label for="settings_help_severity"><%=_("Help on issues' severities")%></label></th></tr>
+    <tr><td><%= text_field_tag 'settings[help_severity]', Setting.help_severity, :size => 50 %></td></tr>
    </table>
   </div>
  </div>

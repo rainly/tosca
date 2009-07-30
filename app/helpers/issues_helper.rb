@@ -168,7 +168,7 @@ module IssuesHelper
   # Show the '?' icon with the link on status explanation on the wiki
   # TODO : this implementation can be improved a LOT
   def help_on_status
-    @@help_on_status ||= %Q{<a href="#{App::Help::IssueStatusUrl}"} <<
+    @@help_on_status ||= %Q{<a href="#{Setting.help_status}"} <<
        ' target="_blank" class="aligned_picture" style="vertical-align: top;">' <<
       image_tag("icons/question_mark.gif") <<
     '</a>'
@@ -178,7 +178,7 @@ module IssuesHelper
   # Show the '?' icon with the link on severity explanation on the wiki
   # TODO : this implementation can be improved a LOT
   def help_on_severity
-    @@help_on_severity ||= %Q{<a href="#{App::Help::IssueSeverityUrl}"} <<
+    @@help_on_severity ||= %Q{<a href="#{Setting.help_severity}"} <<
        ' target="_blank" class="aligned_picture" style="vertical-align: top;">' <<
       image_tag("icons/question_mark.gif") <<
       '</a>'
@@ -196,19 +196,19 @@ module IssuesHelper
   # Link to the inline help to post an issue
   def public_link_to_help_new_issue
     public_link_to(_("Submission of an issue"),
-                   App::Help::NewIssueUrl, NEW_WINDOW)
+                   Setting.help_new_issue, NEW_WINDOW)
   end
 
   # Link to the the inline help about life cycle of a demand
   def public_link_to_howto_issue
     public_link_to(_("The life cycle of an issue"),
-                   App::Help::LifeCycleUrl, NEW_WINDOW)
+                   Setting.help_life_cycle, NEW_WINDOW)
   end
 
   # Link to the inline help about the differents states of a demand
   def public_link_to_help_issue_status
     public_link_to(_("Help on the status"),
-                   App::Help::IssueStatusUrl, NEW_WINDOW)
+                   Setting.help_status, NEW_WINDOW)
   end
 
   def public_link_to_status_legend
