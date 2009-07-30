@@ -183,6 +183,8 @@ class Comment < ActiveRecord::Base
     issue.elapsed.add(self)
 
     issue.last_comment_id = self.id unless self.private
+    # no more a magic field : only comments update this field
+    issue.updated_on = Time.now
 
     issue.save
   end

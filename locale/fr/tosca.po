@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.8.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-07-28 15:53+0200\n"
-"PO-Revision-Date: 2009-07-28 15:54+0200\n"
+"POT-Creation-Date: 2009-07-30 09:57+0200\n"
+"PO-Revision-Date: 2009-07-30 09:58+0200\n"
 "Last-Translator: Jonathan Clarke <jclarke@linagora.com>\n"
 "Language-Team: French\n"
 "MIME-Version: 1.0\n"
@@ -47,7 +47,7 @@ msgstr " à "
 msgid " to date"
 msgstr " à ce jour"
 
-#: app/models/notifier.rb:118
+#: app/models/notifier.rb:117
 msgid " week of "
 msgstr " semaine "
 
@@ -234,6 +234,10 @@ msgstr "Un nouveau type de contribution"
 msgid "A new url"
 msgstr "une nouvelle url"
 
+#: app/views/settings/edit.html.erb:42
+msgid "A restart will be needed"
+msgstr "Un redémarrage sera nécessaire"
+
 #: app/views/welcome/about.html.erb:15
 msgid "About"
 msgstr "A propos de"
@@ -418,6 +422,10 @@ msgstr "Administration"
 msgid "Administration interface"
 msgstr "Interface d'administration"
 
+#: app/views/settings/edit.html.erb:24
+msgid "Administrators email"
+msgstr "Email des administrateurs"
+
 #: app/views/contributions/_list_versions.html.erb:1
 msgid "Affected version"
 msgstr "Version concernée"
@@ -460,7 +468,7 @@ msgstr "Autoriser pour"
 msgid "An %s, allowing to see evolution of issues."
 msgstr "Un %s, permettant de consulter l'évolution des demandes."
 
-#: app/controllers/application.rb:104 app/models/notifier.rb:354
+#: app/controllers/application.rb:104 app/models/notifier.rb:353
 msgid "An e-mail was sent to "
 msgstr "Un e-mail a été envoyé à "
 
@@ -671,6 +679,10 @@ msgstr "Changelog"
 msgid "Characteristic"
 msgstr "Caracteristique"
 
+#: app/views/settings/edit.html.erb:21
+msgid "Charset"
+msgstr "Encodage"
+
 #: app/helpers/pictures_helper.rb:200
 msgid "Checkbox"
 msgstr "À cocher"
@@ -691,7 +703,7 @@ msgstr "Sélectionner une date"
 msgid "Choose one year:"
 msgstr "Spécifier une année : "
 
-#: app/views/welcome/admin.html.erb:58
+#: app/views/welcome/admin.html.erb:59
 msgid "Clear cache"
 msgstr "Nettoyer le cache"
 
@@ -747,6 +759,18 @@ msgstr "Engagements"
 msgid "Commitments"
 msgstr "Engagements"
 
+#: app/views/settings/edit.html.erb:54
+msgid "Company name"
+msgstr "Nom de l'entreprise"
+
+#: app/views/settings/edit.html.erb:45
+msgid "Company settings"
+msgstr "Paramètres de l'entreprise"
+
+#: app/views/settings/edit.html.erb:57
+msgid "Company site"
+msgstr "Site de l'entreprise"
+
 #: app/views/rules/components/index.html.erb:5
 #: app/views/rules/components/_form.html.erb:3
 msgid "Component|Name"
@@ -795,6 +819,10 @@ msgstr "Consultation"
 #: app/views/issues/_show_panel.html.erb:26
 msgid "Contact"
 msgstr "Contact"
+
+#: app/views/settings/edit.html.erb:34
+msgid "Contact email"
+msgstr "Email de contact"
 
 #: app/views/welcome/admin.html.erb:1 app/views/welcome/index.html.erb:4
 msgid "Contents"
@@ -968,7 +996,11 @@ msgstr "Gestion des clients"
 msgid "Customers"
 msgstr "Clients"
 
-#: app/models/notifier.rb:116
+#: app/views/settings/edit.html.erb:63
+msgid "Customization"
+msgstr "Personnalisation"
+
+#: app/models/notifier.rb:115
 msgid "Daily digest for "
 msgstr "Rapport d'activité pour "
 
@@ -1084,7 +1116,7 @@ msgstr "Documentation"
 msgid "Documents"
 msgstr "Documents"
 
-#: app/views/knowledges/_form.html.erb:12
+#: app/views/settings/edit.html.erb:18 app/views/knowledges/_form.html.erb:12
 #: app/views/contracts/_form.html.erb:32
 msgid "Domain"
 msgstr "Domaine"
@@ -1332,6 +1364,10 @@ msgstr "Exporter en %s"
 msgid "File"
 msgstr "Fichier"
 
+#: app/views/settings/edit.html.erb:65
+msgid "Files storage"
+msgstr "Stockage des fichiers"
+
 #: app/views/reporting/_monthly_panel.html.erb:10
 #: app/views/reporting/_weekly_panel.html.erb:9
 msgid "Filters"
@@ -1418,6 +1454,22 @@ msgstr "Hash"
 #: app/views/issues/_show_panel.html.erb:70
 msgid "Help"
 msgstr "Aide"
+
+#: app/views/settings/edit.html.erb:69
+msgid "Help on issues' life cycle"
+msgstr "Aide sur le cycle de vie des demandes"
+
+#: app/views/settings/edit.html.erb:73
+msgid "Help on issues' severities"
+msgstr "Aide sur la sévérité des demandes"
+
+#: app/views/settings/edit.html.erb:71
+msgid "Help on issues' status"
+msgstr "Aide sur les statuts des demandes"
+
+#: app/views/settings/edit.html.erb:67
+msgid "Help on new issue"
+msgstr "Aide sur une nouvelle demande"
 
 #: app/helpers/issues_helper.rb:210
 msgid "Help on the status"
@@ -1783,6 +1835,14 @@ msgstr "Déconnexion"
 msgid "Logout ..."
 msgstr "Déconnexion ..."
 
+#: app/views/settings/edit.html.erb:9
+msgid "Mail settings"
+msgstr "Paramètres de courriel"
+
+#: app/views/settings/edit.html.erb:29
+msgid "Mainteners email"
+msgstr "Email des mainteneurs"
+
 #: app/models/severity.rb:34
 msgid "Major"
 msgstr "Majeure"
@@ -1847,7 +1907,7 @@ msgstr "Modifier votre mot de passe"
 msgid "Monthly and weekly views on issues activity,"
 msgstr "Des vues mensuelles et hebdomadaires sur l'activité des demandes,"
 
-#: app/models/notifier.rb:122
+#: app/models/notifier.rb:121
 msgid "Monthly digest for "
 msgstr "Activité mensuelle pour "
 
@@ -2037,6 +2097,10 @@ msgstr "Aucune demande en attente"
 #: app/helpers/commitments_helper.rb:73 app/models/severity.rb:36
 msgid "None"
 msgstr "Aucune"
+
+#: app/views/settings/edit.html.erb:37
+msgid "Noreply email"
+msgstr "Email sans réponse"
 
 #: app/views/issues/new.html.erb:21
 msgid ""
@@ -2230,8 +2294,12 @@ msgstr "Remplissez les champs ci-dessous."
 msgid "Please select the team you want to monitor"
 msgstr "Veuillez sélectionner l'équipe que vous voulez surveiller"
 
-#: app/models/notifier.rb:273 app/models/notifier.rb:285
-#: app/models/notifier.rb:298
+#: app/views/settings/edit.html.erb:15
+msgid "Port"
+msgstr "Port"
+
+#: app/models/notifier.rb:272 app/models/notifier.rb:284
+#: app/models/notifier.rb:297
 msgid "Possible error in your e-mail"
 msgstr "Erreur possible dans votre adresse e-mail"
 
@@ -2436,13 +2504,30 @@ msgstr "Interface de sélection"
 msgid "Send me a new password"
 msgstr "Envoyer moi un nouveau mot de passe"
 
+#: app/views/settings/edit.html.erb:12
+msgid "Server"
+msgstr "Serveur"
+
 #: app/views/issues/tabs/_cns.html.erb:9
 msgid "Service Level Agreement"
 msgstr "Convention de Niveau de Services"
 
+#: app/views/settings/edit.html.erb:48
+msgid "Service name"
+msgstr "Nom du service"
+
+#: app/views/settings/edit.html.erb:51
+msgid "Service site"
+msgstr "Site du service"
+
+#: app/views/settings/edit.html.erb:1 app/views/welcome/admin.html.erb:58
 #: app/views/issues/_index_panel.html.erb:58
 msgid "Settings"
 msgstr "Paramètres"
+
+#: app/controllers/settings_controller.rb:35
+msgid "Settings has been updated successfully"
+msgstr "Paramètres ont été mis à jour"
 
 #: app/helpers/commitments_helper.rb:37 app/helpers/commitments_helper.rb:91
 #: app/views/commitments/_form.html.erb:7
@@ -3001,7 +3086,7 @@ msgstr "Cette contribution a été déposée le %s par <b>%s</b>"
 msgid "This contribution is now linked"
 msgstr "Cette contribution est maintenant liée"
 
-#: app/controllers/files_controller.rb:78
+#: app/controllers/files_controller.rb:86
 msgid "This file does not exist."
 msgstr "Le fichier CSV n'est pas correct."
 
@@ -3275,10 +3360,10 @@ msgstr "Titre"
 #: app/views/contributions/edit.html.erb:6 app/views/account/edit.html.erb:6
 #: app/views/account/signup.html.erb:6 app/views/account/login.html.erb:16
 #: app/views/rules/components/edit.html.erb:5
-#: app/views/rules/credits/edit.html.erb:5 app/views/archives/edit.html.erb:5
-#: app/views/archives/new.html.erb:5 app/views/commitments/edit.html.erb:5
-#: app/views/releases/edit.html.erb:5 app/views/releases/new.html.erb:5
-#: app/views/comments/edit.html.erb:5
+#: app/views/rules/credits/edit.html.erb:5 app/views/settings/edit.html.erb:79
+#: app/views/archives/edit.html.erb:5 app/views/archives/new.html.erb:5
+#: app/views/commitments/edit.html.erb:5 app/views/releases/edit.html.erb:5
+#: app/views/releases/new.html.erb:5 app/views/comments/edit.html.erb:5
 #: app/views/contracts/supported_software.html.erb:46
 #: app/views/contracts/edit.html.erb:6 app/views/workflows/_form.html.erb:14
 #: app/views/softwares/new.html.erb:6 app/views/licenses/edit.html.erb:5
@@ -3344,7 +3429,7 @@ msgstr "Nous espérons que cet outil vous donnera entière satisfaction."
 msgid "Week of the %s"
 msgstr "Semaine du %s"
 
-#: app/models/notifier.rb:119
+#: app/models/notifier.rb:118
 msgid "Weekly digest for "
 msgstr "Activité hebdomadaire pour "
 
@@ -3358,8 +3443,8 @@ msgid "Welcome %s %s"
 msgstr "Bienvenue %s %s"
 
 #: app/views/welcome/index.html.erb:6
-msgid "Welcome to the %s management tool"
-msgstr "Bienvenue sur l'outil de gestion du %s"
+msgid "Welcome on the management tool of %s"
+msgstr "Bienvenue sur l'outil de gestion de %s"
 
 #: app/views/welcome/index.html.erb:36
 msgid "When you are %s, you have access to various activity reports"
@@ -3389,7 +3474,7 @@ msgstr "Flux de %s"
 msgid "Write your comment here"
 msgstr "Écrivez votre commentaire ici"
 
-#: app/models/notifier.rb:125
+#: app/models/notifier.rb:124
 msgid "Yearly digest for "
 msgstr "Activité annuelle pour "
 
@@ -3805,7 +3890,7 @@ msgstr "contrat"
 msgid "contribution"
 msgstr "contribution"
 
-#: app/models/issue.rb:450
+#: app/models/issue.rb:456
 msgid "day"
 msgstr "jour"
 
@@ -3905,7 +3990,7 @@ msgstr "identifiant"
 msgid "make an issue"
 msgstr "faire une nouvelle demande"
 
-#: app/models/issue.rb:448
+#: app/models/issue.rb:454
 msgid "month"
 msgstr "mois"
 
@@ -4112,7 +4197,7 @@ msgstr "utilisateurs"
 msgid "version"
 msgstr "une version"
 
-#: app/models/issue.rb:449
+#: app/models/issue.rb:455
 msgid "week"
 msgstr "semaine"
 
@@ -4120,19 +4205,10 @@ msgstr "semaine"
 msgid "weekly calendar"
 msgstr "calendrier hebdomadaire"
 
-#: app/controllers/application.rb:105 app/models/notifier.rb:355
+#: app/controllers/application.rb:105 app/models/notifier.rb:354
 msgid "with a copy to"
 msgstr "avec en copie"
 
-#: app/models/issue.rb:447
+#: app/models/issue.rb:453
 msgid "year"
 msgstr "année"
-
-#~ msgid "%s has been spent by %s on this issue."
-#~ msgstr "%s se sont écoulé(e)s sur cette demande."
-
-#~ msgid "Your issue has no links to other issues."
-#~ msgstr "Votre demande n'a pas de liens vers les autres."
-
-#~ msgid "unlimited offer covering a maximum of %d components"
-#~ msgstr "Offre illimitée couvrant un maximum de %d composants"

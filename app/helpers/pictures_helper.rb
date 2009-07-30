@@ -116,12 +116,12 @@ module PicturesHelper
   # Logos
   @@logo_service = nil
   def image_logo_service
-    @@logo_service ||= image_tag("service_image.gif", image_options(App::ContactPhone))
+    @@logo_service ||= image_tag("service_image.gif", image_options(Setting.service_phone))
   end
 
   @@logo_service_small = nil
   def image_logo_service_small
-    @@logo_service_small ||= image_tag("service_image_small.gif", image_options(App::ContactPhone))
+    @@logo_service_small ||= image_tag("service_image_small.gif", image_options(Setting.service_phone))
   end
 
   def image_tosca

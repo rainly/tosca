@@ -35,7 +35,11 @@ class FilesController < ApplicationController
   before_filter :login_required, :except => [:download]
 
   # TODO : review and shorten this method. Camelize should to the job.
+  @@root_path = nil
   def download
+    # this ugly line allows to be DRY : one place to compute root path
+    @@root_path ||= FileColumn::init_options({:web_root => 't/'}, 't', 'f')[:root_path]
+
     file_type = params[:file_type].intern
 
     # mapping path
@@ -52,7 +56,7 @@ class FilesController < ApplicationController
     return if (file_type != :contribution && login_required == false)
 
     # building path
-    root = [ App::FilesPath, params[:file_type], map[file_type] ] * '/'
+    root = [ @@root_path, params[:file_type], map[file_type] ] * '/'
 
     # TODO : FIXME
     # the dirty gsub hack on ' ' is needded, because urls with '+' are weirdly reinterpreted.

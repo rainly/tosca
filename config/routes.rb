@@ -40,6 +40,8 @@ ActionController::Routing::Routes.draw do |map|
   map.without_orm('alerts', %w(index show))
   map.without_orm('alerts', %w(update), :put)
   map.without_orm('alerts', %w(ajax_on_submit), :post)
+  map.without_orm('settings', %w(index edit))
+  map.without_orm('settings', %w(edit), :post)
 
   # routing files to prevent download from public access
   # TODO : convert to named route

@@ -415,7 +415,7 @@ class IssuesController < ApplicationController
   def _form(user)
     @contracts = Contract.find_active4select(Contract::OPTIONS)
     if @contracts.empty?
-      flash[:warn] = _("It seems that you are not associated to a contract, which prevents you from filling an issue. Please contact %s if you think it's not normal") % App::TeamEmail
+      flash[:warn] = _("It seems that you are not associated to a contract, which prevents you from filling an issue. Please contact %s if you think it's not normal") % Setting.email_contact
       return redirect_to(welcome_path)
     end
     @engineers = User.find_select(User::EXPERT_OPTIONS) if user and user.expert?

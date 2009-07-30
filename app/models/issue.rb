@@ -83,6 +83,11 @@ class Issue < ActiveRecord::Base
     end
   end
 
+  # only comments or creation update timestamps
+  # coz it's used by customer to see if a comment has been made
+  record_timestamps = false
+
+
   # self-explanatory
   CLOSED = "issues.statut_id IN (#{Statut::CLOSED.join(',')})" unless defined? CLOSED
   OPENED = "issues.statut_id IN (#{Statut::OPENED.join(',')})" unless defined? OPENED
@@ -422,6 +427,7 @@ class Issue < ActiveRecord::Base
   end
 
   def create_first_comment
+    self.created_on = self.updated_on = Time.now
     self.first_comment = Comment.new do |c|
       #We use id's because it's quicker
       c.text = self.description

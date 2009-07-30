@@ -23,7 +23,7 @@ require File.dirname(__FILE__) + '/../test_helper'
 class ApplicationControllerTest < ActionController::TestCase
 
   ROUTES_TO_IGNORE = [ %r(welcome/theme), %r(/:file_type/) ]
-  ROUTES_REDIRECT = [ %r(welcome/clear_cache) , %r(reporting/general),
+  ROUTES_REDIRECT = [ %r(welcome/clear_cache), %r(reporting/general),
                       %r(accounts/new(?!/signup)), %r(accounts/logout) ]
 
   routes = ActionController::Routing::Routes.routes
@@ -84,12 +84,18 @@ class ApplicationControllerTest < ActionController::TestCase
 
           possible_models = models.grep(/^#{r.requirements[:controller].singularize}$/i)
           id = 1
-          id = eval(possible_models.first + ".first.id") unless possible_models.empty?
+          unless possible_models.empty?
+            first_item = eval(possible_models.first + ".first")
+            id = first_item.id if first_item
+          end
 
           # We specifiy an id for all views like edit/show.
           # It does not impact generic views
-          if string_route =~ /export/
+          case string_route
+          when /export/
             get r.requirements[:action], :id => id, :format => 'ods'
+          when /settings/
+            get r.requirements[:action]
           else
             get r.requirements[:action], :id => id
           end

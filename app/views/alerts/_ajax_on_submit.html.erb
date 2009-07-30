@@ -2,7 +2,7 @@
   <STYLE type="text/css">
   div#status { background-color: red; text-decoration:blink; }
   </STYLE>
-  <%= play_mp3(App::AlertFile) %>
+  <%= play_mp3('default.mp3') %>
   <%= show_list(@issues_found, _('New issues')) do |r|
         "##{r.id} #{r.contract} : #{r.resume}"
       end %>

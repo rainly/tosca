@@ -40,8 +40,6 @@ require 'utils'
 
 path = File.join RAILS_ROOT, 'config', 'database.yml'
 Utils.check_files(path, 'Your database is not configured')
-path = File.join RAILS_ROOT, 'config', 'config.rb'
-Utils.check_files(path, 'The configuration of the application is not done')
 
 cache_path = File.join RAILS_ROOT, 'tmp', 'cache'
 page_cache_path = File.join RAILS_ROOT, 'public', 'cache'
@@ -126,9 +124,6 @@ ActionController::Base.cache_store = :file_store, cache_path
 
 # MLO : It's faster to use X-Send-File module of Apache
 XSendFile::Plugin.replace_send_file! if RAILS_ENV == 'production'
-
-# Config file, mainly use for mail server
-require File.join(RAILS_ROOT, 'config', 'config')
 
 # Extensions to String Class
 # TODO : make an extension loader, which loads automatically all _extensions.rb

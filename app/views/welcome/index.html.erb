@@ -3,7 +3,7 @@
 <link rel="alternate" href="contributions/all/list.atom" title="" type="application/atom+xml" />
 <table><tr><td rowspan="2"><%= image_tosca %> </td><td><h2 class="spacer"><%=_('Contents')%></h2></td></tr>
   <tr><td>
-      <%= _('Welcome to the %s management tool') % App::ServiceFullName %><%= user ? ", #{user.title} #{user.name}" : '.' %>
+      <%= _("Welcome on the management tool of %s") % Setting.service_name %><%= user ? ", #{user.title} #{user.name}" : '.' %>
   </td></tr>
 </table>
 
@@ -61,7 +61,7 @@
           <% access_code = user.client.access_code %>
           <% unless access_code.blank? %>
             <p><%= _('Your call number is')%>
-              <b><%=App::ContactPhone %></b>,
+              <b><%=Setting.service_phone %></b>,
             <b><%= _("and your access code is %s") % access_code %> (<%= user.client.access_code_helper %>)</b></p>
           <% end %>
         </div>
@@ -74,7 +74,7 @@
         <% unless user %>
           <p><%=_("We have a large range of offers for support with a SLA. This Service Level Agreement can be very strong and is guaranteed by contract.")%>
             <%=_("Don't hesitate to")%>
-            <%=mail_to(App::TeamEmail, _('contact us.'))%></p><br />
+            <%=mail_to(Setting.email_contact, _('contact us.'))%></p><br />
           <% end %>
       </div>
 

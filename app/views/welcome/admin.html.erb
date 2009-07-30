@@ -55,7 +55,8 @@
    <div class="show">
     <h3><%= _('Administration')%></h3>
     <% links = [
-        link_to( _('Clear cache'), clear_cache_welcome_path) ] %>
+        link_to( _('Settings'), settings_path),
+		link_to( _('Clear cache'), clear_cache_welcome_path) ] %>
     <%= show_list(links) %>
    </div>
    <% end %>

@@ -2,15 +2,14 @@ Bonjour,<br />
 
 <% if @user.recipient? %>
   <p>
-&nbsp;&nbsp;Vous recevez ce courriel car vous avez été identifié(e) en tant que bénéficiaire du marché passé entre <%= App::CompanyName %> et <%= @user.client.name %>.
+&nbsp;&nbsp;Vous recevez ce courriel car vous avez été identifié(e) en tant que bénéficiaire du marché passé entre <%= Setting.company_name %> et <%= @user.client.name %>.
   </p>
   <%= render :partial => 'user_access' %>
 <% else %>
   <p>
-&nbsp;&nbsp;Vous recevez ce courriel car vous avez désormais accès à notre outil de travail en ligne développé pour vous par <%= App::CompanyName %>.<br /><br />
+&nbsp;&nbsp;Vous recevez ce courriel car vous avez désormais accès à notre outil de travail en ligne développé pour vous par <%= Setting.company_name %>.<br /><br />
    <%#On doit faire ça car la méthode link_to ne semble pas fonctionner %>
-   <% url = "http://www.08000linux.com/" %>
-   Vous pouvez accéder au portail <%= "<a href=\"#{url}\">www.08000linux.com</a>" %>.
+   Vous pouvez accéder au portail de <%= %Q[<a href="http://#{Setting.service_site}"]%>><%= Setting.service_name %></a>.
   </p>
 <% end %>
 <p>
@@ -21,4 +20,4 @@ Bonjour,<br />
    </ul>
 </p>
 &nbsp;&nbsp;Pensez à personnaliser votre mot de passe dès votre première connexion.<br />
-<%= render :partial => 'end_mail'%>
+<%= render(:partial => 'end_mail')%>

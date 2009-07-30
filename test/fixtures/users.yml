@@ -1,5 +1,5 @@
---- 
-user_customer: 
+---
+user_customer:
   name: Customer
   informations: ""
   title: the royal
@@ -11,9 +11,9 @@ user_customer:
   password: c921769f9e42e4876d204fcd51ba16124fb8477f
   login: customer
   client_id: 2
-  picture_id: 
-  email: <%= App::MaintenerEmail %>
-user_viewer: 
+  picture_id:
+  email: <%= Setting.email_mainteners %>
+user_viewer:
   name: Viewer
   informations: ""
   title: the powerless
@@ -25,9 +25,9 @@ user_viewer:
   restricted: true
   password: 8b34fc039696a3815940c5672ba2efaa76ab51ac
   login: viewer
-  picture_id: 
-  email: <%= App::MaintenerEmail %>
-user_admin: 
+  picture_id:
+  email: <%= Setting.email_mainteners %>
+user_admin:
   name: Admin
   informations: ""
   title: "\xC3\xB4 r\xC3\xA9v\xC3\xA9r\xC3\xA9"
@@ -38,10 +38,10 @@ user_admin:
   restricted: false
   password: 47261c32a405a38d54806e4db0e64d1ca9862598
   login: admin
-  picture_id: 
-  email: <%= App::MaintenerEmail %>
+  picture_id:
+  email: <%= Setting.email_mainteners %>
   team_id: 2
-user_manager: 
+user_manager:
   name: Manager
   informations: ""
   title: the lovely
@@ -52,10 +52,10 @@ user_manager:
   restricted: true
   password: 9d49c7773645ac6b2e7af68872074517e66c0e47
   login: manager
-  picture_id: 
-  email: <%= App::MaintenerEmail %>
+  picture_id:
+  email: <%= Setting.email_mainteners %>
   team_id: 1
-user_expert: 
+user_expert:
   name: Expert
   informations: ""
   title: the handy
@@ -66,6 +66,6 @@ user_expert:
   restricted: true
   password: d81674f38d5627bb3580afe45ee79cffafe0b539
   login: expert
-  picture_id: 
-  email: <%= App::MaintenerEmail %>
+  picture_id:
+  email: <%= Setting.email_mainteners %>
   team_id: 2

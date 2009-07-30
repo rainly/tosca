@@ -39,9 +39,8 @@ class Notifier < ActionMailer::Base
 
   # Notifie un état d'erreur
   def error_message(exception, trace, session, params, env)
-    @recipients = App::DeveloppersEmail
-    @cc = App::MaintenerEmail
-    @from = App::FromEmail
+    @recipients = Setting.email_administrators
+    @from = Setting.email_administrators
     @content_type = HTML_CONTENT
     @subject = "Time to fix this one : #{env['REQUEST_URI']}"
     user = "Nobody"
@@ -62,8 +61,8 @@ class Notifier < ActionMailer::Base
   # with its password
   def user_signup(user)
     recipients  user.email
-    from        App::FromEmail
-    reply_to    App::NoReplyEmail
+    from        Setting.email_administrators
+    reply_to    Setting.email_noreply
     subject     "Accès au Support Logiciel Libre"
 
     html_and_text_body(:user => user)
@@ -88,13 +87,13 @@ class Notifier < ActionMailer::Base
   def welcome_idea(text, to, from)
     case to
       when :team
-        recipients App::TeamEmail
+        recipients Setting.email_contact
       when :tosca
-        recipients App::DeveloppersEmail
+        recipients Setting.email_administrators
       else
-        recipients App::MaintenerEmail
+        recipients Setting.email_mainteners
     end
-    from        App::FromEmail
+    from        Setting.email_administrators
     reply_to    _compute_reply_to(from)
     subject     "[Suggestion] => #{to}"
 
@@ -106,7 +105,7 @@ class Notifier < ActionMailer::Base
   end
 
   def reporting_digest(user, data, mode, now)
-    from        App::FromEmail
+    from        Setting.email_administrators
     reply_to    _compute_reply_to(user)
     recipients  user.email
 
@@ -130,7 +129,7 @@ class Notifier < ActionMailer::Base
 
   def new_user_ldap(user)
     recipients  User.admins.collect(&:email_name).join(', ')
-    from        App::FromEmail
+    from        Setting.email_administrators
     reply_to    _compute_reply_to(user)
     subject     "Nouvel utilisateur provenant du LDAP"
 
@@ -206,7 +205,7 @@ class Notifier < ActionMailer::Base
   def _common_issue_headers(issue, comment, user)
     recipients  issue.compute_recipients(comment.private)
     cc          issue.compute_copy(comment.private)
-    from        App::FromEmail
+    from        Setting.email_administrators
     reply_to    _compute_reply_to(user)
     subject     "[#{issue.id}] #{issue.resume}"
     headers     _headers_mail_issue(issue, comment)
@@ -228,7 +227,7 @@ class Notifier < ActionMailer::Base
   def _compute_reply_to(user)
     email = (user ? user.email : nil)
     if email.nil? or email.blank?
-      App::NoReplyEmail
+      Setting.email_noreply
     else
       email
     end
@@ -267,10 +266,10 @@ class Notifier < ActionMailer::Base
   def email_not_exist(to)
     logger.info("E-mail #{to} does not exists in database")
 
-    from       App::FromEmail
+    from       Setting.email_administrators
     recipients to
-    bcc        App::TeamEmail
-    subject    "#{App::InternetAddress} : " << _("Possible error in your e-mail")
+    bcc        Setting.email_mainteners
+    subject    "#{Setting.service_name} : " << _("Possible error in your e-mail")
 
     html_and_text_body
   end
@@ -279,10 +278,10 @@ class Notifier < ActionMailer::Base
   def email_not_good(to)
     logger.info("Bad e-mail from #{to}")
 
-    from       App::FromEmail
+    from       Setting.email_administrators
     recipients to
-    bcc        App::TeamEmail
-    subject    "#{App::InternetAddress} : " << _("Possible error in your e-mail")
+    bcc        Setting.email_mainteners
+    subject    "#{Setting.service_name} : " << _("Possible error in your e-mail")
 
     html_and_text_body
   end
@@ -292,10 +291,10 @@ class Notifier < ActionMailer::Base
   def email_no_rights_contract(to)
     logger.info("Bad e-mail from #{to}")
 
-    from       App::FromEmail
+    from       Setting.email_administrators
     recipients to
-    bcc        App::TeamEmail
-    subject    "#{App::InternetAddress} : " << _("Possible error in your e-mail")
+    bcc        Setting.email_mainteners
+    subject    "#{Setting.service_name} : " << _("Possible error in your e-mail")
 
     html_and_text_body
   end
@@ -327,7 +326,7 @@ class Notifier < ActionMailer::Base
   # Used for outgoing mails, in order to get a Tree of messages
   # in mail software
   def message_id(id)
-    "<#{id}@#{Tosca::App::Name}.#{App::InternetAddress}>"
+    "<#{id}@#{Tosca::App::Name}.#{Setting.service_site}>"
   end
 
   #Extracts the issue number from a header
@@ -336,7 +335,7 @@ class Notifier < ActionMailer::Base
     string.strip!
     string.gsub!(/[<\>]/, '')
     result = nil
-    result = string[/^\d+/] if string =~ /^\d+_\d+@#{Tosca::App::Name}.#{App::InternetAddress}$/
+    result = string[/^\d+/] if string =~ /^\d+_\d+@#{Tosca::App::Name}.#{Setting.service_site}$/
     return result
   end
 

@@ -1,0 +1,47 @@
+# DO NOT MODIFY THIS FILE !!!
+# Settings can be defined through the application in Admin -> Settings
+
+email_server:
+  default: mail.linagora.com
+email_port:
+  default: 25
+email_domain:
+  default: par.lng
+email_charset:
+  default: UTF-8
+email_administrators:
+  default: mloiseleur@linagora.com
+email_mainteners:
+  default: mloiseleur@linagora.com
+email_contact:
+  default: mloiseleur@linagora.com
+email_noreply:
+  default: noreply@tosca-project.net
+
+# TODO : make settings available in plugin system, with UI
+jabber_account:
+  default: tosca@tosca-project.net
+jabber_password:
+  default: tosca
+
+service_name:
+  default: Client
+service_site:
+  default: www.tosca-project.net
+service_phone:
+  default: 08000 LINUX (08000 54689)
+company_name:
+  default: Linagora
+company_site:
+  default: www.linagora.com
+
+files_path:
+  default : files/
+help_new_issue:
+  default: "http://redmine.tosca-project.net/wiki/tosca/NewIssue"
+help_life_cycle:
+  default: "http://redmine.tosca-project.net/wiki/tosca/LifeCycle"
+help_status:
+  default: "http://redmine.tosca-project.net/wiki/tosca/IssueStatus"
+help_severity:
+  default: "http://redmine.tosca-project.net/wiki/tosca/IssueSeverity"
