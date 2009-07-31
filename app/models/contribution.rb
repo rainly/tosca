@@ -79,7 +79,6 @@ class Contribution < ActiveRecord::Base
 
   # délai (en secondes) entre la déclaration et l'acceptation
   # delai_to_s (texte)
-  # en jours : sec2day(delai)
   def delay
     if closed_on? and contributed_on?
       (closed_on - contributed_on)

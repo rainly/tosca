@@ -65,14 +65,6 @@ class ClientTest < ActiveSupport::TestCase
     assert !Client.find_select.empty?
   end
 
-  def test_support_distribution
-    Client.all.each { |c|
-      res = c.support_distribution
-      assert !res.nil?
-      assert(res == true || res == false)
-    }
-  end
-
   def test_recipient_ids
     Client.all.each { |c| check_ids c.recipient_ids, User }
   end
@@ -95,10 +87,6 @@ class ClientTest < ActiveSupport::TestCase
 
   def test_issuetypes
     Client.all.each{|c| c.issuetypes.each{|i| assert_instance_of(Issuetype, i)}}
-  end
-
-  def test_severities
-    Client.all.each{|c| c.severities.each{|i| assert_instance_of(Severity, i)}}
   end
 
   def test_inactive

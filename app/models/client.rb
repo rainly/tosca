@@ -64,20 +64,6 @@ class Client < ActiveRecord::Base
     end
   end
 
-  # TODO : it's slow & ugly
-  # returns true if we have a contract to support an entire distribution
-  # for this client, false otherwise.
-  def support_distribution
-    result = false
-    self.contracts.each do |c|
-      if c.rule.max == -1
-        result = true
-        break
-      end
-    end
-    result
-  end
-
   def recipient_ids
     @recipient_ids ||= self.recipients.all(:select => 'id').collect(&:id)
   end
@@ -118,12 +104,6 @@ class Client < ActiveRecord::Base
     Issuetype.all(:select => "DISTINCT issuetypes.*",
                   :conditions => conditions,
                   :joins => joins)
-  end
-
-  # TODO : it could & should be dynamic. Is there really a sense to severity
-  # for an evolution issue ?
-  def severities
-    Severity.all
   end
 
   # pretty urls for client

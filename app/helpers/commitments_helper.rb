@@ -26,8 +26,6 @@ module CommitmentsHelper
   # They MUST have been sort by the Commitment::ORDER options.
   # Call it like this :
   #   show_form_commitments(@contract.commitments, @commitments)
-  # TODO : habiller et mettre des bordures pour que ca se distingue du reste
-  #  cf /contracts/new pour le voir
   # TODO : a partial should be better
   def show_form_commitments(object_commitment, commitments)
     out = '<table class="full">'
