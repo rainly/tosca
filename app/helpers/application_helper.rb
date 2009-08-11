@@ -192,7 +192,7 @@ module ApplicationHelper
   def show_warn
     @@warn ||= %Q{<div id="information_error" class="information error">
        <div class="close_information">#{delete_button('information_error')}</div>}
-    @@warn.dup << "<h2>#{_('An error has occured')}</h2>" <<
+    @@warn.dup << content_tag(:h2, _('An error has occured')) <<
       "<ul><li>#{flash[:warn]}</li></ul></div>"
   end
 
