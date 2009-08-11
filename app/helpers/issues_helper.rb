@@ -170,7 +170,7 @@ module IssuesHelper
   def help_on_status
     @@help_on_status ||= %Q{<a href="#{Setting.help_status}"} <<
        ' target="_blank" class="aligned_picture" style="vertical-align: top;">' <<
-      image_tag("icons/question_mark.gif") <<
+      image_tag('icons/question_mark.gif') <<
     '</a>'
   end
 

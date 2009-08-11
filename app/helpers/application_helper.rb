@@ -156,46 +156,6 @@ module ApplicationHelper
     result << '</table>'
   end
 
-  # show_total(elements.size, ar, options)
-  # Valid options
-  # :total => false (affiche la taille des éléments et pas un ActiveRecord.count)
-  def show_total(size, ar, options = {})
-    if options[:total] == false
-      result = "<p><b>#{size}</b> "
-    else
-      result = "<p><b>#{ar.count}</b> "
-    end
-    result << (size==1? ar.table_name.singularize : ar.table_name.pluralize)
-    result << '</p>'
-  end
-
-
-  ### TIME ######################################################################
-
-  #Prints the number of days or "None"
-  def display_days(time)
-    return time unless time.is_a? Numeric
-    case time
-    when -1 then _('None')
-    when 1 then _('1 workday')
-    when 0..1 then time.to_s + _(' workday')
-    else time.to_s + _(' workdays')
-    end
-  end
-
-  def display_seconds(time)
-    return time #unless temps.is_a? Numeric
-  end
-
-  # conversion seconds in days
-  def sec2day(seconds)
-    ((seconds.abs)/(60*60*24)).round
-  end
-
-  # conversion seconds in minutes
-  def sec2min(seconds)
-    ((seconds.abs)/60).round
-  end
 
 
   ### MENU #####################################################################
@@ -216,58 +176,6 @@ module ApplicationHelper
     out << '</form>' if options[:form]
   end
 
-  # Build a menu from a hash of 2 arrays : titles and links
-  # TODO : move js to public/js folder
-  # Need common.css #menu part and following js :
-  # Call it like :
-  # <% menu = {} %>
-  #   <% menu[:titles], menu[:links] = [], [] %>
-  #   <% menu[:titles] << 'Un groupe de lien' %>
-  #   <% menu[:links] << [ link_to('Par ici'), link_to('Par là') ] %>
-  # <%= build_menu(menu) %>
-  def build_menu(menu)
-    return unless menu[:titles].is_a? Array
-    return unless menu[:titles].size == menu[:links].size
-    prefix = 'smenu'
-    out = ''
-    out << "<script type=\"text/javascript\"><!--
-    window.onload=montre;
-    function montre(id) {
-      var d = document.getElementById(id);
-      for (var i = 0; i<=10; i++) {
-        if (document.getElementById('smenu'+i)) {
-            document.getElementById('smenu'+i).style.display='none';
-        }
-      }
-      if (d) {d.style.display='block';}
-    }
-    //--></script>"
-    out << '<div id="menu" onmouseout="javascript:montre(\'\');">'
-    menu[:titles].each_index {|i|
-      id = prefix + i.to_s
-      out << "<div class=\"liste_menu\" onmouseover=\"javascript:montre('#{id}');\">"
-      out << show_menu_list(id, menu[:links][i], menu[:titles][i])
-      out << '</div>'
-    }
-    out << '</div>'
-  end
-
-  # Display an menu item : a title + a link list
-  # Called from build_menu
-  def show_menu_list(id, elements, titre)
-    elements.compact!
-    size = elements.size
-    return '' unless titre.is_a? String
-    result = ''
-    result << "<div class=\"liste_title\">#{titre.humanize}</div>"
-    return result unless size > 0 #and options[:sublink]
-    result << "  <div class=\"liste_items\" id=\"#{id}\" >"
-    result << '    <ul>'
-    elements.each { |e| result << "<li>#{e}</li>" }
-    result << '    </ul>'
-    result << '  </div>'
-  end
-
 
   ### INFORMATIONS #########################################################
 
@@ -276,16 +184,16 @@ module ApplicationHelper
        <div class="close_information">#{delete_button('information_notice')}</div>
        <script type="text/javascript">
           setTimeout(function() { new Effect.Fade("information_notice",{duration:1});
-                                }, 3000);
+                                }, 4000);
        </script>}
-    @@notice.dup << "<p>" << flash[:notice] << "</p></div>"
+    @@notice.dup << "<p>#{flash[:notice]}</p></div>"
   end
 
   def show_warn
     @@warn ||= %Q{<div id="information_error" class="information error">
        <div class="close_information">#{delete_button('information_error')}</div>}
-    @@warn.dup << "<h2>" + _('An error has occured') + "</h2>
-       <ul><li>" << flash[:warn] << "</li></ul></div>"
+    @@warn.dup << "<h2>#{_('An error has occured')}</h2>" <<
+      "<ul><li>#{flash[:warn]}</li></ul></div>"
   end
 
 end

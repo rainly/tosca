@@ -19,7 +19,7 @@ fr:
   
   time:
     formats:
-      default: "%d %B %Y %H:%M"
+      default: "%d/%m/%Y %H:%M"
       time: "%H:%M"
       short: "%d %b %H:%M"
       long: "%A %d %B %Y %H:%M:%S %Z"
@@ -30,7 +30,7 @@ fr:
 
   datetime:
     distance_in_words:
-      half_a_minute: "une demi-minute"
+      half_a_minute: "30 secondes"
       less_than_x_seconds:
         zero:  "moins d'une seconde"
         one:   "moins de 1 seconde"
@@ -84,7 +84,18 @@ fr:
     human:
       format:
         precision: 2
-      storage_units: [ Octet, ko, Mo, Go, To ]
+      storage_units:
+        # Storage units output formatting.
+        # %u is the storage unit, %n is the number (default: 2 MB)
+        format: "%n %u"
+        units:
+          byte:
+            one:   "Octet"
+            other: "Octets"
+          kb: "Ko"
+          mb: "Mo"
+          gb: "Go"
+          tb: "To"
   
   support:
     array:
@@ -107,8 +118,8 @@ fr:
         invalid: "n'est pas valide"
         confirmation: "ne concorde pas avec la confirmation"
         accepted: "doit être accepté(e)"
-        empty: "doit être rempli(e)"
-        blank: "doit être rempli(e)"
+        empty: "doit être renseigné(e)"
+        blank: "doit être renseigné(e)"
         too_long: "est trop long (pas plus de {{count}} caractères)"
         too_short: "est trop court (au moins {{count}} caractères)"
         wrong_length: "ne fait pas la bonne longueur (doit comporter {{count}} caractères)"
@@ -121,3 +132,7 @@ fr:
         less_than_or_equal_to: "doit être inférieur ou égal à {{count}}"
         odd: "doit être impair"
         even: "doit être pair"
+        greater_than_start_date: "doit être postérieure à la date de début"
+        not_same_project: "n'appartient pas au même projet"
+        circular_dependency: "Cette relation créerait une dépendance circulaire"
+

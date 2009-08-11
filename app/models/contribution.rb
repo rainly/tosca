@@ -58,7 +58,7 @@ class Contribution < ActiveRecord::Base
   end
 
   def to_param
-    "#{id}-#{name.gsub(/[^a-z1-9]+/i, '-')}"
+    "#{id}-#{name.asciify}"
   end
 
   # date de reversement formattée
@@ -79,7 +79,6 @@ class Contribution < ActiveRecord::Base
 
   # délai (en secondes) entre la déclaration et l'acceptation
   # delai_to_s (texte)
-  # en jours : sec2day(delai)
   def delay
     if closed_on? and contributed_on?
       (closed_on - contributed_on)

@@ -18,10 +18,14 @@ module FileColumn # :nodoc:
   end
 
   def self.init_options(defaults, model, attr)
-    if Setting.files_path[0] == ?/
-      defaults[:root_path] = Setting.files_path
+    if Setting.table_exists? # Allows to create database
+      if Setting.files_path[0] == ?/
+        defaults[:root_path] = Setting.files_path
+      else
+        defaults[:root_path] = File.join(RAILS_ROOT, Setting.files_path)
+      end
     else
-      defaults[:root_path] = File.join(RAILS_ROOT, Setting.files_path)
+      defaults[:root_path] = File.join(RAILS_ROOT, "files")
     end
     options = defaults.dup
     options[:store_dir] ||= File.join(options[:root_path], model, attr)
