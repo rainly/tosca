@@ -79,7 +79,7 @@ class NotifierTest < ActiveSupport::TestCase
       Issue.find(0)
     rescue Exception => exception
       Notifier::deliver_error_message(exception, exception.backtrace,
-                                      :user => User.first, {}, {})
+                                      {:user => User.first}, {}, {})
     end
   end
 
