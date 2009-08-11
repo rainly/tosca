@@ -34,19 +34,21 @@ if defined? Mongrel::DirHandler
   end
 end
 
-=begin
-class Module
-  def include_all_modules_from(parent_module)
-    parent_module.constants.each do |const|
-      mod = parent_module.const_get(const)
-      if mod.class == Module && !defined? mod
-        send(:include, mod)
-        include_all_modules_from(mod)
-      end
+
+# Workaround for mongrel with Rails >= 2.3.x
+# see https://rails.lighthouseapp.com/projects/8994/tickets/2319
+module ActionController
+  class AbstractRequest < ActionController::Request
+    def self.relative_url_root=(path)
+      ActionController::Base.relative_url_root=(path)
+    end
+    def self.relative_url_root
+      ActionController::Base.relative_url_root
     end
   end
 end
-=end
+
+
 
 # TODO : find a lib or a way to compute holidays
 # of other countries. It's only France, for now.
@@ -230,42 +232,6 @@ class Time
 
 end
 
-#############################################
-# Needed for Debian                         #
-# We had to override this in order to fix   #
-# an issue when gettext_localize call this  #
-# interface                                 #
-#############################################
-=begin
-class CGI
-  module QueryExtension
-    # Get the value for the parameter with a given key.
-    #
-    # If the parameter has multiple values, only the first will be
-    # retrieved; use #params() to get the array of values.
-    def [](key)
-      params = @params[key]
-      return '' unless params
-      value = params[0]
-      if @multipart
-        if value
-          return value
-        elsif defined? StringIO
-          StringIO.new("")
-        else
-          Tempfile.new("CGI")
-        end
-      else
-        str = if value then value.dup else "" end
-        str.extend(Value)
-        str.set_params(params)
-        str
-      end
-    end
-  end
-end
-=end
-
 class ActionController::Caching::Sweeper
   # Helper, in order to expire fragments, see ActiveRecord#fragments()
   # for more info
@@ -273,24 +239,6 @@ class ActionController::Caching::Sweeper
     fragments.each { |f| expire_fragment f }
   end
 end
-
-#To not have an error if routes = nil
-=begin
-module ActionController
-  class Base
-    def url_for(options = nil) #:doc:
-      case options || options={}
-        when String
-          options
-        when Hash
-          @url.rewrite(rewrite_options(options))
-        else
-          polymorphic_url(options)
-      end
-    end
-  end
-end
-=end
 
 module ActionView
   class Base
