@@ -113,9 +113,8 @@
 <% cache("layout/#{role_id}/footer") do %>
       <!-- begin: #footer -->
       <div id="footer">
-        <%= public_link_to(Setting.service_name, "http://#{Setting.service_site}") %>&nbsp;
-        <%= public_link_to(image_ruby, 'http://rubyonrails.org/') %>&nbsp;
         <%= public_link_to(Setting.company_name, "http://#{Setting.company_site}") %>
+        <%= public_link_to(image_ruby, 'http://rubyonrails.org/') %>&nbsp;
       </div>
     </div>
 
