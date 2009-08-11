@@ -144,7 +144,7 @@ Mime::Type.register "application/vnd.oasis.opendocument.spreadsheet", :ods
 srand
 
 # Boot Check
-path = File.join RAILS_ROOT, "po", "fr", "LC_MESSAGES", "tosca.mo"
+path = File.join %W(#{RAILS_ROOT} locale fr LC_MESSAGES tosca.mo)
 unless File.exists? path
   puts "***********************"
   puts "Missing traducted files. I am generating it for you with "
