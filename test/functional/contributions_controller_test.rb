@@ -60,6 +60,12 @@ class ContributionsControllerTest < ActionController::TestCase
     assert_template 'list'
   end
 
+  def test_should_get_rss
+    get :list, :id => 'all', :format => 'atom'
+    assert_response :success
+    assert_not_nil assigns(:contributions)
+  end
+
   def test_should_show_contribution
     get :show, :id => contributions(:contribution_0001).id
     assert_response :success

@@ -158,11 +158,6 @@ class Contract < ActiveRecord::Base
     Subscription.count(:conditions => conditions) >= 1
   end
 
-  #This model is scoped by Contract
-  def self.scoped_contract?
-    true
-  end
-
   private
   # To make sure we have only once an engineer
   before_save do |record|

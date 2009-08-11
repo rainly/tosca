@@ -104,29 +104,6 @@ class Notifier < ActionMailer::Base
     html_and_text_body(options)
   end
 
-  def reporting_digest(user, data, mode, now)
-    from        Setting.email_administrators
-    reply_to    _compute_reply_to(user)
-    recipients  user.email
-
-    case mode.to_sym
-    when :day
-      time = I18n.l now, :format => '%A %d %B %Y'
-      subject _("Daily digest for ") << time
-    when :week
-      time = _ordinalize(now.strftime("%U").to_i) << _(" week of ") << now.year.to_s
-      subject _("Weekly digest for ") << time
-    when :month
-      time = now.strftime("%B of %Y")
-      subject _("Monthly digest for ") << time
-    else
-      time = now.year.to_s
-      subject _("Yearly digest for ") << time
-    end
-
-    html_and_text_body({ :result => data.other, :important => data.important, :time => time })
-  end
-
   def new_user_ldap(user)
     recipients  User.admins.collect(&:email_name).join(', ')
     from        Setting.email_administrators

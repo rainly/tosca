@@ -16,12 +16,19 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-require File.dirname(__FILE__) + '/../test_helper'
+require 'test_helper'
 
-class SeverityTest < ActiveSupport::TestCase
-  fixtures :severities
+class SettingTest < ActiveSupport::TestCase
 
   def test_to_strings
-    check_strings Severity, :fake4translation
+    check_strings Setting
+  end
+
+  def test_cache
+    Setting.check_cache
+  end
+
+  def test_setting
+    Setting[:company_name] = 'test company'
   end
 end

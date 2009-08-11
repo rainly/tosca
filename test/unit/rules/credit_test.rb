@@ -22,6 +22,23 @@ class Rules::CreditTest < ActiveSupport::TestCase
   fixtures :credits
 
   def test_to_strings
-    check_strings Rules::Credit
+    check_strings Rules::Credit, :short_description
   end
+
+  def test_rule
+    credit = Rules::Credit.first
+    assert credit.elapsed_on_create != 0
+
+    contract = Contract.first
+    assert !credit.elapsed_formatted(1, contract).blank?
+
+    comment = Comment.first
+    comment.elapsed = 4
+    assert credit.compute_between(nil, comment, contract) != 0
+
+    Rules::Credit.all.each do |c|
+      assert !c.complete_description(1, contract).blank?
+    end
+  end
+
 end

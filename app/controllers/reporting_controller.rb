@@ -19,8 +19,6 @@
 class ReportingController < ApplicationController
   helper :issues, :contracts, :dates
 
-  include DigestReporting
-
   # Default colors are distributed by alphabetical order of severity
   # ( blocking, major, minor, none )
   # TODO : implement a better solution, with a hash ?

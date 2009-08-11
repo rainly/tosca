@@ -22,7 +22,7 @@ class IssuetypeTest < ActiveSupport::TestCase
   fixtures :issuetypes
 
   def test_to_strings
-    check_strings Issuetype
+    check_strings Issuetype, :fake4translation
   end
 
 

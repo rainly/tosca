@@ -21,7 +21,7 @@ require File.dirname(__FILE__) + '/../test_helper'
 class StatutTest < ActiveSupport::TestCase
 
   def test_to_strings
-    check_strings Statut
+    check_strings Statut, :fake4translation
   end
 
 end

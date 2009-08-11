@@ -27,7 +27,15 @@ class SoftwareTest < ActiveSupport::TestCase
 
   def test_scope
     Software.set_public_scope
+    assert Software.all(:conditions => {:private => true}).empty?
     Software.remove_scope
+    assert !Software.all(:conditions => {:private => true}).empty?
+
+    assert Release.scope_contract?
+    contract_id = Contract.first(:order => :id).id
+    Release.set_scope([contract_id])
+    Release.all.each{|r| assert r.contract_id === contract_id}
+    Release.remove_scope
   end
 
   def test_arrays
@@ -51,4 +59,17 @@ class SoftwareTest < ActiveSupport::TestCase
     image.id = id
     image.save!
   end
+
+  def test_contracts
+    Software.all.each{|s| s.contracts}
+  end
+
+  def test_release_contracts
+    Software.all.each do |s|
+      Contract.all.each do |c|
+        s.releases_contract(c)
+      end
+    end
+  end
+
 end

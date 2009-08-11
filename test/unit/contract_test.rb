@@ -75,8 +75,10 @@ class ContractTest < ActiveSupport::TestCase
   end
 
   def test_scope
-    Contract.set_scope([Contract.first(:order => :id).id])
-    Contract.all
+    assert Contract.scope_contract?
+    contract_id = Contract.first(:order => :id).id
+    Contract.set_scope([contract_id])
+    Contract.all.each{|c| assert c.id === contract_id}
     Contract.remove_scope
   end
 

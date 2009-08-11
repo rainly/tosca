@@ -19,12 +19,12 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class ArchiveTest < ActiveSupport::TestCase
-  fixtures :attachments, :comments, :clients, :issues, :recipients
 
-#  def test_to_strings
-#    check_strings Attachment
-#  end
-#
+  def test_to_strings
+    check_strings Archive
+  end
+
+
 #  def test_scope
 #    Attachment.set_scope(Client.first(:order => :id).id)
 #    Attachment.all

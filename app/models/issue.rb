@@ -244,31 +244,6 @@ class Issue < ActiveRecord::Base
     @client ||= ( recipient ? recipient.client : nil )
   end
 
-  # Returns the state of an issue at date t
-  # The result is a READ ONLY clone with the 3 indicators
-  #   statut_id, engineer_id & severity_id
-  def state_at(t)
-    return self if t >= self.updated_on
-    return Issue.new if t < self.created_on
-
-    options = {:conditions => ["statut_id IS NOT NULL AND created_on <= ?", t],
-      :order => "created_on DESC" }
-    statut_id = self.comments.first(options).statut_id
-
-    options[:conditions] = [ "severity_id IS NOT NULL AND created_on <= ?", t ]
-    severity_id = self.comments.first(options).severity_id
-
-    options[:conditions] = [ "engineer_id IS NOT NULL AND created_on <= ?", t ]
-    com_engineer = self.comments.first(options)
-    engineer_id = com_engineer ? com_engineer.engineer_id : nil
-
-    result = self.clone
-    result.attributes = { :statut_id => statut_id,
-      :engineer_id => engineer_id, :severity_id => severity_id }
-    result.readonly!
-    result
-  end
-
   # An issue is critical if :
   # - The CNS for the workaround is > 50% and the issue was never workarounded
   # - The CNS for the correction is > 50% and the issue was never corrected
@@ -401,11 +376,6 @@ class Issue < ActiveRecord::Base
     Issue.all(options)
   end
 
-  #This model is scoped by Contract
-  def self.scoped_contract?
-    true
-  end
-
   private
   # TODO : Use memoization as described here, when Tosca is on Rails >= 2.2
   # http://www.railway.at/articles/2008/09/20/a-guide-to-memoization
@@ -444,14 +414,6 @@ class Issue < ActiveRecord::Base
   # This model is scoped by Contract
   def self.scope_contract?
     true
-  end
-
-  def fake4translation
-    # Used for digest report see
-    N_('year')
-    N_('month')
-    N_('week')
-    N_('day')
   end
 
 end

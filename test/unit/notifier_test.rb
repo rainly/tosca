@@ -45,13 +45,23 @@ class NotifierTest < ActiveSupport::TestCase
     assert_equal user.email, response.to[0]
   end
 
-  def test_issue_new_comment
+  def test_issue_new_public_comment
     issue = Issue.first(:order => :id)
     comment = issue.first_comment
     response = Notifier::deliver_issue_new_comment(comment)
     assert_match issue.resume, response.subject
     assert_match html2text(comment.text), response.body
     assert_match issue.submitter.name, response.body
+  end
+
+  def test_issue_new_private_comment
+    issue = Issue.first(:order => :id)
+    comment = issue.first_comment
+    comment.private = true
+    response = Notifier::deliver_issue_new_comment(comment)
+    assert_match issue.resume, response.subject
+    assert_match html2text(comment.text), response.body
+    assert_match issue.first_comment.user.name, response.body
   end
 
   def test_welcome_idea
@@ -62,6 +72,15 @@ class NotifierTest < ActiveSupport::TestCase
       assert_match 'Suggestion', response.subject
       assert_match text, response.body
     }
+  end
+
+  def test_error_message
+    begin
+      Issue.find(0)
+    rescue Exception => exception
+      Notifier::deliver_error_message(exception, exception.backtrace,
+                                      :user => User.first, {}, {})
+    end
   end
 
   private

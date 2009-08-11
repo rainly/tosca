@@ -75,19 +75,6 @@ class Client < ActiveRecord::Base
     User.all(options)
   end
 
-  def softwares
-    return [] if contracts.empty?
-    return contracts.first.softwares if contracts.size == 1
-    # speedier if there is one openbar contract
-    contracts.each { |c| return Software.all if c.rule.max == -1 }
-
-    # default case, when there is an association with releases.
-    conditions = [ 'softwares.id IN (SELECT DISTINCT versions.software_id ' +
-                   ' FROM versions WHERE versions.contract_id IN (?)) ',
-                   contracts_ids ]
-    Software.all(:conditions => conditions, :order => 'softwares.name')
-  end
-
   def contributions
     return [] if self.recipients.empty?
     Contribution.all(:conditions => "contributions.id IN (" +

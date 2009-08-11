@@ -59,7 +59,7 @@ end
 #Found here
 #http://blog.yanime.org/articles/2005/10/10/html2text-function-in-ruby
 def html2text(html)
-  text = html.
+  text = html.to_s.
     gsub(/(&nbsp;)+/im, ' ').squeeze(' ').strip.gsub("\n",'').gsub(/(&lsquo;)+/, "'").
     gsub(/<([^\s]+)[^>]*(src|href)=\s*(.?)([^>\s]*)\3[^>]*>\4<\/\1>/i, '\4')
 

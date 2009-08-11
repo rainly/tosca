@@ -56,7 +56,13 @@ class ClientTest < ActiveSupport::TestCase
   end
 
   def test_scope
-    Client.set_scope([Client.first(:order => :id).id], User.first)
+    assert Client.scope_client?
+    # recipient & expert
+    Client.set_scope([Client.first(:order => :id).id], User.recipients.first)
+    Client.all
+    Client.remove_scope
+
+    Client.set_scope([Client.first(:order => :id).id], User.engineers.first)
     Client.all
     Client.remove_scope
   end
@@ -75,10 +81,6 @@ class ClientTest < ActiveSupport::TestCase
         assert_instance_of(User, e) and assert_nil(e.client_id)
       end
     end
-  end
-
-  def test_softwares
-    Client.all.each{ |c| c.softwares.each { |i| assert_instance_of(Software, i) } }
   end
 
   def test_contributions

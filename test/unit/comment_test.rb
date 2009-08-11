@@ -19,7 +19,7 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class CommentTest < ActiveSupport::TestCase
-  fixtures :comments, :issues, :users
+  include ActionController::TestProcess
 
   def test_to_strings
     check_strings Comment
@@ -30,8 +30,11 @@ class CommentTest < ActiveSupport::TestCase
     c = Comment.first(:order => :id)
     c.state
     c.mail_id
+    c.first_comment?
     # TODO : call it with multiple files
     assert c.add_attachments({})
+    image_file = fixture_file_upload('/files/logo_linagora.gif', 'image/gif')
+    assert c.add_attachments(:attachments => {'0' => {:file => image_file}})
     c.fragments
   end
 
@@ -39,6 +42,16 @@ class CommentTest < ActiveSupport::TestCase
     c = Comment.new(:text => 'this is a comment',
       :issue => Issue.first(:order => :id),
       :user => User.first(:order => :id))
+    assert c.save!
+    # test automatic status & assignment text
+    c = Comment.new(:text => '',
+                    :issue => Issue.first(:order => :id),
+                    :user => User.first(:order => :id),
+                    :engineer => User.engineers.first)
+    assert c.save!
+    # test automatic assignmenttatus text
+    c = Comment.new(:issue => Issue.first(:order => :id),
+                    :user => User.first(:order => :id))
     assert c.save!
     c = Comment.new(:text => 'this is a comment',
       :issue => Issue.first(:order => :id),
@@ -74,4 +87,11 @@ class CommentTest < ActiveSupport::TestCase
     assert issue.subscribed?(user)
   end
 
+  def test_scope
+    private_comment = { :conditions => { :private => true }}
+    assert Comment.first(private_comment)
+    Comment.set_private_scope
+    assert !Comment.first(private_comment)
+    Comment.remove_scope
+  end
 end
