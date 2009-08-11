@@ -28,12 +28,15 @@ require_dependency 'login_system'
 require_dependency 'acl_system'
 require 'overrides'
 
+# needed for updatepo task
+require 'gettext_rails' unless defined?(GetTextRails)
+
 class ApplicationController < ActionController::Base
   # access protected everywhere, See
   # * Wiki for more generic Info,
   # * lib/scope.rb for deep protection
   # * lib/login_system.rb for account protection
-  before_filter :set_gettext_locale, :set_global_shortcuts, :login_required
+  before_filter :set_global_shortcuts, :login_required
 
   # Limited perimeter for specific roles
   around_filter :scope
@@ -49,6 +52,9 @@ class ApplicationController < ActionController::Base
 
   # Standard layout
   layout "standard-layout"
+
+  # l18n
+  init_gettext 'tosca'
 
   # Options for tiny_mce
   # http://wiki.moxiecode.com/index.php/TinyMCE:Configuration
@@ -69,14 +75,6 @@ protected
   def redirect_back
     session[:return_to] ||= request.env['HTTP_REFERER']
     redirect_back_or_default welcome_path
-  end
-
-  def set_gettext_locale
-    # TODO: see if it can be moved to config/initializers/*
-    I18n.load_path += Dir[ File.join(RAILS_ROOT, 'lib', 'locale', '*.{rb,yml}') ]
-    FastGettext.text_domain = 'tosca'
-    FastGettext.available_locales = ['en','fr'] #all you want to allow
-    super
   end
 
   # global variables (not pretty, but this one is really useful)

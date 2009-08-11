@@ -34,6 +34,7 @@ if defined? Mongrel::DirHandler
   end
 end
 
+=begin
 class Module
   def include_all_modules_from(parent_module)
     parent_module.constants.each do |const|
@@ -45,7 +46,7 @@ class Module
     end
   end
 end
-
+=end
 
 # TODO : find a lib or a way to compute holidays
 # of other countries. It's only France, for now.
@@ -103,7 +104,8 @@ class Date
 end
 
 class Time
-  include FastGettext::Translation if defined?(FastGettext)
+  include GetText
+  bindtextdomain('tosca')
   ##
   # Compute the difference between <tt>start_date</tt> and
   # <tt>end_date</tt> during Working Days, as define in Date::working?
@@ -234,6 +236,7 @@ end
 # an issue when gettext_localize call this  #
 # interface                                 #
 #############################################
+=begin
 class CGI
   module QueryExtension
     # Get the value for the parameter with a given key.
@@ -261,7 +264,7 @@ class CGI
     end
   end
 end
-
+=end
 
 class ActionController::Caching::Sweeper
   # Helper, in order to expire fragments, see ActiveRecord#fragments()
@@ -272,6 +275,7 @@ class ActionController::Caching::Sweeper
 end
 
 #To not have an error if routes = nil
+=begin
 module ActionController
   class Base
     def url_for(options = nil) #:doc:
@@ -286,7 +290,7 @@ module ActionController
     end
   end
 end
-
+=end
 
 module ActionView
   class Base
@@ -407,6 +411,11 @@ module ActiveRecord
       self.scoped_methods.pop
     end
 
+    # Override coz of a strange refresh bug after a comment on Rails 2.3.3
+    def self.scoped_methods
+      Thread.current[:"#{self}_scoped_methods"] ||= (self.default_scoping || []).dup
+    end
+
     # By convention, all tosca records have or implements a 'name' method,
     # used mainly for displaying and selecting them. It's also their default
     # to_s implementation, even if it's free to specialize it when needed.
@@ -485,65 +494,6 @@ module ActiveRecord
     end
   end
 end
-
-
-# This one fix a bug encountered with cache + mongrel + prefix.
-# Url was badly rewritten
-# deactivated for rails 2.2.2
-# TODO : see if it's needed or if it can go out
-=begin
-module ActionView
-  module Helpers
-    module AssetTagHelper
-      public
-      def stylesheet_link_tag(*sources)
-        options = sources.extract_options!.stringify_keys
-        cache   = options.delete("cache")
-
-        if ActionController::Base.perform_caching && cache
-          joined_stylesheet_name = (cache == true ? "all" : cache) + ".css"
-          joined_stylesheet_path = File.join(STYLESHEETS_DIR, joined_stylesheet_name)
-
-          write_asset_file_contents(joined_stylesheet_path, compute_relative_stylesheet_paths(sources))
-          stylesheet_tag(joined_stylesheet_name, options)
-        else
-          expand_stylesheet_sources(sources).collect { |source| stylesheet_tag(source, options) }.join("\n")
-        end
-      end
-
-      def javascript_include_tag(*sources)
-        options = sources.extract_options!.stringify_keys
-        cache   = options.delete("cache")
-
-        if ActionController::Base.perform_caching && cache
-          joined_javascript_name = (cache == true ? "all" : cache) + ".js"
-          joined_javascript_path = File.join(JAVASCRIPTS_DIR, joined_javascript_name)
-
-          write_asset_file_contents(joined_javascript_path, compute_relative_javascript_paths(sources))
-          javascript_src_tag(joined_javascript_name, options)
-        else
-          expand_javascript_sources(sources).collect { |source| javascript_src_tag(source, options) }.join("\n")
-        end
-      end
-
-      private
-      def compute_relative_path(source, dir, ext = nil)
-        source += ".#{ext}" if File.extname(source).blank? && ext
-        # TODO : remove the '/' if possible
-        "#{dir}/#{source}"
-      end
-
-      def compute_relative_javascript_paths(sources)
-        expand_javascript_sources(sources).collect { |source| compute_relative_path(source, 'javascripts', 'js') }
-      end
-
-      def compute_relative_stylesheet_paths(sources)
-        expand_stylesheet_sources(sources).collect { |source| compute_relative_path(source, 'stylesheets', 'css') }
-      end
-    end
-  end
-end
-=end
 
 
 #To have homemade message-id in mails

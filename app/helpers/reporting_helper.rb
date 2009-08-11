@@ -73,7 +73,6 @@ module ReportingHelper
   # permet de comparer deux graphiques :
   # - l'un concernant la periode considérée (à gauche)
   # - l'autre concernant la totalité depuis le début du contract
-  # TODO : style : center report_item tr td
   def report_distribution(name, options= {})
     options[:distribution] = true
     if options.has_key? :separated
@@ -263,7 +262,6 @@ module ReportingHelper
     end
   end
 
-  # TODO : find 3 images. Maybe include this helper in static image  ??
   def progress_image( status, percent )
     return image_sla_exceeded if percent > 1.0
     return image_sla_ok if status
@@ -300,26 +298,6 @@ module ReportingHelper
     elapsed = Elapsed.relative2absolute(elapsed, interval)
     return _('Exceedance') if @recipient && elapsed > total
     result += " / #{Time.in_words(total)}"
-  end
-
-  #display a select box with all clients.
-  #number_items defines the number of visible items in the drop-down list
-
-  # TODO : We need to put the find in the controller
-  #        and to rewrite this ugly method and put it into forms_helper
-  # call it like this :
-  # <%= box_clients(9) %> will show a multi-selection box
-  #                       with 9 selectable items
-  def box_clients(number_items)
-    elements = Client.all(:select => 'id,name', :order => 'name')
-    items='<option value=\'all\' selected=\'selected\'>»</option>'
-
-    elements.each do |elt|
-      items << '<option value=\'' << elt.id.to_s << '\'>'
-      items << elt.name
-      items << '</option>'
-    end
-    return '<select id=\'clients\' multiple=\'multiple\' name=\'clients[]\' size="' << number_items.to_s << '">' <<  items << '</select>'
   end
 
   # Display nicely the issues for the weekly report. See

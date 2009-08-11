@@ -1,7 +1,4 @@
-<%# TODO use instance_variable_defined? when debian will have a better %>
-<%# version of ruby ... :/ %>
-
-<% if defined?(@comment) %>
+<% if instance_variable_defined?(:@comment) %>
   <% @comment.attachments.each do |attachment| %>
     <% if !attachment.file.blank? %>
       <a href="<%=url_for_file_column(attachment, :file, :only_path => false)%>">Télécharger la pièce jointe</a>.<br />

@@ -70,11 +70,11 @@ module LinksHelper
     filename = filepath[/[._ \-a-zA-Z0-9]*$/]
     unless filepath.blank? or not File.exist?(filepath)
       mime_type = record.file_mime_type
-      #To be XHTML compliant
-      relative_path = "#{method}_" <<
-        record.send("#{method}_relative_path").tr!("/", "_")
       #Image
       if mime_type =~ /^image\//
+        #To be XHTML compliant
+        relative_path = "#{method}_" <<
+          record.send("#{method}_relative_path").tr!("/", "_")
         redbox_div(relative_path,
                    image_tag(url_for_image_column(record, method, :fit_size)),
                      :background_close => true)
