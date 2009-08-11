@@ -43,7 +43,7 @@ class WelcomeController < ApplicationController
   def theme
     case request.method
     when :get
-      render(:nothing => true) unless request.xhr?
+      return render(:nothing => true) unless request.xhr?
       render :layout => false
     when :post
       theme = params[:theme]
