@@ -26,6 +26,7 @@ class Rules::ComponentTest < ActiveSupport::TestCase
   end
 
   def test_complete_description
+    contract = Contract.first
     Rules::Component.all.each do |c|
       assert !c.complete_description(1234, contract).blank?
     end

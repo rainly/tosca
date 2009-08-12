@@ -26,7 +26,7 @@ class ElapsedTest < ActiveSupport::TestCase
 
   def test_elapsed_life_cycle
     Issue.find(12).elapsed.destroy
-    e = Elapsed.new(Issue.first)
+    e = Elapsed.new(Issue.find(12))
 
     comment = Comment.first(:conditions => {:statut_id => 2})
     comment.elapsed = 1
@@ -44,8 +44,6 @@ class ElapsedTest < ActiveSupport::TestCase
     e.add comment
     assert( e.correction != 0 )
     assert( e.correction_progress(8/24.0) != 0 )
-
-
   end
 
 end

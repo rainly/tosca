@@ -57,9 +57,9 @@ class SoftwaresControllerTest < ActionController::TestCase
     assert_template 'show'
 
     logout
-    assert_raise(ActiveRecord::RecordNotFound) {
-      get :show, :id => 4
-    }
+    get :show, :id => 4
+    assert_response :redirect
+    assert_redirected_to '/welcome'
   end
 
   def test_create

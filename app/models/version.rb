@@ -25,17 +25,21 @@ class Version < ActiveRecord::Base
   has_and_belongs_to_many :contracts, :uniq => true
 
   validates_presence_of :software
-  
+
   before_validation do |record|
     result = false
     result = true if record.generic? #We may not have a version name if generic
     result = true if record.read_attribute(:name) and not record.read_attribute(:name).empty?
     result
   end
-  
+
   #reset name
   after_save do |record|
     @name = nil if @name
+  end
+
+  def scope_contract?
+    true
   end
 
   def self.set_scope(contract_ids)
@@ -60,7 +64,7 @@ class Version < ActiveRecord::Base
     return @name if @name
     @name = read_attribute(:name)
     if self.generic?
-      #We do this to have version like "*" without a real version 
+      #We do this to have version like "*" without a real version
       @name = "#{@name}." if @name and not @name.empty?
       @name = "#{@name}*"
     end

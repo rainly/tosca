@@ -265,8 +265,6 @@ class Issue < ActiveRecord::Base
     # clean previous existing elapsed
     Elapsed.destroy_all(['elapseds.issue_id = ?', self.id])
 
-    # do not update timestamp for a reset
-    self.class.record_timestamps = false
     rule = self.contract.rule
     self.elapsed = Elapsed.new(self)
     options = { :conditions => 'comments.statut_id IS NOT NULL',
@@ -284,8 +282,6 @@ class Issue < ActiveRecord::Base
       previous = step
     end
     self.save!
-    # restore timestamp updater
-    self.class.record_timestamps = true
   end
 
   # TODO : add a commitment_id to Issue Table. This helper method
