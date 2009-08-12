@@ -48,4 +48,7 @@ class ReleaseTest < ActiveSupport::TestCase
     Release.remove_scope
   end
 
+  def test_software
+    Release.all.each{|r| assert_not_nil r.software}
+  end
 end

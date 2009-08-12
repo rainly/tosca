@@ -45,6 +45,7 @@ class CommentTest < ActiveSupport::TestCase
     assert c.save!
     # test automatic status & assignment text
     c = Comment.new(:text => '',
+                    :statut_id => 7,
                     :issue => Issue.first(:order => :id),
                     :user => User.first(:order => :id),
                     :engineer => User.engineers.first)

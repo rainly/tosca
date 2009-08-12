@@ -25,7 +25,7 @@ class ElapsedTest < ActiveSupport::TestCase
   end
 
   def test_elapsed_life_cycle
-    Issue.first.elapsed.destroy
+    Issue.find(12).elapsed.destroy
     e = Elapsed.new(Issue.first)
 
     comment = Comment.first(:conditions => {:statut_id => 2})

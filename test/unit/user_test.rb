@@ -183,11 +183,19 @@ class UserTest < ActiveSupport::TestCase
     assert_equal(expert.kind, kind_expert)
     assert_equal(manager.kind, kind_expert)
     assert_equal(admin.kind, kind_expert)
+
+    # even fake fields has to be tested
+    assert_equal(viewer.client_form, true)
+    assert_equal(customer.client_form, true)
+    assert_equal(expert.client_form, false)
+    assert_equal(manager.client_form, false)
+    assert_equal(admin.client_form, false)
   end
 
   def test_trigram
     user = users(:user_expert)
     assert_equal(user.trigram, "EXP")
+    User.all.each{|u| assert !u.trigram.blank?}
   end
 
   def test_engineers

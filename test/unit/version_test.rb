@@ -89,4 +89,13 @@ class VersionTest < ActiveSupport::TestCase
     assert(ff_2_generic > ff_2_0_0_13)
   end
 
+
+  def test_scope
+    assert Version.scope_contract?
+    contract_id = Contract.first(:order => :id).id
+    Version.set_scope([contract_id])
+    Version.all.each{|v| assert v.contract_ids.include?(contract_id)}
+    Version.remove_scope
+  end
+
 end
