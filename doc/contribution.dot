@@ -20,8 +20,7 @@ Contribution -> ContributionType [arrowhead=dot,dir=both,arrowtail=crow]
 Contribution -> ContributionState [arrowhead=dot,dir=both,arrowtail=crow]
 Contribution -> Software [arrowhead=dot,dir=both,arrowtail=crow]
 Contribution -> User [label="Engineer",arrowhead=dot,dir=both,arrowtail=crow]
-Contribution -> Version [label="AffectedVersion",arrowhead=dot,dir=both,arrowtail=crow]
-Contribution -> Version [label="FixedVersion",arrowhead=dot,dir=both,arrowtail=crow]
+Contribution -> Version [label="Affected & Fixed\n Version",arrowhead=dot,dir=both,arrowtail=crow]
 Contribution -> Hyperlink [arrowhead=crow,dir=both,arrowtail=dot]
 
 }
