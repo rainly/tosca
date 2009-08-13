@@ -1,7 +1,7 @@
 config/database.yml
 db/schema.rb
 files/*
-po/*/LC_MESSAGES
+locale/*/LC_MESSAGES
 config/config.rb
 log/*.log
 nbproject/*
