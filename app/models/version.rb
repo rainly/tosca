@@ -38,14 +38,14 @@ class Version < ActiveRecord::Base
     @name = nil if @name
   end
 
-  def scope_contract?
+  def self.scope_contract?
     true
   end
 
   def self.set_scope(contract_ids)
     self.scoped_methods << { :find => { :conditions =>
-        [ 'contracts_versions.contract_id IN (?)', contract_ids ], :joins =>
-        "INNER JOIN contracts_versions ON contracts_versions.version_id = versions.id"} }
+        [ 'cv.contract_id IN (?)', contract_ids ], :joins =>
+        "INNER JOIN contracts_versions cv ON cv.version_id = versions.id"} }
   end
 
   def full_name

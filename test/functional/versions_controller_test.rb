@@ -51,7 +51,9 @@ class VersionsControllerTest < ActionController::TestCase
   def test_should_show_version
     %w(admin manager expert).each do |l|
       login l, l
-      get :show, :id => Version.first(:order => :id).id
+
+      version = session[:user].contracts.first.versions.first
+      get :show, :id => version.id
       assert_response :success
     end
   end
@@ -60,7 +62,8 @@ class VersionsControllerTest < ActionController::TestCase
     %w(admin manager).each do |l|
       login l, l
 
-      get :edit, :id => Version.first(:order => :id).id
+      version = session[:user].contracts.first.versions.first
+      get :edit, :id => version.id
       assert_response :success
     end
   end
@@ -69,7 +72,8 @@ class VersionsControllerTest < ActionController::TestCase
     %w(admin manager).each do |l|
       login l, l
 
-      put :update, :id => versions(:version_ff_3_generic).id, :version => { }
+      version = session[:user].contracts.first.versions.first
+      put :update, :id => version.id, :version => { }
       assert_redirected_to version_path(assigns(:version))
     end
   end
