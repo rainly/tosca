@@ -75,10 +75,9 @@ module LdapTosca
       end
     end
 
-    #Connect to the LDAP and handle errors
-    #Takes a bloc which yields the connection
-    #Return nil if there was a problem
-    def connect2ldap(login, pwd)
+    # Connect to the LDAP and handle errors
+    # Return nil if there was a problem
+    def connect2ldap
       ldap_conn = LDAP::Conn.new(Setting.ldap_host, Setting.ldap_port.to_i)
       ldap_conn.set_option(LDAP::LDAP_OPT_PROTOCOL_VERSION, Setting.ldap_protocol.to_i)
       begin
@@ -101,15 +100,15 @@ module LdapTosca
 
     # try credential
     def authenticate_user(ldap_conn, login, pwd)
-      authentication_succesful = false
+      authentication_success = false
       begin
         ldap_conn.bind(Setting.ldap_binddn % login, pwd)
-        authentication_succesful = true
+        authentication_success = true
         ldap_conn.unbind
       rescue LDAP::ResultError
         ldap_conn.unbind if ldap_conn.bound?
       end
-      authentication_succesful
+      authentication_success
     end
 
   end
