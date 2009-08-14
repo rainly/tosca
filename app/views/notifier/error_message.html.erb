@@ -9,8 +9,8 @@
 <b>Query : </b><%= @env['QUERY_STRING'] %><br />
 <b>Method : </b><%= @env['REQUEST_METHOD'] %><br />
 <b>SSL : </b><%= @env['REQUEST_PORT'].to_i == 443 %><br />
-<b>Agent : </b><%= @env['REQUEST_HTTP_USER_AGENT'] %><br />
-
+<b>Agent : </b><%= @env['HTTP_USER_AGENT'] %><br />
+<b>Referer : </b><%= @env['HTTP_REFERER'] %><br />
 <hr/>
 
 <b>Backtrace</b><br />
@@ -31,16 +31,10 @@
 
 <b>Session</b><br />
 <ul>
-<% @session.each do |key, val| %>
+<% (@session || []).each do |key, val| %>
   <li><%= key %> : <%=h val.inspect %></li>
 <% end %>
 </ul>
 
 <hr/>
 
-<b>Environment</b><br />
-<ul>
-<% @env.each do |key, val| %>
-  <li><%= key %> : <%= val %></li>
-<% end %>
-</ul>

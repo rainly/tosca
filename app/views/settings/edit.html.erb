@@ -39,6 +39,33 @@
     </tr>
    </table>
   </div>
+  <div class="show">
+   <h2><%= _('Ldap settings') %></h2>
+   <table>
+    <tr>
+     <th><label for="settings_ldap_enabled"><%=_('LDAP authentification for experts ?')%></th>
+     <td><%= check_box_tag 'settings[ldap_enabled]', 1, Setting.ldap_enabled? %></td>
+    </tr><tr>
+     <th><label for="settings_ldap_host"><%= _('Server') %></th>
+     <td><%= text_field_tag 'settings[ldap_host]', Setting.ldap_host %></td>
+    </tr><tr>
+     <th><label for="settings_ldap_port"><%= _('Port') %></th>
+     <td><%= text_field_tag 'settings[ldap_port]', Setting.ldap_port %></td>
+    </tr><tr>
+     <th><label for="settings_ldap_filter"><%= _('Filter') %></th>
+     <td><%= text_field_tag 'settings[ldap_filter]', Setting.ldap_filter %></td>
+    </tr><tr>
+     <th><label for="settings_ldap_binddn"><%= _('Binddn') %></th>
+     <td><%= text_field_tag 'settings[ldap_binddn]', Setting.ldap_binddn %></td>
+    </tr><tr>
+     <th><label for="settings_ldap_basedn"><%= _('Basedn') %></th>
+     <td><%= text_field_tag 'settings[ldap_basedn]', Setting.ldap_basedn %></td>
+    </tr><tr>
+     <th><label for="settings_ldap_protocal"><%= _('Protocol version') %></th>
+     <td><%= text_field_tag 'settings[ldap_protocol]', Setting.ldap_protocol %></td>
+    </tr>
+   </table>
+  </div>
   <p><%= red_star %> : <%= _('A restart will be needed') %></p>
  </div><div class="c50r">
   <div class="show">

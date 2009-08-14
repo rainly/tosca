@@ -443,6 +443,12 @@ module ActiveRecord
   end
 end
 
+class ActiveRecord::SessionStore::Session
+  def to_s
+    self.inspect
+  end
+end
+
 
 #To have homemade message-id in mails
 module TMail
