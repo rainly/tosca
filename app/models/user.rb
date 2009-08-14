@@ -155,7 +155,7 @@ class User < ActiveRecord::Base
   end
 
   def inactive=(value)
-    Notifier::deliver_user_inactive(self)
+    Notifier::deliver_user_inactive(self) if value
     write_attribute(:inactive, value)
   end
 
