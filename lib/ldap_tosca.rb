@@ -86,7 +86,7 @@ module LdapTosca
       return false if user and user.inactive?
       if ldap_user.nil? and user and user.ldap?
         # Account deactivated on ldap but not on Tosca
-        user.update_attribute(:inactive => true)
+        user.update_attribute(:inactive, true)
         false
       else
         true
