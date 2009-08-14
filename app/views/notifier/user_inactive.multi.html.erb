@@ -1,0 +1,12 @@
+Bonjour,<br />
+
+<p>Le compte de <b><%= @user.name %></b> a été désactivé. Il n'a désormais plus accès au service du <%= Setting.service_site %>.
+Il travaillait sur les contrats :</p>
+<ul>
+ <% @user.contracts.each do |c| %>
+   <li><%= c.name %></li>
+ <% end %>
+</ul>
+<p>Il est possible de réactiver un compte en décochant la case "inactif" lors de son édition.</p>
+
+<%= render(:partial => 'end_mail')%>

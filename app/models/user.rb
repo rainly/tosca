@@ -154,6 +154,11 @@ class User < ActiveRecord::Base
     self.save
   end
 
+  def inactive=(value)
+    Notifier::deliver_user_inactive(self)
+    write_attribute(:inactive, value)
+  end
+
   SELECT_OPTIONS = { :order => 'users.name ASC',
     :conditions => ['users.inactive = ?', false ] } unless defined? User::SELECT_OPTIONS
   EXPERT_OPTIONS = { :conditions => [ 'users.inactive = ? AND users.client_id IS NULL', false ],
