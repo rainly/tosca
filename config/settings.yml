@@ -4,6 +4,7 @@
 email_server:
   default: mail.linagora.com
 email_port:
+  format: int
   default: 25
 email_domain:
   default: par.lng
@@ -45,3 +46,21 @@ help_status:
   default: "http://redmine.tosca-project.net/wiki/tosca/IssueStatus"
 help_severity:
   default: "http://redmine.tosca-project.net/wiki/tosca/IssueSeverity"
+
+ldap_enabled:
+  default: 0
+ldap_host:
+  default: localhost
+ldap_port:
+  format: int
+  default: 389
+ldap_filter:
+  default: "(&(objectclass=person)(uid=%s))"
+ldap_binddn:
+  default: "uid=%s,ou=users"
+ldap_basedn:
+  default: "ou=People"
+ldap_protocol:
+  format: int
+  default: 3
+
