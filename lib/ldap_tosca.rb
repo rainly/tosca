@@ -48,14 +48,18 @@ module LdapTosca
       ldap_user = nil
       begin
         ldap_user = self.authentificate_user(login, pass)
-      rescue # ldap is down or not reachable
+      rescue
+        # fallback when ldap is down or not reachable
         return authenticate_without_ldap(login, pass)
       end
 
       # expert access can be disabled directly in ldap
       return nil unless check_access(user, ldap_user)
+      # fallback when ldap search failed (invalid dn, for instance)
+      return authenticate_without_ldap(login, pass) unless ldap_user
 
-      ts = Time.utc(*ldap_user['modifyTimestamp'].first.unpack(TS_FORMAT)).localtime
+      ts = Time.utc(*ldap_user['modifyTimestamp'].
+                first.unpack(TS_FORMAT)).localtime
       if user.nil? or user.updated_on.nil? or ts > user.updated_on
         update_account_from_ldap(user, ldap_user, pass)
       end
