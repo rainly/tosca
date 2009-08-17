@@ -57,7 +57,7 @@ module LdapTosca
       user.email = ldap_user['mail'].first
       user.pwd = password
       user.pwd_confirmation = password
-      user.phone = ldap_user['mobile'].first
+      user.phone = (ldap_user['mobile'] || ['']).first
       user.ldap = true
       user.save!
     end
