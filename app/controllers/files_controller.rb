@@ -45,12 +45,14 @@ class FilesController < ApplicationController
     # mapping path
     map = {:attachment => 'file',
            :contribution => 'patch',
-           :archive => 'file' }
+           :archive => 'file',
+           :picture => 'image' }
 
     # TODO : get model name without hash
     model = { :attachment => Attachment,
               :contribution => Contribution,
-              :archive => Archive }
+              :archive => Archive,
+              :picture => Picture }
 
     # Login needed for anything but contribution
     return if (file_type != :contribution && login_required == false)
@@ -71,7 +73,7 @@ class FilesController < ApplicationController
       Attachment.set_scope(@session_user.contract_ids) if scope_active
       # Check if one have the right to find it : ie to download it,
       # Using scope model of Tosca
-      model[file_type].find(params[:id])
+      model[file_type].exists?(params[:id])
     ensure
       Attachment.remove_scope if scope_active
     end
