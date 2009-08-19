@@ -151,9 +151,11 @@ class Time
       result += one_working_day if current_day.working?
       current_day = current_day.next
     end
-    # Last day
+    # Last day : end_date can be beyond the closes
     if start_day != end_day && end_day.working?
-      result += @@diff_day.call(end_date.change(:hour => opens_at), end_date)
+      end_close_time = (closes_at == 24 ? end_date.end_of_day : end_date.change(:hour => closes_at))
+      last_end_date = [ end_close_time, end_date ].min
+      result += @@diff_day.call(end_date.change(:hour => opens_at), last_end_date)
     end
     result
   end
@@ -218,7 +220,7 @@ class Time
                 n_('%d day', '%d days', val)) % val
     when day..(3*day)
       days = (distance / day).floor
-      hours = ((distance % 1.day)/60).round
+      hours = ((distance % day)/60).round
       out = ((opened ? n_('%d working day', '%d working days', days) :
                        n_('%d day', '%d days', days)) % days)
       out << ' ' << _('and') << ' ' << n_('%d hour', '%d hours', hours) % hours
