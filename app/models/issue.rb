@@ -267,7 +267,7 @@ class Issue < ActiveRecord::Base
 
     rule = self.contract.rule
     self.elapsed = Elapsed.new(self)
-    options = { :conditions => 'comments.statut_id IS NOT NULL',
+    options = { :conditions => '(comments.statut_id IS NOT NULL OR comments.elapsed != 0)',
       :order => "comments.created_on ASC" }
     life_cycle = self.comments.all(options)
 
