@@ -118,7 +118,7 @@ class Elapsed < ActiveRecord::Base
   def progress(elapsed, commitment, interval=nil)
     return -1 if commitment == -1
     if interval
-      Elapsed.relative2absolute(elapsed, interval) / commitment.days
+      elapsed.to_f / (commitment * interval).hours
     else
       elapsed / commitment.days
     end
