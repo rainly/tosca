@@ -16,6 +16,16 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+=begin
+This AR is used to keep in cache various elapsed time of an issue.
+It keeps :
+* taken into account time
+* workaround time
+* correction time
+* elapsed time (until_now)
+It's here because reporting views cannot afford to compute on the fly
+on so many issues : it's too expensive on the DB.
+=end
 class Elapsed < ActiveRecord::Base
   belongs_to :issue
 
