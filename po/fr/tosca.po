@@ -4569,9 +4569,3 @@ msgstr "Appel"
 #: vendor/extensions/phonecalls/app/views/issues/tabs/_phonecalls.html.erb:4
 msgid "End of phonecall"
 msgstr "Fin de l'appel"
-
-#~ msgid "Informations"
-#~ msgstr "Informations"
-
-#~ msgid "hello the world"
-#~ msgstr "bonjour toi"
