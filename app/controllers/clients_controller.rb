@@ -36,13 +36,6 @@ class ClientsController < ApplicationController
 
   def show
     @client = Client.find(params[:id])
-    # allows to see only binaries of this client for all without scope
-    begin
-      Version.set_scope(@client.contract_ids)
-      render
-    ensure
-      Version.remove_scope
-    end
   end
 
   def new
