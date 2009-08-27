@@ -32,7 +32,7 @@ class ElapsedTest < ActiveSupport::TestCase
     comment.elapsed = 1
     e.add comment
     assert( e.taken_into_account != 0 )
-    assert( e.taken_into_account_progress != 0 )
+    assert( e.taken_into_account_progress(1/24.0) != 0 )
 
     comment.statut_id = 5
     e.add comment

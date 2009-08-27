@@ -17,12 +17,12 @@
    </tr>
    <tr><td colspan="4"><hr /></td></tr>
   </thead><tbody>
-   <% progress = elapsed.taken_into_account_progress %>
+    <% progress = elapsed.taken_into_account_progress(interval) %>
    <tr class="<%= cycle('even', 'odd') %>">
     <td><%= progress_image(elapsed.taken_into_account?, progress) %></td>
     <td><strong><%= _("Taken into account") %></strong></td>
     <td><%= progress_bar(progress) %></td>
-    <td><%= progress_text(elapsed.taken_into_account, 1.hour, interval) %></td>
+    <td><%= progress_text(elapsed.taken_into_account, @issue.contract.taken_into_account_delay.hours, interval) %></td>
    </tr>
    <% progress = elapsed.workaround_progress(interval) %>
    <tr class="<%= cycle('even', 'odd') %>">

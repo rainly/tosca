@@ -3,77 +3,93 @@
 <div class="subcolumns">
   <div class="c50l">
     <div class="show tinymce">
+      <table>
+        <tr>
+          <th colspan="2"><h3><%=_('Informations')%></h3></th>
+        </tr><tr>
+          <th><label for="contract_client_id"><%=_('Customer')%></label></th>
+          <td><%= select(:contract, :client_id, @clients) %></td>
+        </tr><tr>
+          <th><label for="contract_salesman_id"><%= _("Salesman Contact") %></label></th>
+          <td><%= select_empty :contract, :salesman_id, @engineers %></td>
+        </tr><tr>
+          <th><label for="contract_tam_id"><%= _("Technical Contact") %></label></th>
+          <td><%= select_empty :contract, :tam_id, @engineers %></td>
+        </tr><tr>
+          <th><label for="contract_mailinglist"><%=_("Internal mailing list")%></label></th>
+          <td><%= text_field 'contract', 'internal_ml'  %></td>
+        </tr><tr>
+          <th><label for="contract_customer_ml"><%=_("Customer mailing list")%></label></th>
+          <td><%= text_field 'contract', 'customer_ml'  %></td>
+        </tr><tr>
+          <th><label for="contract_inactive"><%=_("Inactive")%></label></th>
+          <td><%= check_box 'contract', 'inactive'  %></td>
+        </tr><tr>
+          <th><label for="contract_start_date"><%= _('Start') %></label></th>
+          <td><%= date_select :contract, :start_date %></td>
+        </tr><tr>
+          <th><label for="contract_end_date"><%=_('End')%></label></th>
+          <td><%= date_select :contract, :end_date %></td>
+        </tr><tr>
+          <th><label for="contract_name"><%= _("Domain") %></label></th>
+          <td><%= text_field :contract, :name %></td>
+        </tr>
+      </table>
+    </div>
+    <div class="show tinymce">
     <table>
       <tr>
-        <th><label for="contract_client_id"><%=_('Customer')%></label></th>
-        <td><%= select(:contract, :client_id, @clients) %></td>
+        <th colspan="2"><h3><%=_('Commitments')%> <%= link_to_new_commitment %></h3></th>
       </tr><tr>
-        <th><label for="contract_salesman_id"><%= _("Salesman Contact") %></label></th>
-        <td><%= select_empty :contract, :salesman_id, @engineers %></td>
-      </tr><tr>
-        <th><label for="contract_tam_id"><%= _("Technical Contact") %></label></th>
-        <td><%= select_empty :contract, :tam_id, @engineers %></td>
-      </tr><tr>
-        <th><label for="contract_mailinglist"><%=_("Internal mailing list")%></label></th>
-        <td><%= text_field 'contract', 'internal_ml'  %></td>
-      </tr><tr>
-        <th><label for="contract_customer_ml"><%=_("Customer mailing list")%></label></th>
-        <td><%= text_field 'contract', 'customer_ml'  %></td>
-      </tr><tr>
-        <th><label for="contract_inactive"><%=_("Inactive")%></label></th>
-        <td><%= check_box 'contract', 'inactive'  %></td>
-      </tr><tr>
-        <th><label for="contract_start_date"><%= _('Start') %></label></th>
-        <td><%= date_select :contract, :start_date %></td>
-      </tr><tr>
-        <th><label for="contract_end_date"><%=_('End')%></label></th>
-        <td><%= date_select :contract, :end_date %></td>
-      </tr><tr>
-        <th><label for="contract_name"><%= _("Domain") %></label></th>
-        <td><%= text_field :contract, :name %></td>
-      </tr><tr>
-        <th colspan="2"><label><%=_('Commitments')%> <%= link_to_new_commitment %></label></th>
+        <td>
+          <label for="contract_taken_into_account_delay"><%= _('Taken-into-account before') %></label>
+          <%= text_field :contract, :taken_into_account_delay, :size => 2  %> <%= _('hour(s)') %>
+        </td>
       </tr><tr>
         <td colspan="2"><%= show_form_commitments(@contract.commitments, @commitments) %></td>
       </tr>
     </table>
-</div></div>
-<div class="c50r">
-  <div class="show">
-    <table>
-     <tr>
-      <th><label><%= _("Type") %></label></th>
-       <td><% Contract::Rules.each do |r| %>
-               <%= radio_button(:contract, :rule_type, r) %>
-               <%= _(r) %> <%= link_to_new_rule(r) %>
-           <% end %></td>
-     </tr><tr>
-       <th><label for="contract_rule_id"><%= _('Ruled by') %></label></th>
-       <td><div id="contract_rules">
-          <%= render :partial => 'rules' %>
-	   </div></td>
-     </tr><tr>
-     <% options = {:size => 2, :style => 'text-align: center;' } %>
-       <th><label for="contract_opening_time"><%= _("Schedules") %></label></th>
-       <td><%= text_field :contract, :opening_time, options  %><%= _("h") %> -
-           <%= text_field :contract, :closing_time, options  %><%= _("h") %></td>
-     </tr><tr>
-       <td colspan="2">
-       <fieldset>
-        <legend><%=_('Engineers assigned to this contract')%></legend>
-        <%= auto_complete_list :user, :name, @contract.engineer_users, 'contract[engineer_user_ids]' %>
-       </fieldset>
-      </td>
-     </tr>
-     <tr>
-       <td colspan="2">
-       <fieldset>
-        <legend><%=_('Teams managing this contract')%></legend>
-        <%= hbtm_check_box(@contract_team, @teams,
-                         'contract[team_ids]', :size => 3) %>
-       </fieldset>
-      </td>
-     </tr>
-    </table>
-</div></div>
+    </div>
+  </div>
+  <div class="c50r">
+    <div class="show">
+      <table>
+        <tr>
+          <th colspan="2"><h3><%=_('Managment')%></h3></th>
+        </tr><tr>
+          <th><label><%= _("Type") %></label></th>
+          <td><% Contract::Rules.each do |r| %>
+                <%= radio_button(:contract, :rule_type, r) %>
+                <%= _(r) %> <%= link_to_new_rule(r) %>
+              <% end %></td>
+       </tr><tr>
+         <th><label for="contract_rule_id"><%= _('Ruled by') %></label></th>
+         <td><div id="contract_rules">
+            <%= render :partial => 'rules' %>
+             </div></td>
+       </tr><tr>
+       <% options = {:size => 2, :style => 'text-align: center;' } %>
+         <th><label for="contract_opening_time"><%= _("Schedules") %></label></th>
+         <td><%= text_field :contract, :opening_time, options  %><%= _("h") %> -
+             <%= text_field :contract, :closing_time, options  %><%= _("h") %></td>
+       </tr><tr>
+         <td colspan="2">
+         <fieldset>
+          <legend><%=_('Engineers assigned to this contract')%></legend>
+          <%= auto_complete_list :user, :name, @contract.engineer_users, 'contract[engineer_user_ids]' %>
+         </fieldset>
+        </td>
+       </tr>
+       <tr>
+         <td colspan="2">
+         <fieldset>
+          <legend><%=_('Teams managing this contract')%></legend>
+          <%= hbtm_check_box(@contract_team, @teams,
+                           'contract[team_ids]', :size => 3) %>
+         </fieldset>
+        </td>
+       </tr>
+      </table>
+    </div>
+  </div>
 </div>
