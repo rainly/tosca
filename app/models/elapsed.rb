@@ -133,9 +133,9 @@ class Elapsed < ActiveRecord::Base
       # 1.16 in commitment means 1 working day and 4 working hours
       commitment = ((commitment.to_i * interval).hours +
                     (commitment.to_f - commitment.to_i).days)
-      elapsed.to_f / (commitment * interval).hours
+      elapsed.to_f / commitment.to_f
     else
-      elapsed / commitment.days
+      elapsed.to_f / commitment.days
     end
   end
 
