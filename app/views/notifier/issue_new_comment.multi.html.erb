@@ -5,6 +5,7 @@
      modified << "<b>#{_(@comment.statut.name)}</b>"
    end %>
 <% if @comment.engineer_id
+     modified << " et " if modified.empty?
      modified << "assignée à <b>#{@comment.engineer.name}</b>"
    end %>
 
