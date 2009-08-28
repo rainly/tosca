@@ -215,7 +215,7 @@ module FileColumn # :nodoc:
       begin
         ::Magick
       rescue NameError
-        gem 'rmagick', '>=0' # needed for ruby 1.9.1
+        #gem 'rmagick', '>=0' # needed for ruby 1.9.1
         require 'RMagick'
       end
       options[:magick] = process_options(options[:magick],false) if options[:magick]

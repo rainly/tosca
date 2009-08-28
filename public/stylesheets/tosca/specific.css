@@ -45,7 +45,7 @@ table.week-view tr th h3 { text-align: center; }
 
 div.info { width: 100%; }
 table.full { width: 100%; }
-
+td select#contract_commitment_ids { width: 100%; }
 
 /* visible in roles/ view */
 th a { color: lightgreen; }

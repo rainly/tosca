@@ -94,9 +94,9 @@ class Elapsed < ActiveRecord::Base
     compute_value :correction, Statut::Fixed
   end
 
-  def taken_into_account_progress
+  def taken_into_account_progress(interval)
     # 1 hour = 1/24 of a day
-    progress(self.taken_into_account, (1/24.0))
+    progress(self.taken_into_account, self.issue.contract.taken_into_account_delay.hours.to_f / 24.0.hours, interval )
   end
 
   def workaround_progress(interval)
@@ -125,6 +125,9 @@ class Elapsed < ActiveRecord::Base
 
   # Compute progress from an 'elapsed' time in "interval" reference,
   # with 'commitment' day
+  # elapsed in seconds
+  # commitment in days
+  # interval in hours
   def progress(elapsed, commitment, interval=nil)
     return -1 if commitment == -1
     if interval
@@ -135,7 +138,7 @@ class Elapsed < ActiveRecord::Base
                     (commitment.to_f - commitment.to_i).days)
       elapsed.to_f / commitment.to_f
     else
-      elapsed.to_f / commitment.days
+      elapsed.to_f / commitment.days.to_f
     end
   end
 
