@@ -93,9 +93,9 @@ class Issue < ActiveRecord::Base
   OPENED = "issues.statut_id IN (#{Statut::OPENED.join(',')})" unless defined? OPENED
 
   # See ApplicationController#scope
-  def self.set_scope(contract_ids)
+  def self.set_scope(user)
     scope = { :conditions =>
-      [ 'issues.contract_id IN (?)', contract_ids ] }
+      [ 'issues.contract_id IN (?)', user.contract_ids ] }
     self.scoped_methods << { :find => scope, :count => scope }
   end
 
@@ -405,11 +405,6 @@ class Issue < ActiveRecord::Base
 
   def do_after_create
     self.first_comment.update_attribute :issue_id, self.id
-  end
-
-  # This model is scoped by Contract
-  def self.scope_contract?
-    true
   end
 
 end

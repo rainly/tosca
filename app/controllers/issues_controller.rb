@@ -57,7 +57,7 @@ class IssuesController < ApplicationController
       redirect_to issue_path(params['numero'].first.to_i) and return
     end
 
-    order = params[:sort] || 'updated_on DESC'
+    order = params[:sort] || 'issues.updated_on DESC'
 
     # Specification of a filter f :
     if params.has_key? :filters

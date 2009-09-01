@@ -42,10 +42,14 @@ class IssueTest < ActiveSupport::TestCase
   end
 
   def test_scope
-    assert Issue.scope_contract?
-    Issue.set_scope([Contract.first(:order => :id).id])
-    Issue.all
-    Issue.remove_scope
+    assert Issue.respond_to?(:set_scope)
+    User.all.each do |u|
+      Issue.set_scope(u)
+      Issue.all.each do |i|
+        assert u.contract_ids.include?(i.contract_id) unless u.admin?
+      end
+      Issue.remove_scope
+    end
   end
 
   def test_helpers

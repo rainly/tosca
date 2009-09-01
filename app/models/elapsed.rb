@@ -96,7 +96,7 @@ class Elapsed < ActiveRecord::Base
 
   def taken_into_account_progress(interval)
     # 1 hour = 1/24 of a day
-    progress(self.taken_into_account, self.issue.contract.taken_into_account_delay.hours.to_f / 24.0.hours, interval )
+    progress(self.taken_into_account, self.issue.contract.taken_into_account_delay.to_f / 24.0.hours, interval )
   end
 
   def workaround_progress(interval)

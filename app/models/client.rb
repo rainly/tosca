@@ -54,11 +54,13 @@ class Client < ActiveRecord::Base
     }
   end
 
+
   # don't use this function outside of an around_filter
-  def self.set_scope(client_ids, user)
+  def self.set_scope(user)
     if user.recipient?
-      self.scoped_methods << { :find => { :conditions =>
-        [ 'clients.id IN (?)', client_ids ]} }
+      self.scoped_methods << { :find => { :joins =>
+          'INNER JOIN contracts c ON c.client_id = clients.id',
+          :conditions => [ 'c.id IN (?)', user.contract_ids ] } }
     else # an entry is needed for remove_scope call
       self.scoped_methods << {}
     end
@@ -111,11 +113,6 @@ class Client < ActiveRecord::Base
   # specialisation, since a Client can be "inactive".
   def self.find_select(options = {}, collect = true)
     find_active4select(options, collect)
-  end
-
-  #This model is scoped by Client
-  def self.scope_client?
-    true
   end
 
 end

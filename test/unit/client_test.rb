@@ -56,15 +56,12 @@ class ClientTest < ActiveSupport::TestCase
   end
 
   def test_scope
-    assert Client.scope_client?
-    # recipient & expert
-    Client.set_scope([Client.first(:order => :id).id], User.recipients.first)
-    Client.all
-    Client.remove_scope
-
-    Client.set_scope([Client.first(:order => :id).id], User.engineers.first)
-    Client.all
-    Client.remove_scope
+    assert Client.respond_to?(:set_scope)
+    User.recipients.each do |u|
+      Client.set_scope(u)
+      Client.all.each{|c| assert_equal u.client_id, c.id}
+      Client.remove_scope
+    end
   end
 
   def test_overloaded_find_select

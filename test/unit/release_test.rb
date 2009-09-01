@@ -41,14 +41,16 @@ class ReleaseTest < ActiveSupport::TestCase
   end
 
   def test_scope
-    assert Release.scope_contract?
-    contract_id = Contract.first(:order => :id).id
-    Release.set_scope([contract_id])
-    Release.all.each{|r| assert r.contract_id === contract_id}
-    Release.remove_scope
+    assert Release.respond_to?(:set_scope)
+    User.all.each do |u|
+      Release.set_scope(u)
+      Release.all.each{|r| assert u.contract_ids.include?(r.contract_id)}
+      Release.remove_scope
+    end
   end
 
   def test_software
     Release.all.each{|r| assert_not_nil r.software}
   end
+
 end

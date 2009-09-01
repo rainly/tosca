@@ -34,6 +34,15 @@ class Team < ActiveRecord::Base
   validates_uniqueness_of :name
   validates_presence_of :name, :contact
 
+  before_save :update_users
+  def update_users
+    # removed users should also be updated
+    res = self.users
+    res += Team.find(self.id).users unless self.new_record?
+    res.uniq!
+    res.each{|u| u.save!}
+  end
+
   # Nice URL
   def to_param
     "#{id}-#{name.asciify}"

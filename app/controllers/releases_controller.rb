@@ -80,7 +80,7 @@ class ReleasesController < ApplicationController
       options = { :conditions => [ 'contributions.software_id = ?', @release.version.software_id ] }
     end
     @contributions = Contribution.find_select(options)
-    @versions = Version.all.collect { |v| [ v.full_name, v.id ]}
+    @versions = Version.all(:conditions => {:generic => false }).collect { |v| [ v.full_name, v.id ]}
     @contracts = Contract.find_select(Contract::OPTIONS)
   end
 

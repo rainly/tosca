@@ -19,10 +19,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class UserTest < ActiveSupport::TestCase
-  self.use_instantiated_fixtures  = true
-
-  fixtures :users, :clients, :roles, :permissions, :permissions_roles,
-    :contracts_users, :contracts
 
   def test_to_strings
     check_strings User
@@ -60,8 +56,7 @@ class UserTest < ActiveSupport::TestCase
 
   def test_create_person
     u = User.new(:role_id => 1, :login => "newu", :email => "foo@bar.com",
-                 :name => "foo",
-                 :informations => "Somme infos")
+                 :name => "foo")
     u.generate_password
     assert u.save
 
@@ -110,8 +105,7 @@ class UserTest < ActiveSupport::TestCase
 
   def test_disallowed_passwords
     u = User.new(:role_id => 1, :email => "foo@bar.com",
-                 :name => "foo",
-                 :informations => "Some infos")
+                 :name => "foo")
     u.login = "nobody"
 
     u.pwd = u.pwd_confirmation = "tiny"
@@ -131,8 +125,7 @@ class UserTest < ActiveSupport::TestCase
 
   def test_bad_logins
     u = User.new(:role_id => 1, :email => "foo@bar.com",
-                 :name => "foo",
-                 :informations => "Some infos")
+                 :name => "foo")
     u.pwd = u.pwd_confirmation = "a_very_secure_password"
 
     [ "x",  "hugebobhugebobhugebobhugebobhugebobhugebobhugebobhugebobhugebobhugebobhugebobhugebobhugebobhugebobhugebobhugebobhugebobhugebobhugebobhugebobhugebobhugebobhugebobhugebobhugebobhugebobhug", "" ].each { |p|
