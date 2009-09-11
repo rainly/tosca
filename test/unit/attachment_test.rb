@@ -26,9 +26,12 @@ class AttachmentTest < ActiveSupport::TestCase
   end
 
   def test_scope
-    Attachment.set_scope(Contract.all.collect(&:id))
-    Attachment.all
-    Attachment.remove_scope
+    assert Attachment.respond_to?(:set_scope)
+    User.all.each do |u|
+      Attachment.set_scope(u)
+      Attachment.all.each{|a| assert u.contract_ids.include?(a.issue.contract_id)}
+      Attachment.remove_scope
+    end
   end
 
   def test_magick_attachments

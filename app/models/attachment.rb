@@ -35,13 +35,12 @@ class Attachment < ActiveRecord::Base
 
   # special scope : only used for file downloads
   # see FilesController
-  def self.set_scope(contract_ids)
-    joins = ''
-    joins << 'LEFT OUTER JOIN comments ON attachments.comment_id = comments.id '
-    joins << 'LEFT OUTER JOIN issues ON issues.id = comments.issue_id '
+  def self.set_scope(user)
+    @@joins ||= %q(LEFT OUTER JOIN comments ON attachments.comment_id = comments.id
+                   LEFT OUTER JOIN issues ON issues.id = comments.issue_id)
     self.scoped_methods << { :find => {
-       :conditions => [ 'issues.contract_id IN (?)', contract_ids ],
-       :joins => joins }
+       :conditions => [ 'issues.contract_id IN (?)', user.contract_ids ],
+       :joins => @@joins }
     }
   end
 

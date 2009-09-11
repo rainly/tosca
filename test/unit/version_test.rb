@@ -91,11 +91,15 @@ class VersionTest < ActiveSupport::TestCase
 
 
   def test_scope
-    assert Version.scope_contract?
-    contract_id = Contract.first(:order => :id).id
-    Version.set_scope([contract_id])
-    Version.all.each{|v| assert v.contract_ids.include?(contract_id)}
-    Version.remove_scope
+    assert Version.respond_to?(:set_scope)
+    User.all.each do |u|
+      Version.set_scope(u)
+      Version.all.each do |v|
+        assert_not_equal((v.contract_ids - u.contract_ids).size,
+                         v.contract_ids.size)
+      end
+      Version.remove_scope
+    end
   end
 
 end

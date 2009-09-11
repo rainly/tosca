@@ -13,7 +13,7 @@ version_oo_2_4:
 version_ff_2_generic:
   name: "2"
   software_id: 2
-  generic: false
+  generic: true
   id: 3
 
 version_ff_2_0_0_12:

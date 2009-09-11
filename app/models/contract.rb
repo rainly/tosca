@@ -62,14 +62,9 @@ class Contract < ActiveRecord::Base
   Rules = [ 'Rules::Credit', 'Rules::Component' ] unless defined? Contract::Rules
   INNER_JOIN_TEAMS = 'INNER JOIN contracts_teams ct ON ct.contract_id=contracts.id'
 
-  # This model is scoped by Contract
-  def self.scope_contract?
-    true
-  end
-
-  def self.set_scope(contract_ids)
+  def self.set_scope(user)
     self.scoped_methods << { :find => { :conditions =>
-        [ 'contracts.id IN (?)', contract_ids ] } }
+        [ 'contracts.id IN (?)', user.contract_ids ] } }
   end
 
   def engineers
@@ -159,17 +154,29 @@ class Contract < ActiveRecord::Base
   end
 
   private
-  # To make sure we have only once an engineer
-  before_save do |record|
-    record.engineer_users = record.engineer_users -
-      (record.teams.collect(&:users).flatten)
+
+  before_save :update_users
+  def update_users
+    # To make sure we have only once an engineer
+    self.engineer_users = self.engineer_users -
+      (self.teams.collect(&:users).flatten)
+    # removed users should also be updated
+    res = []
+    res << self.users << self.teams.collect(&:users)
+    if self.id
+      res << Contract.find(self.id).users
+      res << Contract.find(self.id).teams.collect(&:users)
+    end
+    res.flatten!
+    res.uniq!
+    res.each{|u| u.save!}
   end
 
   # Ensure tam is subscribed
-  after_save do |record|
-    unless record.subscribed?(record.tam)
-      Subscription.create(:user => record.tam, :model => record)
-    end
-  end
+  #  after_save do |record|
+  #    unless record.subscribed?(record.tam)
+  #      Subscription.create(:user => record.tam, :model => record)
+  #    end
+  #  end
 
 end

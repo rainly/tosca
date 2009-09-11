@@ -1,71 +1,98 @@
 ---
 user_customer:
+  team_id:
   name: Customer
-  informations: ""
+  ldap: false
   title: the royal
+  updated_on: 2009-08-26 15:44:56 +02:00
   role_id: 4
   inactive: false
+  contract_ids:
+  - 1
+  client_id: 2
   id: 4
+  picture_id:
   phone: "666"
   restricted: true
   password: c921769f9e42e4876d204fcd51ba16124fb8477f
   login: customer
-  client_id: 2
-  picture_id:
   email: <%= Setting.email_mainteners %>
 user_viewer:
+  team_id:
   name: Viewer
-  informations: ""
+  ldap: false
   title: the powerless
+  updated_on: 2009-08-26 15:44:56 +02:00
   role_id: 5
   inactive: false
-  id: 5
+  contract_ids:
+  - 2
   client_id: 1
+  id: 5
+  picture_id:
   phone: "000"
   restricted: true
   password: 8b34fc039696a3815940c5672ba2efaa76ab51ac
   login: viewer
-  picture_id:
   email: <%= Setting.email_mainteners %>
 user_admin:
+  team_id: 2
   name: Admin
-  informations: ""
+  ldap: false
   title: "\xC3\xB4 r\xC3\xA9v\xC3\xA9r\xC3\xA9"
+  updated_on: 2009-08-26 15:44:56 +02:00
   role_id: 1
   inactive: false
+  contract_ids:
+  - 1
+  - 2
+  client_id:
   id: 1
+  picture_id:
   phone: ""
   restricted: false
   password: 47261c32a405a38d54806e4db0e64d1ca9862598
   login: admin
-  picture_id:
   email: <%= Setting.email_mainteners %>
-  team_id: 2
 user_manager:
+  team_id: 1
   name: Manager
-  informations: ""
+  ldap: false
   title: the lovely
+  updated_on: 2009-08-26 15:44:56 +02:00
   role_id: 2
   inactive: false
+  contract_ids:
+  - 2
+  - 6
+  - 9
+  - 18
+  - 26
+  - 40
+  - 1
+  client_id:
   id: 2
+  picture_id:
   phone: ""
   restricted: true
   password: 9d49c7773645ac6b2e7af68872074517e66c0e47
   login: manager
-  picture_id:
   email: <%= Setting.email_mainteners %>
-  team_id: 1
 user_expert:
+  team_id: 2
   name: Expert
-  informations: ""
+  ldap: false
   title: the handy
+  updated_on: 2009-08-26 15:44:56 +02:00
   role_id: 3
   inactive: false
+  contract_ids:
+  - 2
+  client_id:
   id: 3
+  picture_id:
   phone: "69"
   restricted: true
   password: d81674f38d5627bb3580afe45ee79cffafe0b539
   login: expert
-  picture_id:
   email: <%= Setting.email_mainteners %>
-  team_id: 2

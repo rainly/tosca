@@ -45,7 +45,7 @@ class User < ActiveRecord::Base
   validates_uniqueness_of :login
 
   attr_accessor :pwd_confirmation
-
+  serialize :contract_ids, Array
 
   #Preferences
 =begin
@@ -97,6 +97,10 @@ class User < ActiveRecord::Base
     number = record.phone.to_s
     number.gsub!(/(\d\d)/, '\1.').chop! if number =~ /\d{10}/
     record.phone = number
+    # ensure uniqueness
+    record.own_contracts -= record.team.contracts if record.team
+    # update contract_ids cache
+    record.contract_ids = record.contracts.collect(&:id)
     # false will invalidate the save
     true
   end
@@ -259,6 +263,7 @@ class User < ActiveRecord::Base
   def contracts
     contracts = self.own_contracts.dup
     contracts.concat(self.team.contracts) if self.team
+    contracts.uniq!
     contracts
   end
 
@@ -269,12 +274,6 @@ class User < ActiveRecord::Base
     options = { :conditions => { :inactive => false } }
     result.concat(self.team.contracts.all(options)) if self.team
     result
-  end
-
-  # TODO Rails 3 : use "memoize :contract_ids" & :client_ids
-  # see http://ryandaigle.com/articles/2008/7/16/what-s-new-in-edge-rails-memoization
-  def contract_ids
-    self.contracts.collect(&:id)
   end
 
   def client_ids
