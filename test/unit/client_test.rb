@@ -29,7 +29,6 @@ class ClientTest < ActiveSupport::TestCase
     image_file = fixture_file_upload('/files/logo_linagora.gif', 'image/gif')
     client = Client.new(:name => "Testing logo",
       :creator => User.first(:order => :id),
-      :context => "I a client with a nice logo",
       :address => "I live next door")
     assert client.save
 

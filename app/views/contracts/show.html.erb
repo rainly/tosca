@@ -79,6 +79,12 @@
   </div>
  </div><div class="c50r">
 
+   <% unless @contract.context.blank? %>
+   <div class="show">
+    <p><%= @contract.context %> </p>
+   </div>
+   <% end %>
+
    <% unless @contract.recipient_users.empty? %>
    <div class="show">
     <p><b><%= _('Recipients') %></b> <%= link_to_new_recipient(@contract.client_id) %> :</p>
