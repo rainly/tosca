@@ -47,7 +47,7 @@
         <small>
          <% elapsed += comment.elapsed.to_i %>
          <% if elapsed == 0 %>
-           <%= _(comment.statut.name) %>
+           <%= _(comment.statut.name) if comment.statut %>
          <% else %>
            <%= _("%s in") % _(comment.statut.name) if comment.statut %>
            <%= contract.rule.elapsed_formatted(elapsed, contract) %>
