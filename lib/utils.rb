@@ -54,9 +54,10 @@ def avg(data)
 end
 
 
+
+
 #Found here
 #http://blog.yanime.org/articles/2005/10/10/html2text-function-in-ruby
-#TODO : Make ordered list
 def html2text(html)
   text = html.
     gsub(/(&nbsp;)+/im, ' ').squeeze(' ').strip.gsub("\n",'').gsub(/(&lsquo;)+/, "'").

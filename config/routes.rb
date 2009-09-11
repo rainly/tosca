@@ -46,7 +46,7 @@ ActionController::Routing::Routes.draw do |map|
   # routing files to prevent download from public access
   # TODO : convert to named route
   options = { :controller => 'files', :action => 'download', :filename => /\w+(.\w+)*/ }
-  %w(file patch archive attachment).each do |file|
+  %w(file patch image).each do |file|
     map.files(":file_type/#{file}/:id/:filename", options)
   end
 
@@ -54,7 +54,7 @@ ActionController::Routing::Routes.draw do |map|
   extension_path = "#{RAILS_ROOT}/vendor/extensions"
   Dir.foreach( extension_path ) do |ext|
     next if ext == '.'
-    route_path = File.join extension_path, ext, 'config', 'routes.rb'
+    route_path = File.join extension_path, ext, 'config', 'desert_routes.rb'
     map.routes_from_plugin(ext.to_sym) if File.exists? route_path
   end if File.exists? extension_path
 

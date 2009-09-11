@@ -34,8 +34,7 @@ class Knowledge < ActiveRecord::Base
       record.errors.add_to_base _('You cannot specify a software and a domain.')
     end
   end
-  # TODO : seach name of the levels ?
-  # maybe a new Model ?
+
   validates_numericality_of :level, :integer => true,
     :greater_than => 0, :lesser_than => 6
 
@@ -50,13 +49,13 @@ class Knowledge < ActiveRecord::Base
       Subscription.destroy_by_user_and_model(self.engineer, self)
     end
   end
-  
+
   def subscribed
     return 0 unless self.engineer and self.engineer.id and self.id
     (Subscription.all(:conditions => { :user_id => self.engineer.id,
       :model_id => self.id, :model_type => 'Knowledge'}).empty? ? 0 : 1)
   end
-  
+
   def subscribed?
     (self.subscribed == 1)
   end

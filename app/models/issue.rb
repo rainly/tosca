@@ -100,7 +100,7 @@ class Issue < ActiveRecord::Base
   end
 
   def to_param
-    "#{id}-#{resume.gsub(/[^a-z1-9]+/i, '-')}"
+    "#{id}-#{resume.asciify}"
   end
 
   def name
@@ -168,8 +168,6 @@ class Issue < ActiveRecord::Base
   end
 
   # Used in the cache/sweeper system
-  # TODO : it seems Regexp are not compatible with memcache.
-  # So we will need to find a way if we migrate.
   def fragments
     [ %r{issues/#{self.id}} ]
   end
@@ -296,7 +294,7 @@ class Issue < ActiveRecord::Base
     self.class.record_timestamps = false
     rule = self.contract.rule
     self.elapsed = Elapsed.new(self)
-    options = { :conditions => 'comments.statut_id IS NOT NULL',
+    options = { :conditions => '(comments.statut_id IS NOT NULL OR comments.elapsed != 0)',
       :order => "comments.created_on ASC" }
     life_cycle = self.comments.all(options)
 
@@ -418,8 +416,8 @@ class Issue < ActiveRecord::Base
 
     options[:joins] += 'INNER JOIN comments ON comments.id = issues.last_comment_id'
 
-    conditions.first << 'issues.statut_id IN (?)'
-    conditions << Statut::OPENED
+    conditions.first << 'statuts.active = ?'
+    conditions << true
     conditions.first << '(issues.expected_on < ? OR issues.expected_on IS NULL)'
     conditions << Time.now
 

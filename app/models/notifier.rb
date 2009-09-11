@@ -68,6 +68,17 @@ class Notifier < ActionMailer::Base
     html_and_text_body(:user => user)
   end
 
+  # This method takes a User in parameter and send a welcome email,
+  # with its password
+  def user_inactive(user)
+    recipients  Setting.email_administrators
+    from        Setting.email_administrators
+    reply_to    Setting.email_noreply
+    subject     "Utilisateur désactivé"
+
+    html_and_text_body(:user => user)
+  end
+
   # This function require 1 parameter : the comment
   def issue_new_comment(comment)
     issue = comment.issue
@@ -287,7 +298,6 @@ class Notifier < ActionMailer::Base
   end
 
   #Email when a user has no rights on a contract
-  #TODO
   def email_no_rights_contract(to)
     logger.info("Bad e-mail from #{to}")
 

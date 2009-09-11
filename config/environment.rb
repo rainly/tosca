@@ -24,7 +24,7 @@
 # ENV['RAILS_ENV'] ||= 'production'
 
 # Specifies gem version of Rails to use when vendor/rails is not present
-RAILS_GEM_VERSION = '2.2.2' unless defined? RAILS_GEM_VERSION
+RAILS_GEM_VERSION = '2.3.3' unless defined? RAILS_GEM_VERSION
 
 if RUBY_VERSION >= '1.9'
   Encoding.default_internal = Encoding::UTF_8
@@ -47,7 +47,7 @@ page_cache_path = File.join RAILS_ROOT, 'public', 'cache'
 # Used to have extension
 # See http://github.com/pivotal/desert/tree/master for more info
 begin
-  gem 'desert', '~> 0.3.4'
+  gem 'desert', '~> 0.5.0'
   require 'desert'
 rescue
   # It cannot be loaded in config.gem, so we need this hack for freezed version
@@ -84,13 +84,16 @@ Rails::Initializer.run do |config|
   config.gem 'mislav-will_paginate', :version => '~> 2.3.7', :lib => 'will_paginate', :source => 'http://gems.github.com'
 
   # l10n & i18n working
-  config.gem "grosser-fast_gettext", :version => '~> 0.4.13', :lib => 'fast_gettext', :source=> 'http://gems.github.com/'
   config.gem 'gettext', :version => '~> 2.0.0'
+  config.gem 'gettext_rails', :version => '~> 2.0.0'
+  config.gem 'locale', :version => '~> 2.0.0'
+  config.gem 'locale_rails', :version => '~> 2.0.0'
+
 
   # Used to generate graphs of activity report & resize some pictures
   #config.gem 'rmagick', :lib => "RMagick2"
   # Used to load the extension mechanism
-  config.gem 'desert', :version => '~> 0.3.4'
+  config.gem 'desert', :version => '~> 0.5.0'
 
   # Force all environments to use the same logger level
   # (by default production uses :info, the others :debug)
@@ -111,11 +114,6 @@ Rails::Initializer.run do |config|
   # config.active_record.default_timezone = :utc
 
   # See Rails::Configuration for more options
-end
-
-
-if defined?(FastGettext)
-  FastGettext.add_text_domain 'tosca', :path => File.join(RAILS_ROOT, 'locale')
 end
 
 
@@ -146,11 +144,11 @@ Mime::Type.register "application/vnd.oasis.opendocument.spreadsheet", :ods
 srand
 
 # Boot Check
-path = File.join RAILS_ROOT, "locale", "fr", "LC_MESSAGES", "tosca.mo"
+path = File.join %W(#{RAILS_ROOT} locale fr LC_MESSAGES tosca.mo)
 unless File.exists? path
   puts "***********************"
   puts "Missing traducted files. I am generating it for you with "
-  puts "$ rake gettext:pack"
-  %x[#{"rake gettext:pack"}]
+  puts "$ rake makemo"
+  %x[#{"rake makemo"}]
   puts "***********************"
 end

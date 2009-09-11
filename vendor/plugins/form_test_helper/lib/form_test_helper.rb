@@ -8,15 +8,111 @@ module FormTestHelper
       end
     end
   end
-  
+
+
+  class UrlEncodedPairParser < StringScanner #:nodoc:
+    attr_reader :top, :parent, :result
+
+    def initialize(pairs = [])
+      super('')
+      @result = {}
+      pairs.each { |key, value| parse(key, value) }
+    end
+
+    KEY_REGEXP = %r{([^\[\]=&]+)}
+    BRACKETED_KEY_REGEXP = %r{\[([^\[\]=&]+)\]}
+
+    # Parse the query string
+    def parse(key, value)
+      self.string = key
+      @top, @parent = result, nil
+
+      # First scan the bare key
+      key = scan(KEY_REGEXP) or return
+      key = post_key_check(key)
+
+      # Then scan as many nestings as present
+      until eos?
+        r = scan(BRACKETED_KEY_REGEXP) or return
+        key = self[1]
+        key = post_key_check(key)
+      end
+
+      bind(key, value)
+    end
+
+    private
+      # After we see a key, we must look ahead to determine our next action. Cases:
+      #
+      #   [] follows the key. Then the value must be an array.
+      #   = follows the key. (A value comes next)
+      #   & or the end of string follows the key. Then the key is a flag.
+      #   otherwise, a hash follows the key.
+      def post_key_check(key)
+        if scan(/\[\]/) # a[b][] indicates that b is an array
+          container(key, Array)
+          nil
+        elsif check(/\[[^\]]/) # a[b] indicates that a is a hash
+          container(key, Hash)
+          nil
+        else # End of key? We do nothing.
+          key
+        end
+      end
+
+      # Add a container to the stack.
+      def container(key, klass)
+        type_conflict! klass, top[key] if top.is_a?(Hash) && top.key?(key) && ! top[key].is_a?(klass)
+        value = bind(key, klass.new)
+        type_conflict! klass, value unless value.is_a?(klass)
+        push(value)
+      end
+
+      # Push a value onto the 'stack', which is actually only the top 2 items.
+      def push(value)
+        @parent, @top = @top, value
+      end
+
+      # Bind a key (which may be nil for items in an array) to the provided value.
+      def bind(key, value)
+        if top.is_a? Array
+          if key
+            if top[-1].is_a?(Hash) && ! top[-1].key?(key)
+              top[-1][key] = value
+            else
+              top << {key => value}.with_indifferent_access
+              push top.last
+              value = top[key]
+            end
+          else
+            top << value
+          end
+        elsif top.is_a? Hash
+          key = CGI.unescape(key)
+          parent << (@top = {}) if top.key?(key) && parent.is_a?(Array)
+          top[key] ||= value
+          return top[key]
+        else
+          raise ArgumentError, "Don't know what to do: top is #{top.inspect}"
+        end
+
+        return value
+      end
+
+      def type_conflict!(klass, value)
+        raise TypeError, "Conflicting types for parameter containers. Expected an instance of #{klass} but found an instance of #{value.class}. This can be caused by colliding Array and Hash parameters like qs[]=value&qs[key]=value. (The parameters received were #{value.inspect}.)"
+      end
+  end
+
+
   class Form
     class FieldNotFoundError < RuntimeError; end
     class MissingSubmitError < RuntimeError; end
     include TagProxy
     attr_reader :tag
-    
+
     def initialize(tag, testcase, options={})
-      @tag, @testcase = tag, testcase, 
+      @tag, @testcase = tag, testcase,
       @submit_value = options.delete(:submit_value)
       @xhr = options.delete(:xhr)
     end
@@ -24,18 +120,18 @@ module FormTestHelper
     def xhr?
       @xhr
     end
-    
+
     # If you submit the form with JavaScript
     def submit_without_clicking_button
       path = self.action.blank? ? self.uri : self.action # If no action attribute on form, it submits to the same URI where the form was displayed
       params = {}
       fields.each {|field| params[field.name] = field.value unless field.value.nil? || field.value == [] || params[field.name] } # don't submit the nils, empty arrays, and fields already named
-      
+
       # Convert arrays and hashes in param keys, since test processing doesn't do this automatically
-      params = ActionController::UrlEncodedPairParser.new(params).result
+      params = UrlEncodedPairParser.new(params).result
       @testcase.make_request(request_method, path, params, self.uri, @xhr)
     end
-    
+
     # Submits the form.  Raises an exception if no submit button is present.
     def submit(opts={})
       msg = "Submit button not found in form"
@@ -48,15 +144,15 @@ module FormTestHelper
       fields_hash.update(opts)
       submit_without_clicking_button
     end
-    
+
     def uri
       @testcase.instance_variable_get("@request").request_uri
     end
-    
+
     def field_names
       fields.collect {|field| field.name }
     end
-    
+
     def fields
       return @fields if @fields
       # Input, textarea, select, and button are valid field tags.  Name is a required attribute.
@@ -85,12 +181,12 @@ module FormTestHelper
         end
       end
     end
-    
+
     def fields_hash
-      @fields_hash ||= FieldsHash.new(ActionController::UrlEncodedPairParser.new(fields.collect {|field| [field.name, field] }).result)
+      @fields_hash ||= FieldsHash.new(UrlEncodedPairParser.new(fields.collect {|field| [field.name, field] }).result)
     end
-    
-    # Accepts a block that can work with a single object (group of fields corresponding to a 
+
+    # Accepts a block that can work with a single object (group of fields corresponding to a
     # single ActiveRecord object)
     #
     # Example:
@@ -102,19 +198,19 @@ module FormTestHelper
     def with_object(object_name)
       yield self.send(object_name)
     end
-    
+
     def find_field_by_name(field_name)
       field_name = field_name.to_s.gsub(/\[\]$/, '') # Strip any trailing empty square brackets
       matching_fields = self.fields.select {|field| field.name == field_name }
       return nil if matching_fields.empty?
       matching_fields.first
     end
-    
+
     # Same as find_field_by_name but raises an exception if the field doesn't exist.
     def [](field_name)
       find_field_by_name(field_name) || raise(FieldNotFoundError, "Field named '#{field_name}' not found in form.")
     end
-    
+
     def method_missing(method, *args)
       method = method.to_s
       if method.gsub!(/=$/, '')
@@ -125,19 +221,19 @@ module FormTestHelper
         self[method].proxy
       end
     end
-    
+
     def []=(field_name, value)
       self[field_name].value = value
     end
-    
+
     def reset
       fields.each {|field| field.reset }
     end
-    
+
     def action
       tag["action"]
     end
-    
+
     def request_method
       hidden_method_field = self.find_field_by_name("_method")
       if hidden_method_field # PUT and DELETE
@@ -149,11 +245,11 @@ module FormTestHelper
       end
     end
   end
-  
+
   # A hash of fields to allow infinite nesting of fields named like 'person[address][street]'
   class FieldsHash < HashWithIndifferentAccess
     class FieldNotFoundError < RuntimeError; end
-    
+
     # Uses #merge! instead of #update when creating a new FieldsHash so #update can update
     # field values, not the field objects themselves.
     def initialize(constructor = {})
@@ -164,10 +260,10 @@ module FormTestHelper
         super(constructor)
       end
     end
-    
+
     # Ignore requests for a proxy
     def proxy; self end
-    
+
     # Allow field values to be merged in from a hash.
     # Example:
     #   new_book = {
@@ -180,14 +276,14 @@ module FormTestHelper
       other_hash.each_pair { |key, value| self[key].update(value) }
       self
     end
-    
+
     def [](key)
       unless self.has_key?(key)
-        raise(FieldNotFoundError, "Field named '#{key.to_s}' not found in FieldsHash.") 
+        raise(FieldNotFoundError, "Field named '#{key.to_s}' not found in FieldsHash.")
       end
       super
     end
-    
+
     # Allows setting form field values using key access to form fields:
     # Examples:
     #   form = select_form
@@ -196,18 +292,18 @@ module FormTestHelper
     #   submit_form do |form|
     #     form.user['name'] = 'joe'
     #   end
-    # 
+    #
     def []=(key, value)
       self[key].value = value
     end
 
-    
+
     protected
-    
+
     def convert_value(value)
       value.is_a?(Hash) ? FieldsHash.new(value) : value
     end
-    
+
     def method_missing(method, *args)
       method = method.to_s
       if method.gsub!(/=$/, '') && self.has_key?(method)
@@ -217,30 +313,30 @@ module FormTestHelper
       end
     end
   end
-  
+
   # Gets mixed into field values (strings, arrays) to make them respond to field methods
   module FieldProxy
     attr_accessor :field
-    
+
     def method_missing(*args)
       @field.send(*args)
     end
   end
-  
+
   class Field
     include TagProxy
     attr_accessor :value
     attr_reader :name, :tags
-    
+
     def initialize(tags)
       @tags = tags
       reset
     end
-        
+
     def tag
       tags.first
     end
-    
+
     def initial_value
       if tag['value']
         tag['value']
@@ -248,7 +344,7 @@ module FormTestHelper
         tag.children.to_s
       end
     end
-    
+
     # The name for the field (which may have multiple values)
     # Multiple form elements with the same name are considered only one field.  Fields that return
     # multiple values when submitted are indicated with square brackets at the end of their
@@ -256,7 +352,7 @@ module FormTestHelper
     def name
       tag['name'].gsub(/\[\]$/, '')
     end
-    
+
     def reset
       @value = initial_value
     end
@@ -264,38 +360,38 @@ module FormTestHelper
     def to_s
       self.value.to_s
     end
-    
+
     def proxy
-      returning @value do |value| 
+      returning @value do |value|
         value.extend(FieldProxy)
         value.field = self
       end
     end
-    
+
     # Update the value of the field.
     # This enables updates to be done recursively through FieldsHashes until a form is reached
     def update(new_value)
       self.value = new_value
     end
   end
-  
+
   class Submit < Field; end
-  
+
   class CheckBox < Field
     def initial_value
       tag['checked'] ? checked_value : unchecked_value
     end
-    
+
     def checked_value
       @checkbox_tag = tags.detect {|field_tag| field_tag['type'] == 'checkbox' }
       @checkbox_tag['value']
     end
-    
+
     def unchecked_value
       @hidden_tag = tags.detect {|field_tag| field_tag['type'] == 'hidden' }
       @hidden_tag ? @hidden_tag['value'] : nil
     end
-    
+
     def value=(value)
       case value
       when TrueClass, FalseClass
@@ -307,16 +403,16 @@ module FormTestHelper
         # raise "Checkbox value must be one of #{[checked_value, unchecked_value].inspect}."
       end
     end
-    
+
     def check
       self.value = checked_value
     end
-    
+
     def uncheck
       self.value = unchecked_value
     end
   end
-  
+
   class RadioButtonGroup < Field
     def initial_value
       checked_tags = tags.select {|tag| tag['checked'] }
@@ -324,11 +420,11 @@ module FormTestHelper
       # If none, the value is undefined and is not submitted
       checked_tags.any? ? checked_tags.last['value'] : nil
     end
-    
+
     def options
       tags.collect {|tag| tag['value'] }
     end
-    
+
     def value=(value)
       if options.include?(value)
         @value = value
@@ -337,13 +433,13 @@ module FormTestHelper
       end
     end
   end
-  
+
   class Select < Field
     def initialize(tags)
       @options = tags.first.select("option").collect {|option_tag| Option.new(self, option_tag) }
       super
     end
-    
+
     def initial_value
       selected_options = @options.select(&:initially_selected)
       case selected_options.size
@@ -352,12 +448,12 @@ module FormTestHelper
       when 0 # If no option is selected, browsers generally use the first
         @options.first.value
       else
-        # When multiple options selected but the multiple attribute is not specified, 
+        # When multiple options selected but the multiple attribute is not specified,
         # Firefox selects the last of the options.
         selected_options.last.value
       end
     end
-    
+
     def options
       if options_are_labeled?
         @options.collect do |option|
@@ -367,13 +463,13 @@ module FormTestHelper
         @options.collect(&:value)
       end
     end
-    
+
     # True if options are like <option value="4">Spain</option> rather than
     # <option>Spain</option> or <option value="Spain">Spain</option>
     def options_are_labeled?
       @options.any? {|option| option.label }
     end
-    
+
     # If +value+ is a label, return the real value.  If not an option, raise error.
     def lookup_in_options(value)
       if options.include?(value)
@@ -384,30 +480,30 @@ module FormTestHelper
         raise "Value '#{value}' isn't one of the options for #{self.name}."
       end
     end
-    
+
     def value=(value)
       @value = lookup_in_options(value)
     end
   end
-  
+
   # A select element that allows multiple values to be set
   class SelectMultiple < Select
     class NameMissingSquareBracketsError < RuntimeError; end
-    
+
     def initialize(tags)
       super
       raise NameMissingSquareBracketsError, "The name of #{name} must be #{name}[] for multiple values to be sent to Rails' params" unless tag['name'] =~ /\[\]$/
     end
-    
+
     def initial_value
       @options.select(&:initially_selected).collect(&:value)
     end
-    
+
     def value=(values)
       @value = values.collect {|value| lookup_in_options(value) }
     end
   end
-  
+
   class Option
     attr_reader :tag, :label, :value, :initially_selected
     def initialize(select, tag)
@@ -423,29 +519,29 @@ module FormTestHelper
       end
     end
   end
-  
+
   class Hidden < Field
     def value=(value)
       raise TypeError, "Can't modify hidden field's value"
     end
-    
+
     # Permit changing the value of a hidden field (as if using Javascript)
     def set_value(value)
       @value = value
     end
   end
-  
+
   module Link
     def follow
       path = self.href
       @testcase.make_request(request_method, path)
     end
     alias_method :click, :follow
-    
+
     def href
       self["href"]
     end
-    
+
     def request_method
       if self["onclick"] && self["onclick"] =~ /'_method'.*'value', '(\w+)'/
         $1.to_sym
@@ -453,7 +549,7 @@ module FormTestHelper
         :get
       end
     end
-    
+
     def testcase=(testcase)
       @testcase = testcase
       self

@@ -34,17 +34,20 @@ if defined? Mongrel::DirHandler
   end
 end
 
-class Module
-  def include_all_modules_from(parent_module)
-    parent_module.constants.each do |const|
-      mod = parent_module.const_get(const)
-      if mod.class == Module && !defined? mod
-        send(:include, mod)
-        include_all_modules_from(mod)
-      end
+
+# Workaround for mongrel with Rails >= 2.3.x
+# see https://rails.lighthouseapp.com/projects/8994/tickets/2319
+module ActionController
+  class AbstractRequest < ActionController::Request
+    def self.relative_url_root=(path)
+      ActionController::Base.relative_url_root=(path)
+    end
+    def self.relative_url_root
+      ActionController::Base.relative_url_root
     end
   end
 end
+
 
 
 # TODO : find a lib or a way to compute holidays
@@ -103,7 +106,8 @@ class Date
 end
 
 class Time
-  include FastGettext::Translation if defined?(FastGettext)
+  include GetText
+  bindtextdomain('tosca')
   ##
   # Compute the difference between <tt>start_date</tt> and
   # <tt>end_date</tt> during Working Days, as define in Date::working?
@@ -147,9 +151,11 @@ class Time
       result += one_working_day if current_day.working?
       current_day = current_day.next
     end
-    # Last day
+    # Last day : end_date can be beyond the closes
     if start_day != end_day && end_day.working?
-      result += @@diff_day.call(end_date.change(:hour => opens_at), end_date)
+      end_close_time = (closes_at == 24 ? end_date.end_of_day : end_date.change(:hour => closes_at))
+      last_end_date = [ end_close_time, end_date ].min
+      result += @@diff_day.call(end_date.change(:hour => opens_at), last_end_date)
     end
     result
   end
@@ -214,7 +220,7 @@ class Time
                 n_('%d day', '%d days', val)) % val
     when day..(3*day)
       days = (distance / day).floor
-      hours = ((distance % 1.day)/60).round
+      hours = ((distance % day)/60).round
       out = ((opened ? n_('%d working day', '%d working days', days) :
                        n_('%d day', '%d days', days)) % days)
       out << ' ' << _('and') << ' ' << n_('%d hour', '%d hours', hours) % hours
@@ -228,41 +234,6 @@ class Time
 
 end
 
-#############################################
-# Needed for Debian                         #
-# We had to override this in order to fix   #
-# an issue when gettext_localize call this  #
-# interface                                 #
-#############################################
-class CGI
-  module QueryExtension
-    # Get the value for the parameter with a given key.
-    #
-    # If the parameter has multiple values, only the first will be
-    # retrieved; use #params() to get the array of values.
-    def [](key)
-      params = @params[key]
-      return '' unless params
-      value = params[0]
-      if @multipart
-        if value
-          return value
-        elsif defined? StringIO
-          StringIO.new("")
-        else
-          Tempfile.new("CGI")
-        end
-      else
-        str = if value then value.dup else "" end
-        str.extend(Value)
-        str.set_params(params)
-        str
-      end
-    end
-  end
-end
-
-
 class ActionController::Caching::Sweeper
   # Helper, in order to expire fragments, see ActiveRecord#fragments()
   # for more info
@@ -270,23 +241,6 @@ class ActionController::Caching::Sweeper
     fragments.each { |f| expire_fragment f }
   end
 end
-
-#To not have an error if routes = nil
-module ActionController
-  class Base
-    def url_for(options = nil) #:doc:
-      case options || options={}
-        when String
-          options
-        when Hash
-          @url.rewrite(rewrite_options(options))
-        else
-          polymorphic_url(options)
-      end
-    end
-  end
-end
-
 
 module ActionView
   class Base
@@ -407,6 +361,11 @@ module ActiveRecord
       self.scoped_methods.pop
     end
 
+    # Override coz of a strange refresh bug after a comment on Rails 2.3.3
+    def self.scoped_methods
+      Thread.current[:"#{self}_scoped_methods"] ||= (self.default_scoping || []).dup
+    end
+
     # By convention, all tosca records have or implements a 'name' method,
     # used mainly for displaying and selecting them. It's also their default
     # to_s implementation, even if it's free to specialize it when needed.
@@ -486,64 +445,11 @@ module ActiveRecord
   end
 end
 
-
-# This one fix a bug encountered with cache + mongrel + prefix.
-# Url was badly rewritten
-# deactivated for rails 2.2.2
-# TODO : see if it's needed or if it can go out
-=begin
-module ActionView
-  module Helpers
-    module AssetTagHelper
-      public
-      def stylesheet_link_tag(*sources)
-        options = sources.extract_options!.stringify_keys
-        cache   = options.delete("cache")
-
-        if ActionController::Base.perform_caching && cache
-          joined_stylesheet_name = (cache == true ? "all" : cache) + ".css"
-          joined_stylesheet_path = File.join(STYLESHEETS_DIR, joined_stylesheet_name)
-
-          write_asset_file_contents(joined_stylesheet_path, compute_relative_stylesheet_paths(sources))
-          stylesheet_tag(joined_stylesheet_name, options)
-        else
-          expand_stylesheet_sources(sources).collect { |source| stylesheet_tag(source, options) }.join("\n")
-        end
-      end
-
-      def javascript_include_tag(*sources)
-        options = sources.extract_options!.stringify_keys
-        cache   = options.delete("cache")
-
-        if ActionController::Base.perform_caching && cache
-          joined_javascript_name = (cache == true ? "all" : cache) + ".js"
-          joined_javascript_path = File.join(JAVASCRIPTS_DIR, joined_javascript_name)
-
-          write_asset_file_contents(joined_javascript_path, compute_relative_javascript_paths(sources))
-          javascript_src_tag(joined_javascript_name, options)
-        else
-          expand_javascript_sources(sources).collect { |source| javascript_src_tag(source, options) }.join("\n")
-        end
-      end
-
-      private
-      def compute_relative_path(source, dir, ext = nil)
-        source += ".#{ext}" if File.extname(source).blank? && ext
-        # TODO : remove the '/' if possible
-        "#{dir}/#{source}"
-      end
-
-      def compute_relative_javascript_paths(sources)
-        expand_javascript_sources(sources).collect { |source| compute_relative_path(source, 'javascripts', 'js') }
-      end
-
-      def compute_relative_stylesheet_paths(sources)
-        expand_stylesheet_sources(sources).collect { |source| compute_relative_path(source, 'stylesheets', 'css') }
-      end
-    end
+class ActiveRecord::SessionStore::Session
+  def to_s
+    self.inspect
   end
 end
-=end
 
 
 #To have homemade message-id in mails
