@@ -43,11 +43,11 @@ class Software < ActiveRecord::Base
 
 
   # See ApplicationController#scope
-  def self.set_scope(contract_ids)
+  def self.set_index_scope(user)
     @@scope_joins ||= " LEFT OUTER JOIN `versions` ON versions.software_id = softwares.id INNER JOIN contracts_versions ON versions.id = contracts_versions.version_id "
     self.scoped_methods << { :find => { :conditions =>
-        [ 'contracts_versions.contract_id IN (?)', contract_ids ],
-        :joins => @@scope_joins } } if contract_ids
+        [ 'contracts_versions.contract_id IN (?)', user.contract_ids ],
+        :joins => @@scope_joins } }
   end
 
   # See ApplicationController#scope

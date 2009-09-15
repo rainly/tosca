@@ -37,17 +37,11 @@ class Tag
     name
   end
 
-
-  # This model is scoped by Contract
-  def self.scope_contract?
-    true
-  end
-
   # See ApplicationController#scope
   # Users can only see their contractual tags or generic ones
-  def self.set_scope(contract_ids)
+  def self.set_scope(user)
     scope = { :conditions =>
-      [ 'tags.contract_id IN (?) OR tags.contract_id IS NULL', contract_ids ] }
+      [ 'tags.contract_id IN (?) OR tags.contract_id IS NULL', user.contract_ids ] }
     self.scoped_methods << { :find => scope, :count => scope }
   end
 

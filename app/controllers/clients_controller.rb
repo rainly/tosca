@@ -91,7 +91,6 @@ class ClientsController < ApplicationController
       # All the fields must be coherent with lib/filters.rb related Struct.
       conditions = Filters.build_conditions(clients_filters, [
         [:text, 'clients.name',
-                'clients.context',
                 'clients.address', :multiple_like ]
       ], special_cond)
       @filters = clients_filters

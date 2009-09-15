@@ -31,11 +31,13 @@ class SoftwareTest < ActiveSupport::TestCase
     Software.remove_scope
     assert !Software.all(:conditions => {:private => true}).empty?
 
-    assert Release.scope_contract?
-    contract_id = Contract.first(:order => :id).id
-    Release.set_scope([contract_id])
-    Release.all.each{|r| assert r.contract_id === contract_id}
-    Release.remove_scope
+    User.all.each do |u|
+      software_users = u.contracts.collect(&:softwares).flatten
+      Software.set_index_scope(u)
+      Software.all.each{|s| assert software_users.include?(s)}
+      Software.remove_scope
+    end
+
   end
 
   def test_arrays

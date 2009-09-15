@@ -38,26 +38,21 @@ module Scope
   def set_scopes(user)
     # defined locally since this file is loaded by application controller
     # it reduces dramatically loading time
-    @@scope_client ||= @@models.select(&:scope_client?)
-    @@scope_contract ||= @@models.select(&:scope_contract?)
+    @@scope_contract ||= @@models.select{|m| m.respond_to?(:set_scope)}
+    @@public_user ||= User.new(:contract_ids => [0])
 
     if !user.nil?
       # You can NOT change this condition without looking at remove_scope
       if ((user.engineer? && user.restricted?) || user.recipient?)
         contract_ids = user.contract_ids
-        client_ids = user.client_ids
-        if contract_ids.empty?
-          contract_ids = [ 0 ]
-          client_ids = [ user.client_id ] if user.recipient?
-        end
-        @@scope_contract.each {|m| m.set_scope(contract_ids) }
-        @@scope_client.each {|m| m.set_scope(client_ids, user) }
+        contract_ids = [ 0 ] if contract_ids.empty?
+        @@scope_contract.each {|m| m.set_scope(user) }
         # Forbid access to private comments for recipients. It's just paranoia.
         Comment.set_private_scope if user.recipient?
       end
     else
       # Forbid access to issue if we are not connected. It's just a paranoia.
-      Issue.set_scope([0])
+      Issue.set_scope(@@public_user)
       Software.set_public_scope
     end
   end
@@ -68,7 +63,6 @@ module Scope
     if !user.nil?
       # You can NOT change this condition without looking at set_scope
       if ((user.engineer? and user.restricted?) || user.recipient?)
-        @@scope_client.each(&:remove_scope)
         @@scope_contract.each(&:remove_scope)
         Comment.remove_scope if user.recipient?
       end

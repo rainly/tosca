@@ -435,13 +435,6 @@ module ActiveRecord
       res
     end
 
-    # Used to launch or not the scope system. See lib/scope.rb for more details
-    def self.scope_client?
-      false
-    end
-    def self.scope_contract?
-      false
-    end
   end
 end
 

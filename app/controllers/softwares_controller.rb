@@ -64,7 +64,7 @@ class SoftwaresController < ApplicationController
 
     # optional scope, for customers
     begin
-      Software.set_scope(@session_user.contract_ids) if scope
+      Software.set_index_scope(@session_user) if scope
       @softwares = Software.paginate options
     ensure
       Software.remove_scope if scope

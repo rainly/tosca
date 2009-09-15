@@ -42,7 +42,7 @@ class ReleasesControllerTest < ActionController::TestCase
 
       assert_difference('Release.count') do
         form = select_form 'main_form'
-        form.release.name = "rc 1"
+        form.release.name = "rc 115"
         form.submit
       end
       assert_redirected_to version_path(assigns(:release).version)
