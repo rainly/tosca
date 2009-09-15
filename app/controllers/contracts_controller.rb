@@ -128,6 +128,8 @@ class ContractsController < ApplicationController
       if @contract.save
         @contract.update_attribute :engineer_users, engineers
         flash[:notice] = _('Contract was successfully created.')
+        @contract.reload
+        Notifier::deliver_contract_new @contract
         redirect_to contracts_path
       else
         @contract.engineer_users = engineers
@@ -143,10 +145,17 @@ class ContractsController < ApplicationController
 
   def update
     @contract = Contract.find(params[:id])
+
+    # need a real copy of all content of the contract,
+    # not only its attributes and references
+    old_contract = @contract.to_hash
+
     @contract.creator = @session_user unless @contract.creator
     _aggregate_commitments
     if @contract.update_attributes(params[:contract])
       flash[:notice] = _('Contract was successfully updated.')
+      @contract.reload
+      Notifier::deliver_contract_update(@session_user, @contract, ( @contract - old_contract ))
       redirect_to contract_path(@contract)
     else
       _form and render :action => 'edit'

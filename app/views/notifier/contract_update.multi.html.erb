@@ -1,0 +1,133 @@
+<%
+  def __url_for(obj, controller = 'account', name_field = 'name')
+    url = url_for :controller => controller, :action => "show", :id => obj.id, :only_path => false
+    "<a href=\"#{url}\">#{h(obj.send(name_field))}</a>"
+  end
+
+  # compute list
+  def compute_list(list)
+    tmp = []
+    result = 'vide'
+    unless list.empty?
+      list.each { |e| tmp << h(e) }
+      result = tmp.join(', ')
+    end
+    result
+  end
+
+  def red(text)
+    %Q{<span style="color:red">#{text}</span>}
+  end
+
+  def green(text)
+    %Q{<span style="color:green">#{text}</span>}
+  end
+%>
+
+   Le <%= __url_for(@contract, 'contracts') %> vient d&lsquo;être créé par <i><%= h(@session_user) %></i> :
+<br />
+
+<br />
+<% modified = false
+  [ :client, :name, :salesman, :tam, :internal_ml, :customer_ml,
+     :inactive, :start_date_formatted, :end_date_formatted, :rule ].
+   each { |e| modified=true if @diff_contract.has_key?(e) } %>
+<% if modified %>
+<hr noshade size="1px"/>
+<b><u>Informations</u></b><br />
+<%   if @diff_contract.has_key? :client %>
+. Client: <%= red(@diff_contract[:client][:old]) %> ==&gt; <%= green(@diff_contract[:client][:new]) %><br />
+<%   end %>
+<%   if @diff_contract.has_key? :name %>
+. Nom: <%= red(h(@diff_contract[:name][:old])) %> ==&gt; <%= green(h(@diff_contract[:name][:new])) %><br />
+<%   end %>
+<%   if @diff_contract.has_key? :salesman %>
+. Contact Commercial: <%= red( @diff_contract[:salesman][:old] || 'vide' ) %> ==&gt; <%= green( @diff_contract[:salesman][:new] || 'vide' ) %><br />
+<%   end %>
+<%   if @diff_contract.has_key? :tam %>
+. Contact technique: <%= red( @diff_contract[:tam][:old] || 'vide' ) %> ==&gt; <%= green( @diff_contract[:tam][:new] || 'vide' ) %><br />
+<%   end %>
+<%   if @diff_contract.has_key? :internal_ml %>
+. Mailing liste interne: <%= red(h(@diff_contract[:internal_ml][:old])) %> ==&gt; <%= green(h(@diff_contract[:internal_ml][:new])) %><br />
+<%   end %>
+<%   if @diff_contract.has_key? :customer_ml %>
+. Mailing liste cliente: <%= red(h(@diff_contract[:customer_ml][:old])) %> ==&gt; <%= green(h(@diff_contract[:customer_ml][:new])) %><br />
+<%   end %>
+<%   if @diff_contract.has_key? :inactive %>
+. État: <%= red(h( @diff_contract[:inactive][:old] ? 'inactif' : 'actif' )) %> ==&gt; <%= green(h( @diff_contract[:inactive][:new] ? 'inactif' : 'actif' )) %><br />
+<%   end %>
+<%   if @diff_contract.has_key? :start_date_formatted %>
+. Début: <%= red(h(@diff_contract[:start_date_formatted][:old])) %> ==&gt; <%= green(h(@diff_contract[:start_date_formatted][:new])) %><br />
+<%   end %>
+<%   if @diff_contract.has_key? :end_date_formatted %>
+. Fin: <%= red(h(@diff_contract[:end_date_formatted][:old])) %> ==&gt; <%= green(h(@diff_contract[:end_date_formatted][:new])) %><br />
+<%   end %>
+<%   if @diff_contract.has_key? :rule %>
+. Type: <%= red(h(@diff_contract[:rule][:old] || 'aucun')) %> ==&gt; <%= green(h(@diff_contract[:rule][:new] || 'aucun')) %><br />
+<%   end %>
+<br />
+<% end %>
+
+<% if @diff_contract.has_key?(:taken_into_account_delay) || @diff_contract.has_key?(:commitments) %>
+<hr noshade size="1px" />
+<b><u>Engagement Contractuel</u></b><br />
+<%   if @diff_contract.has_key? :taken_into_account_delay %>
+. Prise en compte avant: <%= red(h("#{@diff_contract[:taken_into_account_delay][:old].to_i} heure(s)")) %> ==&gt; <%= green(h("#{@diff_contract[:taken_into_account_delay][:new].to_i} heure(s)")) %><br />
+<%   end %>
+<%   if @diff_contract.has_key? :commitments %>
+<%     unless @diff_contract[:commitments][:del].empty? %>
+<%       @diff_contract[:commitments][:del].each do |commitment| %>
+<%=        red(h( "- #{commitment} (supprimé)")) %><br />
+<%       end %>
+<%     end %>
+<%     unless @diff_contract[:commitments][:add].empty? %>
+<%       @diff_contract[:commitments][:add].each do |commitment| %>
+<%=        green(h( "+ #{commitment} (ajouté)")) %><br />
+<%       end %>
+<%     end %>
+<%   end %>
+<br />
+<% end %>
+
+<% if @diff_contract.has_key?(:engineer_users) || @diff_contract.has_key?(:teams) || @diff_contract.has_key?(:versions) %>
+<hr noshade size="1px" />
+<b><u>Gestion</u></b><br />
+<%   if @diff_contract.has_key? :recipient_users %>
+. Bénéficiaires: <%= red(compute_list(@diff_contract[:recipient_users][:old])) %> ==&gt; <%= green(compute_list(@diff_contract[:recipient_users][:new]))%><br />
+<%   end %>
+
+<%   if @diff_contract.has_key?(:engineer_users) || @diff_contract.has_key?(:teams)  %>
+<u>Ressources humaines</u>:<br />
+<%     if @diff_contract.has_key? :engineer_users %>
+<%       unless @diff_contract[:engineer_users][:del].empty? %>
+<%= red(". Expert(s) supprimé(s)")%>: <%= compute_list @diff_contract[:engineer_users][:del]  %><br />
+<%       end %>
+<%       unless @diff_contract[:engineer_users][:add].empty? %>
+<%= green(". Expert(s) ajouté(s)") %>: <%= compute_list @diff_contract[:engineer_users][:add] %><br />
+<%       end %>
+<%     end %>
+<%     if @diff_contract.has_key? :teams %>
+<%       unless @diff_contract[:teams][:del].empty? %>
+<%= red(". Équipe(s) supprimé(s)") %>: <%= compute_list @diff_contract[:teams][:del] %><br />
+<%       end %>
+<%       unless @diff_contract[:teams][:add].empty? %>
+<%= green(". Équipe(s) ajoutée(s)") %>: <%= compute_list @diff_contract[:teams][:add] %><br />
+<%       end %>
+<%     end %>
+<%   end %>
+<br />
+<% end %>
+
+<% if @diff_contract.has_key? :versions %>
+<u>Logiciels supportés</u>:<br />
+<%   unless @diff_contract[:versions][:del].empty? %>
+<%= red(". Logiciel supprimé(s)") %>: <%= compute_list @diff_contract[:versions][:del] %><br />
+<%   end %>
+<%   unless @diff_contract[:versions][:add].empty? %>
+<%= green(". Logiciel ajouté(s)") %>: <%= compute_list @diff_contract[:versions][:add] %><br />
+<%   end %>
+<br />
+<% end %>
+
+<br />
+<%= render :partial => 'end_mail' %>

@@ -1,0 +1,77 @@
+<%
+  def __url_for(obj, controller = 'account', name_field = 'name')
+    url = url_for :controller => controller, :action => "show", :id => obj.id, :only_path => false
+    "<a href=\"#{url}\">#{h(obj.send(name_field))}</a>"
+  end
+
+  # compute commitment list
+  commitments = ''
+  @contract.commitments.each do |e|
+    commitments << ". #{e.issuetype.name} (#{e.severity.name}): "
+    commitments << "#{Time.in_words(e.workaround.days, true)} / #{Time.in_words(e.correction.days, true)}<br />"
+  end
+
+  # compute software list
+  result = []
+  softwares = 'vide'
+  unless @contract.versions.empty?
+    @contract.versions.each { |v| result << '. ' + __url_for(v, 'versions', 'full_software_name') }
+    softwares = result.join(', ')
+  end
+
+  # compute list
+  def compute_list(list)
+    tmp = []
+    result = 'vide'
+    unless list.empty?
+      list.each { |e| tmp << h(e) }
+      result = tmp.join(', ')
+    end
+    result
+  end
+
+  recipients = compute_list @contract.recipient_users
+  experts    = compute_list @contract.engineer_users
+  teams      = compute_list @contract.teams
+
+%>
+
+   Le <%= __url_for(@contract, 'contracts') %> vient d&lsquo;être créé par <i><%= h(@contract.creator)%></i> :
+<br />
+
+
+<hr noshade size="1px"/>
+<b><u>Informations</u></b><br />
+
+. Client: <%= __url_for(@contract.client, 'clients') %><br />
+. Nom: <%= h(@contract.name) %><br />
+. Contact Commercial: <%= ( @contract.salesman ? __url_for(@contract.salesman) : 'vide' ) %><br />
+. Contact technique: <%= ( @contract.tam ? __url_for(@contract.tam) : 'vide' ) %><br />
+. Mailing liste interne: <%= h(@contract.internal_ml) %><br />
+. Mailing liste cliente: <%= h(@contract.customer_ml) %><br />
+. État: <%= h( @contract.inactive? ? "inactif" : "actif" ) %><br />
+. Début: <%= h(complete_date(@contract.start_date)) %><br />
+. Fin: <%= h(complete_date(@contract.end_date)) %><br />
+<% if @contract.rule %>
+. Type: <%= h(@contract.rule.to_s) %><br />
+<% end %>
+<br />
+<hr noshade size="1px" />
+<b><u>Engagement Contractuel</u></b><br />
+
+. Prise en compte avant: <%= h(@contract.taken_into_account_delay) %> heure(s)<br />
+<%= commitments %>
+<br />
+<hr noshade size="1px" />
+<b><u>Gestion</u></b><br />
+. Bénéficiaires : <%= h(recipients) %><br />
+
+<u>Ressources humaines</u>:<br />
+. Experts: <%= experts %><br />
+. Équipe: <%= teams %><br />
+
+<u>Logiciels supportés</u>:<br />
+<%= softwares %>
+<br />
+<br />
+<%= render :partial => 'end_mail' %>
