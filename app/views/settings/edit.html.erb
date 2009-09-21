@@ -44,7 +44,10 @@
    <table>
     <tr>
      <th><label for="settings_ldap_enabled"><%=_('LDAP authentification for experts ?')%></th>
-     <td><%= check_box_tag 'settings[ldap_enabled]', 1, Setting.ldap_enabled? %></td>
+     <td>
+      <%= hidden_field_tag 'settings[ldap_enabled]', 0 %>
+      <%= check_box_tag 'settings[ldap_enabled]', 1, Setting.ldap_enabled? %>
+     </td>
     </tr><tr>
      <th><label for="settings_ldap_host"><%= _('Server') %></th>
      <td><%= text_field_tag 'settings[ldap_host]', Setting.ldap_host %></td>
