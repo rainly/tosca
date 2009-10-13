@@ -17,7 +17,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 class Notifier < ActionMailer::Base
-  helper :mail
+  helper :mail, :dates
 
   HTML_CONTENT = 'text/html'
   TEXT_CONTENT = 'text/plain'
@@ -94,6 +94,23 @@ class Notifier < ActionMailer::Base
     _common_issue_headers(issue, comment, comment.user)
     html_and_text_body(options)
   end
+
+
+
+  def contract_new(contract)
+    _common_contract_headers contract, _('Creation of contract: ')
+    html_and_text_body :contract => contract
+  end
+
+
+
+  def contract_update(session_user, contract, diff_contract)
+    _common_contract_headers contract, _('Modification of contract: ')
+    html_and_text_body :session_user => session_user,
+                       :contract      => contract,
+                       :diff_contract => diff_contract
+  end
+
 
   def welcome_idea(text, to, from)
     case to
@@ -190,6 +207,25 @@ class Notifier < ActionMailer::Base
 
   private
 
+  def _common_contract_headers(contract, action)
+    recipients  contract.compute_recipients
+    from        Setting.email_administrators
+    reply_to    Setting.email_administrators
+    subject     "[tosca] #{action} #{contract.name}"
+    headers     _headers_mail_contract(contract)
+  end
+
+  #For mail headers : http://www.expita.com/header1.html
+  def _headers_mail_contract(contract)
+    headers = {}
+    #Refers to the contract
+    headers[HEADER_REFERENCES] = headers[HEADER_IN_REPLY_TO] = message_id(contract.id)
+    headers[HEADER_XCONTRACT]  = contract.to_s.asciify
+    headers[HEADER_XCLIENT]    = contract.client.to_s.asciify
+    return headers
+  end
+
+
   def _common_issue_headers(issue, comment, user)
     recipients  issue.compute_recipients(comment.private)
     cc          issue.compute_copy(comment.private)
@@ -206,7 +242,7 @@ class Notifier < ActionMailer::Base
     #Refers to the issue
     headers[HEADER_REFERENCES] = headers[HEADER_IN_REPLY_TO] = message_id((issue.first_comment || comment).mail_id)
     headers[HEADER_XSOFTWARE]  = issue.software.name.asciify if issue.software
-    headers[HEADER_XCONTRACT]  = issue.contract.to_s.asciify!
+    headers[HEADER_XCONTRACT]  = issue.contract.to_s.asciify
     headers[HEADER_XCLIENT]    = issue.client.to_s.asciify
     headers[HEADER_XASSIGNEE]  = issue.engineer.name.asciify if issue.engineer
     return headers

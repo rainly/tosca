@@ -20,3 +20,4 @@ doc/*
 *.*~
 db/*.db
 config/locales/missing*
+*.swp

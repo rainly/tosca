@@ -43,7 +43,7 @@ class Contract < ActiveRecord::Base
     :order => 'users.name ASC'
   has_and_belongs_to_many :teams, :order => 'teams.name', :uniq => true
 
-  validates_presence_of :client, :rule, :creator, :start_date, :end_date
+  validates_presence_of :client, :rule, :creator, :start_date, :end_date, :tam
   validates_numericality_of :opening_time, :closing_time,
     :only_integer => true
   validates_inclusion_of :opening_time, :closing_time, :in => 0..24
@@ -151,6 +151,73 @@ class Contract < ActiveRecord::Base
     conditions = {:user_id => user.id,
       :model_type => 'Contract', :model_id => self.id}
     Subscription.count(:conditions => conditions) >= 1
+  end
+
+  def compute_recipients
+    res = []
+    res << self.tam.email_name unless self.tam
+    res << self.creator.email_name if res.empty?
+    res << self.salesman.email_name unless self.salesman
+    res.join ', '
+  end
+
+  def to_hash
+    commitments_list = []
+    self.commitments.each do |i|
+      k = "#{i.issuetype.name} (#{i.severity.name})"
+      v = "#{Time.in_words(i.workaround.days, true)} / #{Time.in_words(i.correction.days, true)}"
+      commitments_list << "#{k}: #{v}"
+    end
+
+    {
+      # informations
+      :name                 => self.name.to_s,
+      :client               => self.client.to_s,
+      :salesman             => self.salesman.to_s,
+      :tam                  => self.tam.to_s,
+      :internal_ml          => self.internal_ml.to_s,
+      :customer_ml          => self.customer_ml.to_s,
+      :inactive             => self.inactive,
+      :start_date_formatted => self.start_date_formatted,
+      :end_date_formatted   => self.end_date_formatted,
+      :rule                 => self.rule.to_s,
+
+      # commitments
+      :commitments              => commitments_list,
+      :taken_into_account_delay => self.taken_into_account_delay,
+
+      # managment
+      :recipient_users => self.recipient_users.map { |i| i.name },
+      :engineer_users  => self.engineer_users.map { |i| i.name },
+      :teams           => self.teams.map { |i| i.name },
+      :versions        => self.versions.map { |i| i.full_software_name } ,
+    }
+  end
+
+  # compute difference between self and a Contract.to_hash result
+  def -(old_contract)
+    new_contract = self.to_hash
+    result = { }
+
+    return result unless old_contract.is_a? Hash
+
+    [ :name, :client, :salesman, :tam, :internal_ml, :customer_ml, :inactive,
+      :start_date_formatted, :end_date_formatted, :rule, :taken_into_account_delay,
+      :recipient_users, :engineer_users, :teams, :versions, :commitments ].each do |attr|
+      old = old_contract[attr]
+      new = new_contract[attr]
+
+      unless old == new
+        if old.is_a?( Array ) || new.is_a?( Array )
+          result[ attr ] = { :del => (old - new), :add => (new - old) }
+          result.delete attr if result[ attr ][:add].empty? && result[ attr ][:del].empty?
+        else
+          result[ attr ] = { :old  => old, :new => new }
+        end
+      end
+    end
+
+    result
   end
 
   private
