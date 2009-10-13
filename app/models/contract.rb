@@ -155,9 +155,8 @@ class Contract < ActiveRecord::Base
 
   def compute_recipients
     res = []
-    res << self.tam.email_name unless self.tam
-    res << self.creator.email_name if res.empty?
-    res << self.salesman.email_name unless self.salesman
+    res << (self.tam ? self.tam.email_name : self.creator.email_name)
+    res << self.salesman.email_name if self.salesman
     res.join ', '
   end
 
