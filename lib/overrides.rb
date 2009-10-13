@@ -37,6 +37,7 @@ end
 
 # Workaround for mongrel with Rails >= 2.3.x
 # see https://rails.lighthouseapp.com/projects/8994/tickets/2319
+=begin
 module ActionController
   class AbstractRequest < ActionController::Request
     def self.relative_url_root=(path)
@@ -47,7 +48,7 @@ module ActionController
     end
   end
 end
-
+=end
 
 
 # TODO : find a lib or a way to compute holidays
