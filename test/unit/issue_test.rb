@@ -29,7 +29,7 @@ class IssueTest < ActiveSupport::TestCase
     issue = Issue.new({:description => 'description', :resume => 'resume',
         :recipient => recipient, :submitter => recipient,
         :statut => statuts(:statut_00001), :severity => severities(:severity_00001),
-        :contract => recipient.contracts.first })
+        :contract_id => recipient.contracts.first.id })
     # must have a recipient
     assert issue.save
 
@@ -42,9 +42,19 @@ class IssueTest < ActiveSupport::TestCase
   end
 
   def test_scope
-    Issue.set_scope([Contract.first(:order => :id).id])
-    Issue.all
-    Issue.remove_scope
+    assert Issue.respond_to?(:set_scope)
+    User.all.each do |u|
+      Issue.set_scope(u)
+      Issue.all.each do |i|
+        assert u.contract_ids.include?(i.contract_id) unless u.admin?
+      end
+      Issue.remove_scope
+    end
+  end
+
+  def test_helpers
+    Issue.all.each{|i| assert !i.pretty_id.blank? }
+    Issue.new.set_defaults(User.first, :software_id => 1)
   end
 
   def test_arrays
@@ -64,8 +74,6 @@ class IssueTest < ActiveSupport::TestCase
   def test_helpers_function
     Issue.all.each { |r|
       r.time_running?
-      result = r.state_at(Time.now)
-      assert_instance_of Issue, result
       r.critical?
       assert_not_nil r.client
       assert_not_nil r.commitment
@@ -75,6 +83,13 @@ class IssueTest < ActiveSupport::TestCase
       r.full_software_name
     }
   end
+
+  def test_pending_helpers
+    Issue.find_pending_user(User.recipients.first)
+    Issue.find_pending_user(User.engineers.first)
+    Issue.find_pending_contracts([Contract.first.id])
+  end
+
 
   def test_reset_elapsed
     Issue.first(:order => :id).reset_elapsed

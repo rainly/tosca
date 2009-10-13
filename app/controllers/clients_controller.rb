@@ -36,13 +36,6 @@ class ClientsController < ApplicationController
 
   def show
     @client = Client.find(params[:id])
-    # allows to see only binaries of this client for all without scope
-    begin
-      Version.set_scope(@client.contract_ids)
-      render
-    ensure
-      Version.remove_scope
-    end
   end
 
   def new
@@ -98,7 +91,6 @@ class ClientsController < ApplicationController
       # All the fields must be coherent with lib/filters.rb related Struct.
       conditions = Filters.build_conditions(clients_filters, [
         [:text, 'clients.name',
-                'clients.context',
                 'clients.address', :multiple_like ]
       ], special_cond)
       @filters = clients_filters

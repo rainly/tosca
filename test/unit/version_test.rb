@@ -89,4 +89,17 @@ class VersionTest < ActiveSupport::TestCase
     assert(ff_2_generic > ff_2_0_0_13)
   end
 
+
+  def test_scope
+    assert Version.respond_to?(:set_scope)
+    User.all.each do |u|
+      Version.set_scope(u)
+      Version.all.each do |v|
+        assert_not_equal((v.contract_ids - u.contract_ids).size,
+                         v.contract_ids.size)
+      end
+      Version.remove_scope
+    end
+  end
+
 end

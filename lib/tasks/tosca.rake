@@ -49,19 +49,18 @@ namespace :tosca do
     puts "You need to install those dependencies : "
     puts "sudo apt-get install ruby1.8 ri ri1.8 rdoc rake irb rubygems mongrel"
     puts "Is those dependencies here ? [Y/n]"
-    exit 0 if STDIN.gets.chomp! == 'n'
+    exit 0 if STDIN.gets.chomp! =~ /n/i
 
     # Database #
-    puts "Use default access to mysql [Y/n] ?"
-    if STDIN.gets.chomp! != 'n'
-      FileUtils.cp "#{root}/config/database.yml.sample",
+    puts "Use default access to sqlite [Y/n] ?"
+    if STDIN.gets.chomp! !~ /n/i
+      FileUtils.cp "#{root}/config/database.yml.sqlite",
                    "#{root}/config/database.yml"
     end
-    FileUtils.cp "#{root}/config/config.rb.sample", "#{root}/config/config.rb"
     # needed for dev mode, when stylesheets are not cached in single file.
     FileUtils.ln_s '../../public/images/', 'public/stylesheets/images', :force => true
 
-    Rake::Task['gettext:pack'].invoke
+    Rake::Task['makemo'].invoke
     Rake::Task['db:create'].invoke
     Rake::Task['db:migrate'].invoke
   end

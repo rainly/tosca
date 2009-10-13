@@ -54,11 +54,13 @@ class Client < ActiveRecord::Base
     }
   end
 
+
   # don't use this function outside of an around_filter
-  def self.set_scope(client_ids, user)
+  def self.set_scope(user)
     if user.recipient?
-      self.scoped_methods << { :find => { :conditions =>
-        [ 'clients.id IN (?)', client_ids ]} }
+      self.scoped_methods << { :find => { :joins =>
+          'INNER JOIN contracts c ON c.client_id = clients.id',
+          :conditions => [ 'c.id IN (?)', user.contract_ids ] } }
     else # an entry is needed for remove_scope call
       self.scoped_methods << {}
     end
@@ -73,19 +75,6 @@ class Client < ActiveRecord::Base
     options = { :conditions => [ 'cu.contract_id IN (?) AND users.client_id IS NULL', contract_ids ],
       :joins => 'INNER JOIN contracts_users cu ON cu.user_id=users.id' }
     User.all(options)
-  end
-
-  def softwares
-    return [] if contracts.empty?
-    return contracts.first.softwares if contracts.size == 1
-    # speedier if there is one openbar contract
-    contracts.each { |c| return Software.all if c.rule.max == -1 }
-
-    # default case, when there is an association with releases.
-    conditions = [ 'softwares.id IN (SELECT DISTINCT versions.software_id ' +
-                   ' FROM versions WHERE versions.contract_id IN (?)) ',
-                   contracts_ids ]
-    Software.all(:conditions => conditions, :order => 'softwares.name')
   end
 
   def contributions
@@ -124,11 +113,6 @@ class Client < ActiveRecord::Base
   # specialisation, since a Client can be "inactive".
   def self.find_select(options = {}, collect = true)
     find_active4select(options, collect)
-  end
-
-  #This model is scoped by Client
-  def self.scope_client?
-    true
   end
 
 end

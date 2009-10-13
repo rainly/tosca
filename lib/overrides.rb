@@ -37,6 +37,7 @@ end
 
 # Workaround for mongrel with Rails >= 2.3.x
 # see https://rails.lighthouseapp.com/projects/8994/tickets/2319
+=begin
 module ActionController
   class AbstractRequest < ActionController::Request
     def self.relative_url_root=(path)
@@ -47,6 +48,7 @@ module ActionController
     end
   end
 end
+=end
 
 
 
@@ -435,13 +437,12 @@ module ActiveRecord
       res
     end
 
-    # Used to launch or not the scope system. See lib/scope.rb for more details
-    def self.scope_client?
-      false
-    end
-    def self.scope_contract?
-      false
-    end
+  end
+end
+
+class ActiveRecord::SessionStore::Session
+  def to_s
+    self.inspect
   end
 end
 

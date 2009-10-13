@@ -1,6 +1,6 @@
 <%= public_link_to _('Homepage') , welcome_path %> >
 <%= public_link_to _('Software') , softwares_path %> >
-<%= public_link_to @software.group, group_path(@software.group_id) %> >
+<%#= public_link_to @software.group, group_path(@software.group_id) %> >
 <%= @software %> <%= link_to_edit(@software) %>
 <% expert = @session_user and @session_user.engineer? %>
 <div class="subcolumns">
@@ -36,11 +36,6 @@
         <tr>
           <th><%= _('Technologies') %></th>
           <td colspan="2"><%= @software.skills.collect{|c| c.name}.join(', ') %></td>
-        </tr>
-
-        <tr>
-          <th><%= _('Group') %></th>
-          <td colspan="2"><%= public_link_to(@software.group.name, group_path(@software.group_id) ) if @software.group %></td>
         </tr>
 
         <tr>
@@ -98,7 +93,7 @@
         </tr>
 
         <tr>
-          <td><b><%=_('Tags')%></b></td>
+          <td><b><%=_('Groups')%></b></td>
           <td><%= @software.tag_list %></td>
         </tr>
       </table>

@@ -1,15 +1,16 @@
 digraph x {
 
 //rotate=90;
-{rank=min; Statut TypeIssue Statut }
+{rank=same; Contract Issue }
+{rank=same; Contribution User Tag }
+{rank=same; ContributionType ContributionState Hyperlink }
+{rank=same; Knowledge Version }
 
 Rule [label="Rule\nComponent\nTimeCredit"]
 
 Alert -> Team [arrowhead=dot,dir=both,arrowtail=crow]
 
 Archives -> Release [arrowhead=dot,dir=both,arrowtail=crow]
-
-Attachment -> User [arrowtail=crow,dir=both,arrowhead=dot]
 
 Changelog -> Release [arrowhead=dot,dir=both,arrowtail=crow]
 
@@ -20,33 +21,27 @@ Comment -> User [arrowhead=dot,dir=both,arrowtail=crow]
 Comment -> Attachment [arrowhead=odot,dir=both,arrowtail=dot]
 Comment -> Statut [arrowhead=dot,dir=both,arrowtail=crow]
 Comment -> Severity [arrowhead=dot,dir=both,arrowtail=crow]
-Comment -> User [label="Engineer",arrowhead=dot,dir=both,arrowtail=crow]
 
 Commitment -> Severity [arrowhead=dot,dir=both,arrowtail=crow]
 Commitment -> IssueType [arrowhead=dot,dir=both,arrowtail=crow]
 
 Contract -> Client [arrowhead=dot,dir=both,arrowtail=crow]
-Contract -> User [arrowhead=crow,dir=both,arrowtail=crow]
 Contract -> Commitment [arrowhead=crow,arrowtail=crow,dir=both]
 Contract -> Rule [arrowhead=dot,arrowtail=crow]
-Contract -> User [label="Creator",arrowhead=dot,dir=both,arrowtail=crow]
-Contract -> User [label="Salesman",arrowhead=dot,dir=both,arrowtail=crow]
-Contract -> User [label="Tam",arrowhead=dot,dir=both,arrowtail=crow]
+Contract -> User [label="Recipients, Engineers,\n Creator, Salesman\n & Tam",arrowhead=crow,dir=both,arrowtail=crow]
 Contract -> Team [arrowhead=crow,arrowtail=crow,dir=both]
-Contract -> Subscription [arrowhead=crow,arrowtail=dot,dir=both]
+// Contract -> Subscription [arrowhead=crow,arrowtail=dot,dir=both]
 
 Contribution -> ContributionType [arrowhead=dot,dir=both,arrowtail=crow]
 Contribution -> ContributionState [arrowhead=dot,dir=both,arrowtail=crow]
 Contribution -> Software [arrowhead=dot,dir=both,arrowtail=crow]
 Contribution -> User [label="Engineer",arrowhead=dot,dir=both,arrowtail=crow]
-Contribution -> Version [label="AffectedVersion",arrowhead=dot,dir=both,arrowtail=crow]
-Contribution -> Version [label="FixedVersion",arrowhead=dot,dir=both,arrowtail=crow]
+Contribution -> Version [label=" Affected & Fixed\n Version",arrowhead=dot,dir=both,arrowtail=crow]
 Contribution -> Hyperlink [arrowhead=crow,dir=both,arrowtail=dot]
 
 Issue -> IssueType [arrowhead=dot,dir=both,arrowtail=crow]
 Issue -> Elapsed [arrowhead=dot,dir=both,arrowtail=dot]
 Issue -> Severity [arrowhead=dot,dir=both,arrowtail=crow]
-Issue -> Socle [arrowhead=dot,dir=both,arrowtail=crow]
 Issue -> Contribution [arrowhead=dot,dir=both,arrowtail=crow]
 Issue -> Contract [arrowhead=dot,dir=both,arrowtail=crow]
 Issue -> Statut [arrowhead=dot,dir=both,arrowtail=crow]
@@ -54,17 +49,15 @@ Issue -> Phonecall [arrowhead=crow,arrowtail=odot,dir=both]
 Issue -> Software [arrowhead=odot,dir=both,arrowtail=crow]
 Issue -> Release [arrowhead=odot,dir=both,arrowtail=crow]
 Issue -> Version [arrowhead=odot,dir=both,arrowtail=crow]
-Issue -> Subscription [arrowhead=crow,dir=both,arrowtail=dot]
-Issue -> User [label="Recipient",arrowhead=dot,dir=both,arrowtail=crow]
-Issue -> User [label="Engineer",arrowhead=dot,dir=both,arrowtail=crow]
-Issue -> User [label="Submitter",arrowhead=dot,dir=both,arrowtail=crow]
+// Issue -> Subscription [arrowhead=crow,dir=both,arrowtail=dot]
+Issue -> User [label=" Recipient, Engineer\n & Submitter",arrowhead=dot,dir=both,arrowtail=crow]
 
 IssueType -> Workflow [arrowhead=crow,dir=both,arrowtail=dot]
 
 Knowledge -> User [label="Engineer",arrowhead=dot,dir=both,arrowtail=crow]
 Knowledge -> Skill [arrowhead=dot,dir=both,arrowtail=crow]
 Knowledge -> Software [arrowhead=dot,dir=both,arrowtail=crow]
-Knowledge -> Subscription [arrowhead=dot,dir=both,arrowtail=crow]
+// Knowledge -> Subscription [arrowhead=dot,dir=both,arrowtail=crow]
 
 Preference -> User [arrowhead=dot,arrowtail=dot,dir=both]
 
@@ -81,20 +74,19 @@ Software -> Group [arrowhead=dot,dir=both,arrowtail=crow]
 Software -> Picture [arrowhead=dot,dir=both,arrowtail=crow]
 Software -> Hyperlink [arrowhead=crow,dir=both,arrowtail=dot]
 
-Subscription -> User [arrowhead=dot,dir=both,arrowtail=crow]
+// Subscription -> User [arrowhead=dot,dir=both,arrowtail=crow]
 
 Tag -> User [arrowhead=dot,dir=both,arrowtail=crow]
 Tag -> Contract [arrowhead=dot,dir=both,arrowtail=crow]
 
 Team -> User [label="Contact",arrowhead=dot,dir=both,arrowtail=crow]
-Team -> User [label="Contact",arrowhead=crow,dir=both,arrowtail=dot]
 
 User -> Picture [arrowhead=dot,dir=both,arrowtail=crow]
 User -> Role [arrowhead=dot,arrowtail=crow,dir=both]
 User -> Skill [arrowhead=crow,arrowtail=crow,dir=both]
 User -> Phonecall [arrowhead=crow,dir=both,arrowtail=dot]
 User -> Client [arrowhead=dot,dir=both,arrowtail=crow]
-User -> Preference [arrowhead=crow,dir=both,arrowtail=crow]
+// User -> Preference [arrowhead=crow,dir=both,arrowtail=crow]
 
 Version -> Software [arrowhead=dot,dir=both,arrowtail=crow]
 Version -> Contract [arrowhead=crow,dir=both,arrowtail=crow]

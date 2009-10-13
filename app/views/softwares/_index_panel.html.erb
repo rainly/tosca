@@ -20,6 +20,9 @@
         <li><%= remote_link_to_software :all %></li>
       <% end %>
       <li><%= link_to _('List of the versions'), versions_path %></li>
+      <% Software::actions.each do |a| %>
+       <li><%= send(a) %></li>
+      <% end %>
     </ul>
   <% end %>
 
@@ -39,7 +42,7 @@
     <li><b><%= _('Description') %> </b><br />
     <%= text_field :filters, :description %></li>
     <li><b><%= _('Group') %> </b><br />
-    <%= select_filter(@groups, 'group') %></li>
+    <%= select_filter(@groups, 'group', :field => 'group') %></li>
   </ul>
 
 <% end %>

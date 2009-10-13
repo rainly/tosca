@@ -104,36 +104,34 @@ protected
     result << '.'
   end
 
+  # used to escape hammer of search engine bots
+  rescue_from ActionController::RoutingError, :with => :rescued_error
+  rescue_from ActiveRecord::RecordNotFound, :with => :rescued_error
+
 private
 
-  # This array contains all errors that we want to rescue nicely
-  # It's mainly for search engine bots, which seems to love
-  # hammering wrong address
-  def rescue_action_in_public(exception)
-    @@rescued_errors ||= [ ActiveRecord::RecordNotFound,
-                           ActionController::RoutingError ]
-    msg = nil
-    @@rescued_errors.each{ |k| if exception.is_a? k
-        msg = _('This address is not valid. If you think this is an error, do not hesitate to contact us.')
-      end
-    }
-    if msg.nil?
-      msg = _('An error has occured. We are now advised of your issue and have all the required information to investigate in order to fix it.') +
-        '<br />' + _('Please contact us if your problem remains.')
-      if ENV['RAILS_ENV'] == 'production'
-        Notifier::deliver_error_message(exception, clean_backtrace(exception),
-                                        session.instance_variable_get("@data"),
-                                        params, request.env)
-      end
-    end
+  def rescued_error
+    render_error_msg(_('This address is not valid. If you think this is an error, do not hesitate to contact us.'))
+  end
 
+  def rescue_action_in_public(exception)
+    msg = _('An error has occured. We are now advised of your issue and have all the required information to investigate in order to fix it.') +
+      '<br />' + _('Please contact us if your problem remains.')
+    if ENV['RAILS_ENV'] == 'production'
+      Notifier::deliver_error_message(exception, clean_backtrace(exception),
+                                      session.instance_variable_get("@data"),
+                                      params, request.env)
+    end
+    render_error_msg(msg)
+  end
+
+  def render_error_msg(msg)
     if request.xhr?
       render :text => ('<div class="information error">' + msg + '</div>')
     else
       flash[:warn] = msg
       redirect_to(welcome_path, :status => :moved_permanently)
     end
-
   end
 
 end

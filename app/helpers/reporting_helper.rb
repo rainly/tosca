@@ -272,20 +272,22 @@ module ReportingHelper
   # argument. 0% correspond to green, 100% to red and > 100% to black
   # usage : progress_bar(50) display a orange bar, which correspond to 50%
   def progress_bar( percent, desc = _('progress bar') )
-    return '-' if (not percent.is_a? Numeric or percent <= 0)
-    percent = (percent * 100)
+    return '-' unless percent and percent.is_a? Numeric
+    percent = percent.to_f
+    return '-' if !percent.finite? or !percent.between?(0.0, 1.0)
+    percent = (percent * 100.0)
     case percent
-    when percent < 0
-      percent = 0
+    when percent < 0.0
+      percent = 0.0
     when 0..50.0
-      red, green = (255*percent/50.0).round , 255
+      red, green = (255.0*percent/50.0).round , 255.0
     when 50.0..100.0
-      red , green = 255, (255*(100-percent)/50.0).round
+      red , green = 255.0, (255*(100.0-percent)/50.0).round
     else
-      red, green = 0, 0
+      red, green = 0.0, 0.0
     end
 
-    color = "rgb( #{red}, #{green},0)"
+    color = "rgb( #{red}, #{green}, 0)"
 
     result = image_percent(1.23*percent, color, desc)
     result << " (#{(percent).round} %) " if @session_user.engineer?
@@ -294,7 +296,7 @@ module ReportingHelper
 
   def progress_text(elapsed, total, interval)
     result = Time.in_words(elapsed, interval)
-    return result if elapsed == 0
+    return result if elapsed == nil
     elapsed = Elapsed.relative2absolute(elapsed, interval)
     return _('Exceedance') if @recipient && elapsed > total
     result += " / #{Time.in_words(total)}"

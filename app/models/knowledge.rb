@@ -42,6 +42,7 @@ class Knowledge < ActiveRecord::Base
     ( skill_id && skill_id != 0 ? skill.name : software.name )
   end
 
+=begin
   def subscribed=(value)
     if value == '1'
       Subscription.create(:user => self.engineer, :model => self)
@@ -65,5 +66,5 @@ class Knowledge < ActiveRecord::Base
         :model_id => self.id,
         :model_type => 'Knowledge'})
   end
-
+=end
 end

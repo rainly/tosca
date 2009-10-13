@@ -29,7 +29,6 @@ class ClientTest < ActiveSupport::TestCase
     image_file = fixture_file_upload('/files/logo_linagora.gif', 'image/gif')
     client = Client.new(:name => "Testing logo",
       :creator => User.first(:order => :id),
-      :context => "I a client with a nice logo",
       :address => "I live next door")
     assert client.save
 
@@ -56,9 +55,12 @@ class ClientTest < ActiveSupport::TestCase
   end
 
   def test_scope
-    Client.set_scope([Client.first(:order => :id).id], User.first)
-    Client.all
-    Client.remove_scope
+    assert Client.respond_to?(:set_scope)
+    User.recipients.each do |u|
+      Client.set_scope(u)
+      Client.all.each{|c| assert_equal u.client_id, c.id}
+      Client.remove_scope
+    end
   end
 
   def test_overloaded_find_select
@@ -75,10 +77,6 @@ class ClientTest < ActiveSupport::TestCase
         assert_instance_of(User, e) and assert_nil(e.client_id)
       end
     end
-  end
-
-  def test_softwares
-    Client.all.each{ |c| c.softwares.each { |i| assert_instance_of(Software, i) } }
   end
 
   def test_contributions

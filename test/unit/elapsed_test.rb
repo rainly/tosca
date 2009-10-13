@@ -19,11 +19,31 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class ElapsedTest < ActiveSupport::TestCase
-  fixtures :elapseds
-
 
   def test_to_strings
     check_strings Elapsed
+  end
+
+  def test_elapsed_life_cycle
+    Issue.find(12).elapsed.destroy
+    e = Elapsed.new(Issue.find(12))
+
+    comment = Comment.first(:conditions => {:statut_id => 2})
+    comment.elapsed = 1
+    e.add comment
+    assert( e.taken_into_account != 0 )
+    assert( e.taken_into_account_progress(1/24.0) != 0 )
+
+    comment.statut_id = 5
+    e.add comment
+    assert( e.workaround != 0 )
+    assert( e.workaround_progress(8/24.0) != 0 )
+    e.remove comment
+
+    comment.statut_id = 7
+    e.add comment
+    assert( e.correction != 0 )
+    assert( e.correction_progress(8/24.0) != 0 )
   end
 
 end

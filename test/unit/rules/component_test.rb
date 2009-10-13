@@ -22,6 +22,14 @@ class Rules::ComponentTest < ActiveSupport::TestCase
   fixtures :components
 
   def test_to_strings
-    check_strings Rules::Component
+    check_strings Rules::Component, :short_description
   end
+
+  def test_complete_description
+    contract = Contract.first
+    Rules::Component.all.each do |c|
+      assert !c.complete_description(1234, contract).blank?
+    end
+  end
+
 end

@@ -42,18 +42,10 @@ class ReleasesControllerTest < ActionController::TestCase
 
       assert_difference('Release.count') do
         form = select_form 'main_form'
-        form.release.name = "rc 1"
+        form.release.name = "rc 115"
         form.submit
       end
       assert_redirected_to version_path(assigns(:release).version)
-    end
-  end
-
-  def test_should_show_release
-    %w(admin manager expert).each do |l|
-      login l, l
-      get :show, :id => Release.first(:order => :id).id
-      assert_response :success
     end
   end
 

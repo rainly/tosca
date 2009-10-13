@@ -16,6 +16,19 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-class Group < ActiveRecord::Base
-  has_many :softwares
+require 'test_helper'
+
+class SettingTest < ActiveSupport::TestCase
+
+  def test_to_strings
+    check_strings Setting
+  end
+
+  def test_cache
+    Setting.check_cache
+  end
+
+  def test_setting
+    Setting[:company_name] = 'test company'
+  end
 end

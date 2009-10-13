@@ -30,7 +30,7 @@ class AccountControllerTest < ActionController::TestCase
       assert session[:user] == User.find_by_login(l)
 
       logout
-      assert_redirected_to '/'
+      assert_redirected_to '/welcome'
       assert session[:user].nil?
     end
   end

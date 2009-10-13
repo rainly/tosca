@@ -63,6 +63,7 @@ class ContractsControllerTest < ActionController::TestCase
       form = select_form "main_form"
       form.contract.opening_time = 9
       form.contract.closing_time = 18
+      form.contract.tam_id = User.find_by_login('manager').id
       form.submit
       assert flash.has_key?(:notice)
       assert_response :redirect

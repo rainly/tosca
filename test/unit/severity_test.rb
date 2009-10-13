@@ -22,6 +22,6 @@ class SeverityTest < ActiveSupport::TestCase
   fixtures :severities
 
   def test_to_strings
-    check_strings Severity
+    check_strings Severity, :fake4translation
   end
 end

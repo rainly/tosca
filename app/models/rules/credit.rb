@@ -46,7 +46,7 @@ class Rules::Credit < ActiveRecord::Base
     end
   end
 
-  def complete_description(value, contract, bold = true)
+  def complete_description(value, contract)
     if max == -1
       _("%s time-credits of %s have already been spent") %
         [ "<b>#{value}</b>", "<b>#{Time.in_words(time.hours)}</b>" ]

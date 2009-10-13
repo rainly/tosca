@@ -45,7 +45,7 @@ class SoftwaresControllerTest < ActionController::TestCase
       assert_equal software.versions.first.contract.id, 3
     end
 
-    xhr :get, :index, :filters => { :group_id => 2 }
+    xhr :get, :index, :filters => { :group => "Bureautique" }
     assert_response :success
     assigns(:softwares).each { |l| assert_equal l.group_id, 2 }
   end
@@ -57,9 +57,9 @@ class SoftwaresControllerTest < ActionController::TestCase
     assert_template 'show'
 
     logout
-    assert_raise(ActiveRecord::RecordNotFound) {
-      get :show, :id => 4
-    }
+    get :show, :id => 4
+    assert_response :redirect
+    assert_redirected_to '/welcome'
   end
 
   def test_create
@@ -67,7 +67,7 @@ class SoftwaresControllerTest < ActionController::TestCase
     assert_difference('Software.count') do
       form = select_form 'form_software'
       form.software.name = 'Ant'
-      form.software.group_id = 4
+      form.software.tag_list = ["Bureautique" ]
       form.software.summary = 'compilation java tool'
       form.software.skill_ids = '1'
       form.submit

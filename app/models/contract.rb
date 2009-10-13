@@ -43,7 +43,7 @@ class Contract < ActiveRecord::Base
     :order => 'users.name ASC'
   has_and_belongs_to_many :teams, :order => 'teams.name', :uniq => true
 
-  validates_presence_of :client, :rule, :creator, :start_date, :end_date
+  validates_presence_of :client, :rule, :creator, :start_date, :end_date, :tam
   validates_numericality_of :opening_time, :closing_time,
     :only_integer => true
   validates_inclusion_of :opening_time, :closing_time, :in => 0..24
@@ -62,14 +62,9 @@ class Contract < ActiveRecord::Base
   Rules = [ 'Rules::Credit', 'Rules::Component' ] unless defined? Contract::Rules
   INNER_JOIN_TEAMS = 'INNER JOIN contracts_teams ct ON ct.contract_id=contracts.id'
 
-  # This model is scoped by Contract
-  def self.scope_contract?
-    true
-  end
-
-  def self.set_scope(contract_ids)
+  def self.set_scope(user)
     self.scoped_methods << { :find => { :conditions =>
-        [ 'contracts.id IN (?)', contract_ids ] } }
+        [ 'contracts.id IN (?)', user.contract_ids ] } }
   end
 
   def engineers
@@ -158,23 +153,96 @@ class Contract < ActiveRecord::Base
     Subscription.count(:conditions => conditions) >= 1
   end
 
-  #This model is scoped by Contract
-  def self.scoped_contract?
-    true
+  def compute_recipients
+    res = []
+    res << (self.tam ? self.tam.email_name : self.creator.email_name)
+    res << self.salesman.email_name if self.salesman
+    res.join ', '
+  end
+
+  def to_hash
+    commitments_list = []
+    self.commitments.each do |i|
+      k = "#{i.issuetype.name} (#{i.severity.name})"
+      v = "#{Time.in_words(i.workaround.days, true)} / #{Time.in_words(i.correction.days, true)}"
+      commitments_list << "#{k}: #{v}"
+    end
+
+    {
+      # informations
+      :name                 => self.name.to_s,
+      :client               => self.client.to_s,
+      :salesman             => self.salesman.to_s,
+      :tam                  => self.tam.to_s,
+      :internal_ml          => self.internal_ml.to_s,
+      :customer_ml          => self.customer_ml.to_s,
+      :inactive             => self.inactive,
+      :start_date_formatted => self.start_date_formatted,
+      :end_date_formatted   => self.end_date_formatted,
+      :rule                 => self.rule.to_s,
+
+      # commitments
+      :commitments              => commitments_list,
+      :taken_into_account_delay => self.taken_into_account_delay,
+
+      # managment
+      :recipient_users => self.recipient_users.map { |i| i.name },
+      :engineer_users  => self.engineer_users.map { |i| i.name },
+      :teams           => self.teams.map { |i| i.name },
+      :versions        => self.versions.map { |i| i.full_software_name } ,
+    }
+  end
+
+  # compute difference between self and a Contract.to_hash result
+  def -(old_contract)
+    new_contract = self.to_hash
+    result = { }
+
+    return result unless old_contract.is_a? Hash
+
+    [ :name, :client, :salesman, :tam, :internal_ml, :customer_ml, :inactive,
+      :start_date_formatted, :end_date_formatted, :rule, :taken_into_account_delay,
+      :recipient_users, :engineer_users, :teams, :versions, :commitments ].each do |attr|
+      old = old_contract[attr]
+      new = new_contract[attr]
+
+      unless old == new
+        if old.is_a?( Array ) || new.is_a?( Array )
+          result[ attr ] = { :del => (old - new), :add => (new - old) }
+          result.delete attr if result[ attr ][:add].empty? && result[ attr ][:del].empty?
+        else
+          result[ attr ] = { :old  => old, :new => new }
+        end
+      end
+    end
+
+    result
   end
 
   private
-  # To make sure we have only once an engineer
-  before_save do |record|
-    record.engineer_users = record.engineer_users -
-      (record.teams.collect(&:users).flatten)
+
+  before_save :update_users
+  def update_users
+    # To make sure we have only once an engineer
+    self.engineer_users = self.engineer_users -
+      (self.teams.collect(&:users).flatten)
+    # removed users should also be updated
+    res = []
+    res << self.users << self.teams.collect(&:users)
+    if self.id
+      res << Contract.find(self.id).users
+      res << Contract.find(self.id).teams.collect(&:users)
+    end
+    res.flatten!
+    res.uniq!
+    res.each{|u| u.save!}
   end
 
   # Ensure tam is subscribed
-  after_save do |record|
-    unless record.subscribed?(record.tam)
-      Subscription.create(:user => record.tam, :model => record)
-    end
-  end
+  #  after_save do |record|
+  #    unless record.subscribed?(record.tam)
+  #      Subscription.create(:user => record.tam, :model => record)
+  #    end
+  #  end
 
 end

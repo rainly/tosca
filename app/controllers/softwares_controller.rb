@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+require_dependency 'filters'
 
 class SoftwaresController < ApplicationController
   helper  :contracts, :contributions, :groups, :hyperlinks,
@@ -33,7 +34,7 @@ class SoftwaresController < ApplicationController
     end
 
     options = { :order => 'softwares.name', :per_page => 15, :include =>
-      [:group,:picture,:skills], :page => params[:page] }
+      [:picture,:skills], :page => params[:page] }
     conditions = []
 
     if params.has_key? :filters
@@ -55,7 +56,7 @@ class SoftwaresController < ApplicationController
       conditions = Filters.build_conditions(software_filters, [
         [:software, 'softwares.name', :like ],
         [:description, 'softwares.description', :like ],
-        [:group_id, 'softwares.group_id', :equal ],
+        [:group, 'softwares.cached_tag_list', :like ],
         [:contract_id, ' cv.contract_id', :in ]
       ])
       @filters = software_filters
@@ -64,7 +65,7 @@ class SoftwaresController < ApplicationController
 
     # optional scope, for customers
     begin
-      Software.set_scope(@session_user.contract_ids) if scope
+      Software.set_index_scope(@session_user) if scope
       @softwares = Software.paginate options
     ensure
       Software.remove_scope if scope
@@ -137,14 +138,14 @@ class SoftwaresController < ApplicationController
 private
   def _form
     @skills = Skill.find_select
-    @groups = Group.find_select
+    @groups = Software.tag_counts.collect{|t| [t.id, t.name]}
     @licenses = License.find_select
   end
 
   def _panel
     @contracts = Contract.find_select(Contract::OPTIONS) if @session_user and @session_user.engineer?
     @technologies = Skill.find_select
-    @groups = Group.find_select
+    @groups = Software.tag_counts.collect{|t| [t.name, t.name]}
   end
 
   def add_logo

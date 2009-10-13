@@ -19,10 +19,6 @@
 require File.dirname(__FILE__) + '/../test_helper'
 
 class UserTest < ActiveSupport::TestCase
-  self.use_instantiated_fixtures  = true
-
-  fixtures :users, :clients, :roles, :permissions, :permissions_roles,
-    :contracts_users, :contracts
 
   def test_to_strings
     check_strings User
@@ -60,8 +56,7 @@ class UserTest < ActiveSupport::TestCase
 
   def test_create_person
     u = User.new(:role_id => 1, :login => "newu", :email => "foo@bar.com",
-                 :name => "foo",
-                 :informations => "Somme infos")
+                 :name => "foo")
     u.generate_password
     assert u.save
 
@@ -110,8 +105,7 @@ class UserTest < ActiveSupport::TestCase
 
   def test_disallowed_passwords
     u = User.new(:role_id => 1, :email => "foo@bar.com",
-                 :name => "foo",
-                 :informations => "Some infos")
+                 :name => "foo")
     u.login = "nobody"
 
     u.pwd = u.pwd_confirmation = "tiny"
@@ -131,8 +125,7 @@ class UserTest < ActiveSupport::TestCase
 
   def test_bad_logins
     u = User.new(:role_id => 1, :email => "foo@bar.com",
-                 :name => "foo",
-                 :informations => "Some infos")
+                 :name => "foo")
     u.pwd = u.pwd_confirmation = "a_very_secure_password"
 
     [ "x",  "hugebobhugebobhugebobhugebobhugebobhugebobhugebobhugebobhugebobhugebobhugebobhugebobhugebobhugebobhugebobhugebobhugebobhugebobhugebobhugebobhugebobhugebobhugebobhugebobhugebobhugebobhug", "" ].each { |p|
@@ -183,11 +176,19 @@ class UserTest < ActiveSupport::TestCase
     assert_equal(expert.kind, kind_expert)
     assert_equal(manager.kind, kind_expert)
     assert_equal(admin.kind, kind_expert)
+
+    # even fake fields has to be tested
+    assert_equal(viewer.client_form, true)
+    assert_equal(customer.client_form, true)
+    assert_equal(expert.client_form, false)
+    assert_equal(manager.client_form, false)
+    assert_equal(admin.client_form, false)
   end
 
   def test_trigram
     user = users(:user_expert)
     assert_equal(user.trigram, "EXP")
+    User.all.each{|u| assert !u.trigram.blank?}
   end
 
   def test_engineers

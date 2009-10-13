@@ -1,21 +1,24 @@
 digraph Request {
 
 //rotate=90;
+{rank=same; Contract Software Version }
+{rank=min; IssueType Elapsed Contribution }
 
 Comment -> Issue [arrowhead=dot,dir=both,arrowtail=crow]
 Comment -> User [arrowhead=dot,dir=both,arrowtail=crow]
+Comment -> Attachment [arrowhead=dot,dir=both,arrowtail=crow]
+Comment -> Statut [arrowhead=dot,dir=both,arrowtail=crow]
+Comment -> Severity [arrowhead=dot,dir=both,arrowtail=crow]
 
 Contract -> User [arrowhead=crow,dir=both,arrowtail=crow]
 Contract -> Rule [arrowhead=dot,arrowtail=crow]
+Contract -> Version [arrowhead=crow,dir=both,arrowtail=crow]
 
 User -> Role [arrowhead=dot,arrowtail=crow,dir=both]
-User -> Skill [arrowhead=crow,arrowtail=crow,dir=both]
-User -> Client [arrowhead=dot,dir=both,arrowtail=crow]
 
 Issue -> IssueType [arrowhead=dot,dir=both,arrowtail=crow]
 Issue -> Elapsed [arrowhead=dot,dir=both,arrowtail=dot]
 Issue -> Severity [arrowhead=dot,dir=both,arrowtail=crow]
-Issue -> Socle [arrowhead=dot,dir=both,arrowtail=crow]
 Issue -> Contribution [arrowhead=dot,dir=both,arrowtail=crow]
 Issue -> Contract [arrowhead=dot,dir=both,arrowtail=crow]
 Issue -> Statut [arrowhead=dot,dir=both,arrowtail=crow]
@@ -23,10 +26,8 @@ Issue -> Phonecall [arrowhead=crow,arrowtail=odot,dir=both]
 Issue -> Software [arrowhead=odot,dir=both,arrowtail=crow]
 Issue -> Release [arrowhead=odot,dir=both,arrowtail=crow]
 Issue -> Version [arrowhead=odot,dir=both,arrowtail=crow]
-Issue -> Subscription [arrowhead=crow,dir=both,arrowtail=dot]
-Issue -> User [label="Recipient",arrowhead=dot,dir=both,arrowtail=crow]
-Issue -> User [label="Engineer",arrowhead=dot,dir=both,arrowtail=crow]
-Issue -> User [label="Submitter",arrowhead=dot,dir=both,arrowtail=crow]
+// Issue -> Subscription [arrowhead=crow,dir=both,arrowtail=dot]
+Issue -> User [label="Recipient, Engineer\n & Submitter",arrowhead=dot,dir=both,arrowtail=crow]
 
 Version -> Software [arrowhead=dot,dir=both,arrowtail=crow]
 

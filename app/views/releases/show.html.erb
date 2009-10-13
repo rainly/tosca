@@ -2,7 +2,6 @@
 <% software = @release.software %>
 <%= public_link_to _('Home'), welcome_path %> >
  <%= public_link_to _('Software'), softwares_path %> >
-  <%= public_link_to software.group.name, software_path(software.group_id) %> >
    <%= public_link_to software, software_path(software) %> >
     <%= link_to version, version_path(version) %> >
       <%= h @release %> <%= link_to_edit(@release) %>
@@ -15,7 +14,7 @@
  <p><b><%=_('Release')%>:</b> <%= @release %></p>
  <p><b><%=_('Packaged ?')%></b> <%= _('Yes') if @release.packaged? %></p>
  <p><b><%=_('Active ?')%></b> <%= _('Yes') unless @release.inactive? %></p>
- 
+
  <% if @release.changelog %>
  <fieldset>
    <legend><%=_('Changelog') %></legend>
@@ -29,7 +28,7 @@
   <p>
   <% if @release.archives.count > 0 %>
     <% options = { :no_title => true, :edit => 'archive'} %>
-    <%= show_list(@release.archives, _('archive'), options) { |a| 
+    <%= show_list(@release.archives, _('archive'), options) { |a|
       link_to a.name, archive_path(a)
     } %>
   <% end %>

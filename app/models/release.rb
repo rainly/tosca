@@ -48,15 +48,10 @@ class Release < ActiveRecord::Base
   end
 
   # See ApplicationController#scope
-  def self.set_scope(contract_ids)
+  def self.set_scope(user)
     self.scoped_methods << { :find => { :conditions =>
-        [ 'releases.contract_id IN (?)', contract_ids ]
-      } } if contract_ids
-  end
-
-  #This model is scoped by Contract
-  def self.scoped_contract?
-    true
+        [ 'releases.contract_id IN (?)', user.contract_ids ]
+      } }
   end
 
 end

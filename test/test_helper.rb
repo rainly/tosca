@@ -82,6 +82,7 @@ class ActiveSupport::TestCase
     end
     return t
   end
+
   def uploaded_png(path, filename=nil)
     uploaded_file(path, 'image/png', filename)
   end

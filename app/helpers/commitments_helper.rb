@@ -60,16 +60,20 @@ module CommitmentsHelper
       end
       out << '</td><td>'
       severities = []
-      severities.push ['» ',0]
+      severities.push [_('Disabled'),0]
       # selecteds = []
       out << %Q{<select id="contract_commitment_ids"
          name="contract[commitment_ids_#{last_issuetype_id}_#{last_severity_id}]">}
       while (e) do
         workaround = Time.in_words(e.workaround.days, true)
         correction = Time.in_words(e.correction.days, true)
-        workaround = _('None') if workaround == '-'
-        correction = _('None') if correction == '-'
-        severities.push ["#{workaround} | #{correction}", e.id]
+        if workaround == '-' && correction == '-'
+          severities.push [_('without commitment'), e.id]
+        else
+          workaround = _('None') if workaround == '-'
+          correction = _('None') if correction == '-'
+          severities.push ["#{workaround} | #{correction}", e.id]
+        end
         if commitments.empty? || (commitments.last.severity_id != last_severity_id)||
                                  (commitments.last.issuetype_id != last_issuetype_id)
           break

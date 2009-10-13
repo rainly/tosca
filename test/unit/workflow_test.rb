@@ -31,4 +31,9 @@ class WorkflowTest < ActiveSupport::TestCase
       end
     end
   end
+
+  def test_sort
+    Workflow.all.sort!
+  end
+
 end

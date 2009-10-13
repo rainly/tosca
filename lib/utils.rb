@@ -59,15 +59,20 @@ end
 #Found here
 #http://blog.yanime.org/articles/2005/10/10/html2text-function-in-ruby
 def html2text(html)
-  text = html.
+  text = html.to_s.
     gsub(/(&nbsp;)+/im, ' ').squeeze(' ').strip.gsub("\n",'').gsub(/(&lsquo;)+/, "'").
     gsub(/<([^\s]+)[^>]*(src|href)=\s*(.?)([^>\s]*)\3[^>]*>\4<\/\1>/i, '\4')
 
   links = []
   linkregex = /<[^>]*(src|href)=\s*(.?)([^>\s]*)\2[^>]*>([^>]*)<[^>]*>/i
   while linkregex.match(text)
-    links << $~[3]
-    text.sub!(linkregex, "#{$~[4]}[#{links.size}]")
+    index = links.index($~[3])
+    # have we already see this link ? (don't repeat the same link in the stack)
+    if index.nil?
+      links << $~[3]
+      index = links.size
+    end
+    text.sub!(linkregex, "#{$~[4]}[#{index}]")
   end
 
   text = CGI.unescapeHTML(
@@ -83,7 +88,7 @@ def html2text(html)
       gsub(/<\/pre(| [^>]*)>/i, "\n").
       gsub(/<\/?(b|strong)[^>]*>/i, "*").
       gsub(/<\/?(i|em)[^>]*>/i, "/").
-      gsub(/<\/?u[^>]*>/i, "").
+      gsub(/<\/?u[^>]*>/i, "_").
       gsub(/<[^>]*>/, '')
   )
   # OOo does not know the Unbreakable UTF-8 char, as of OOo 2.4.1, Hardy.

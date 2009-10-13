@@ -5,7 +5,7 @@ module LdapTosca
 
   def self.included(base)
     super(base)
-    if Setting.ldap_enabled?
+    if Setting.table_exists? and Setting.ldap_enabled?
       require 'ldap'
       base.extend(LdapToscaClassMethods)
     end

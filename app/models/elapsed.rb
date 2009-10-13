@@ -16,6 +16,16 @@
 # You should have received a copy of the GNU Lesser General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+=begin
+This AR is used to keep in cache various elapsed time of an issue.
+It keeps :
+* taken into account time
+* workaround time
+* correction time
+* elapsed time (until_now)
+It's here because reporting views cannot afford to compute on the fly
+on so many issues : it's too expensive on the DB.
+=end
 class Elapsed < ActiveRecord::Base
   belongs_to :issue
 
@@ -84,9 +94,9 @@ class Elapsed < ActiveRecord::Base
     compute_value :correction, Statut::Fixed
   end
 
-  def taken_into_account_progress
+  def taken_into_account_progress(interval)
     # 1 hour = 1/24 of a day
-    progress(self.taken_into_account, (1/24.0))
+    progress(self.taken_into_account, self.issue.contract.taken_into_account_delay.to_f / 24.0.hours, interval )
   end
 
   def workaround_progress(interval)
@@ -115,6 +125,9 @@ class Elapsed < ActiveRecord::Base
 
   # Compute progress from an 'elapsed' time in "interval" reference,
   # with 'commitment' day
+  # elapsed in seconds
+  # commitment in days
+  # interval in hours
   def progress(elapsed, commitment, interval=nil)
     return -1 if commitment == -1
     if interval
@@ -123,9 +136,9 @@ class Elapsed < ActiveRecord::Base
       # 1.16 in commitment means 1 working day and 4 working hours
       commitment = ((commitment.to_i * interval).hours +
                     (commitment.to_f - commitment.to_i).days)
-      elapsed.to_f / (commitment * interval).hours
+      elapsed.to_f / commitment.to_f
     else
-      elapsed / commitment.days
+      elapsed.to_f / commitment.days.to_f
     end
   end
 

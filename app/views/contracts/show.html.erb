@@ -70,11 +70,20 @@
    </table>
   </div><div class="show">
    <fieldset>
-    <legend><%= _("Contractual commitments") %></legend>
+     <h3><%= _("Contractual commitments") %></h3>
+     <br />
+     <%=_('Taken-into-account before') %><%= " #{@contract.taken_into_account_delay} " %> <%= _('hour(s)') %>
+     <br /><br />
      <%= show_table_commitments @contract.commitments %>
    </fieldset>
   </div>
  </div><div class="c50r">
+
+   <% unless @contract.context.blank? %>
+   <div class="show">
+    <p><%= @contract.context %> </p>
+   </div>
+   <% end %>
 
    <% unless @contract.recipient_users.empty? %>
    <div class="show">
