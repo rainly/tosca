@@ -31,10 +31,9 @@ module FormsHelper
   #   :size => set a column disposition
   #   :no_empty_field => do not set the additional empty field
   # Ex : hbtm_check_box( @software.skills, @skills, 'skill_ids')
-  def hbtm_check_box( objectcollection, collection, name , options={})
+  def hbtm_check_box( objects, collection, name , options={})
     return '' if collection.nil? || collection.empty?
-    objects = objectcollection.collect { |c| [ c.name, c.id ] }
-    objects = Hash[*objects.flatten.reverse]
+    objects = Set[*objects.collect(&:id)] unless objects.is_a?(Set)
     out = '<table class="full"><tr>' and count = 1
     options_size = options[:size]
     length = collection.size
@@ -46,7 +45,7 @@ module FormsHelper
       out <<  "<label for=\"#{name_w3c}_#{id}\">"
       out <<   "<input id=\"#{name_w3c}_#{id}\" type=\"checkbox\" "
       out <<      "name=\"#{name}[]\" value=\"#{id}\" "
-      out <<      'checked="checked" ' if objects.has_key?(id)
+      out <<      'checked="checked" ' if objects.include?(id)
       out <<   "/> #{value}"
       out <<  "</label>"
       out << "</td>"
@@ -91,9 +90,11 @@ module FormsHelper
   # Provides a select box to filter choice
   # select_filter(@softwares, :software)
   # select_filter(@types, :issuetype, :title => '» Type')
-  def select_filter(list, property, options = {:title => '» '})
+  # select_filter(@groups, :group, :field => 'group')
+  def select_filter(list, property, options = {})
     out = ''
-    field = "#{property}_id"
+    options[:title] ||= PROMPT_SELECT[:prompt]
+    field = options[:field] || "#{property}_id"
     # disabling auto submit, there is an observer in filter form
     options[:onchange] = ''
     filters = instance_variable_get(:@filters)

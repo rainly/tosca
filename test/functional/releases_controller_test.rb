@@ -49,14 +49,6 @@ class ReleasesControllerTest < ActionController::TestCase
     end
   end
 
-  def test_should_show_release
-    %w(admin manager expert).each do |l|
-      login l, l
-      get :show, :id => Release.first(:order => :id).id
-      assert_response :success
-    end
-  end
-
   def test_should_get_edit
     %w(admin manager).each do |l|
       login l, l

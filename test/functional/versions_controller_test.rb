@@ -48,16 +48,6 @@ class VersionsControllerTest < ActionController::TestCase
     end
   end
 
-  def test_should_show_version
-    %w(admin manager expert).each do |l|
-      login l, l
-
-      version = session[:user].contracts.first.versions.first
-      get :show, :id => version.id
-      assert_response :success
-    end
-  end
-
   def test_should_get_edit
     %w(admin manager).each do |l|
       login l, l

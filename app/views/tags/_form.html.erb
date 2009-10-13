@@ -10,3 +10,5 @@
 <%= select_empty(:tag, :skill_id, @skills) %></p>
 <p><label for="tag_contract_id"><%= _('Contract')%></label><br />
 <%= select_empty(:tag, :contract_id, @contracts) %></p>
+
+<%= hidden_field_tag 'software_id', params[:software_id] %>

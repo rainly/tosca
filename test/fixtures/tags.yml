@@ -1,24 +1,43 @@
-tag_00001:
+--- 
+tag_00001: 
   name: Ajax
-  id: "1"
-  skill_id: "14"
-  contract_id:
-  user_id: "1"
-tag_00002:
+  id: 1
+  user_id: 1
+  contract_id: 
+  skill_id: 14
+tag_00002: 
   name: Eclipse
-  id: "2"
-  skill_id: "7"
-  contract_id:
-  user_id: "1"
-tag_00003:
+  id: 2
+  user_id: 1
+  contract_id: 
+  skill_id: 7
+tag_00003: 
   name: Fun
-  id: "3"
-  skill_id: "12"
-  contract_id:
-  user_id: "1"
-tag_00004:
+  id: 3
+  user_id: 1
+  contract_id: 
+  skill_id: 12
+tag_00004: 
   name: Hard
-  id: "4"
-  skill_id:
-  contract_id:
-  user_id: "1"
+  id: 4
+  user_id: 1
+  contract_id: 
+  skill_id: 
+tag_00005: 
+  name: Bureautique
+  id: 5
+  user_id: 
+  contract_id: 
+  skill_id: 
+tag_00006: 
+  name: Publication
+  id: 6
+  user_id: 
+  contract_id: 
+  skill_id: 
+tag_00007: 
+  name: Supervision
+  id: 7
+  user_id: 
+  contract_id: 
+  skill_id: 

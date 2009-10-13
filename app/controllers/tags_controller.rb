@@ -35,7 +35,8 @@ class TagsController < ApplicationController
     @tag.user_id = @session_user.id
     if @tag.save
       flash[:notice] = _('Skill was successfully created.')
-      redirect_to tags_path
+      soft = params[:software_id].to_i
+      redirect_to(soft != 0 ? software_path(soft.to_i) : tags_path)
     else
       render :action => 'new'
     end
@@ -49,7 +50,7 @@ class TagsController < ApplicationController
   def update
     @tag = Tag.find(params[:id])
     if @tag.update_attributes(params[:tag])
-      flash[:notice] = _('Skill was successfully updated.')
+      flash[:notice] = _('Tag was successfully updated.')
       redirect_to tag_path(@tag)
     else
       render :action => 'edit'
