@@ -6,8 +6,8 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: tosca 0.8.0\n"
-"POT-Creation-Date: 2009-10-13 16:41+0200\n"
+"Project-Id-Version: tosca 0.8.1\n"
+"POT-Creation-Date: 2009-10-13 18:25+0200\n"
 "PO-Revision-Date: 2009-03-02 17:05+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -142,11 +142,11 @@ msgstr ""
 msgid "Severity was successfully updated."
 msgstr ""
 
-#: app/controllers/application_controller.rb:102 app/models/notifier.rb:340
+#: app/controllers/application_controller.rb:102 app/models/notifier.rb:376
 msgid "An e-mail was sent to "
 msgstr ""
 
-#: app/controllers/application_controller.rb:103 app/models/notifier.rb:341
+#: app/controllers/application_controller.rb:103 app/models/notifier.rb:377
 msgid "with a copy to"
 msgstr ""
 
@@ -246,11 +246,11 @@ msgstr ""
 msgid "Contract was successfully created."
 msgstr ""
 
-#: app/controllers/contracts_controller.rb:149
+#: app/controllers/contracts_controller.rb:156
 msgid "Contract was successfully updated."
 msgstr ""
 
-#: app/controllers/contracts_controller.rb:249
+#: app/controllers/contracts_controller.rb:258
 msgid "Unknown rules for contract \"%s\""
 msgstr ""
 
@@ -1898,8 +1898,16 @@ msgstr ""
 msgid "You cannot specify a software and a domain."
 msgstr ""
 
-#: app/models/notifier.rb:260 app/models/notifier.rb:272
-#: app/models/notifier.rb:284
+#: app/models/notifier.rb:101
+msgid "Creation of contract: "
+msgstr ""
+
+#: app/models/notifier.rb:108
+msgid "Modification of contract: "
+msgstr ""
+
+#: app/models/notifier.rb:296 app/models/notifier.rb:308
+#: app/models/notifier.rb:320
 msgid "Possible error in your e-mail"
 msgstr ""
 
@@ -1997,7 +2005,7 @@ msgstr ""
 #: app/views/account/signup.html.erb:6 app/views/account/login.html.erb:16
 #: app/views/rules/components/edit.html.erb:5
 #: app/views/rules/credits/edit.html.erb:5
-#: app/views/settings/edit.html.erb:106 app/views/archives/edit.html.erb:5
+#: app/views/settings/edit.html.erb:109 app/views/archives/edit.html.erb:5
 #: app/views/archives/new.html.erb:5 app/views/commitments/edit.html.erb:5
 #: app/views/releases/edit.html.erb:5 app/views/releases/new.html.erb:5
 #: app/views/comments/edit.html.erb:5
@@ -2485,11 +2493,11 @@ msgstr ""
 msgid "Mail settings"
 msgstr ""
 
-#: app/views/settings/edit.html.erb:12 app/views/settings/edit.html.erb:49
+#: app/views/settings/edit.html.erb:12 app/views/settings/edit.html.erb:52
 msgid "Server"
 msgstr ""
 
-#: app/views/settings/edit.html.erb:15 app/views/settings/edit.html.erb:52
+#: app/views/settings/edit.html.erb:15 app/views/settings/edit.html.erb:55
 msgid "Port"
 msgstr ""
 
@@ -2526,67 +2534,67 @@ msgstr ""
 msgid "LDAP authentification for experts ?"
 msgstr ""
 
-#: app/views/settings/edit.html.erb:55
+#: app/views/settings/edit.html.erb:58
 msgid "Filter"
 msgstr ""
 
-#: app/views/settings/edit.html.erb:58
+#: app/views/settings/edit.html.erb:61
 msgid "Binddn"
 msgstr ""
 
-#: app/views/settings/edit.html.erb:61
+#: app/views/settings/edit.html.erb:64
 msgid "Basedn"
 msgstr ""
 
-#: app/views/settings/edit.html.erb:64
+#: app/views/settings/edit.html.erb:67
 msgid "Protocol version"
 msgstr ""
 
-#: app/views/settings/edit.html.erb:69
+#: app/views/settings/edit.html.erb:72
 msgid "A restart will be needed"
 msgstr ""
 
-#: app/views/settings/edit.html.erb:72
+#: app/views/settings/edit.html.erb:75
 msgid "Company settings"
 msgstr ""
 
-#: app/views/settings/edit.html.erb:75
+#: app/views/settings/edit.html.erb:78
 msgid "Service name"
 msgstr ""
 
-#: app/views/settings/edit.html.erb:78
+#: app/views/settings/edit.html.erb:81
 msgid "Service site"
 msgstr ""
 
-#: app/views/settings/edit.html.erb:81
+#: app/views/settings/edit.html.erb:84
 msgid "Company name"
 msgstr ""
 
-#: app/views/settings/edit.html.erb:84
+#: app/views/settings/edit.html.erb:87
 msgid "Company site"
 msgstr ""
 
-#: app/views/settings/edit.html.erb:90
+#: app/views/settings/edit.html.erb:93
 msgid "Customization"
 msgstr ""
 
-#: app/views/settings/edit.html.erb:92
+#: app/views/settings/edit.html.erb:95
 msgid "Files storage"
 msgstr ""
 
-#: app/views/settings/edit.html.erb:94
+#: app/views/settings/edit.html.erb:97
 msgid "Help on new issue"
 msgstr ""
 
-#: app/views/settings/edit.html.erb:96
+#: app/views/settings/edit.html.erb:99
 msgid "Help on issues' life cycle"
 msgstr ""
 
-#: app/views/settings/edit.html.erb:98
+#: app/views/settings/edit.html.erb:101
 msgid "Help on issues' status"
 msgstr ""
 
-#: app/views/settings/edit.html.erb:100
+#: app/views/settings/edit.html.erb:103
 msgid "Help on issues' severities"
 msgstr ""
 
@@ -4197,55 +4205,55 @@ msgid ""
 "holidays."
 msgstr ""
 
-#: lib/overrides.rb:195
+#: lib/overrides.rb:182
 msgid "Immediate"
 msgstr ""
 
-#: lib/overrides.rb:209
+#: lib/overrides.rb:196
 msgid "less than a minute"
 msgstr ""
 
-#: lib/overrides.rb:211
+#: lib/overrides.rb:198
 msgid "%d minutes"
 msgstr ""
 
-#: lib/overrides.rb:214 lib/overrides.rb:227
+#: lib/overrides.rb:201 lib/overrides.rb:214
 msgid "%d hour"
 msgid_plural "%d hours"
 msgstr[0] ""
 msgstr[1] ""
 
-#: lib/overrides.rb:216
+#: lib/overrides.rb:203
 msgid "1 half a working day"
 msgstr ""
 
-#: lib/overrides.rb:216
+#: lib/overrides.rb:203
 msgid "1 half day"
 msgstr ""
 
-#: lib/overrides.rb:220 lib/overrides.rb:225
+#: lib/overrides.rb:207 lib/overrides.rb:212
 msgid "%d working day"
 msgid_plural "%d working days"
 msgstr[0] ""
 msgstr[1] ""
 
-#: lib/overrides.rb:221 lib/overrides.rb:226
+#: lib/overrides.rb:208 lib/overrides.rb:213
 msgid "%d day"
 msgid_plural "%d days"
 msgstr[0] ""
 msgstr[1] ""
 
-#: lib/overrides.rb:227
+#: lib/overrides.rb:214
 msgid "and"
 msgstr ""
 
-#: lib/overrides.rb:231
+#: lib/overrides.rb:218
 msgid "%d working month"
 msgid_plural "%d working months"
 msgstr[0] ""
 msgstr[1] ""
 
-#: lib/overrides.rb:232
+#: lib/overrides.rb:219
 msgid "%d month"
 msgid_plural "%d months"
 msgstr[0] ""

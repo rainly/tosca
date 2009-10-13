@@ -10,10 +10,10 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: tosca 0.8.0\n"
+"Project-Id-Version: tosca 0.8.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-10-13 16:41+0200\n"
-"PO-Revision-Date: 2009-10-13 16:46+0200\n"
+"POT-Creation-Date: 2009-10-13 18:25+0200\n"
+"PO-Revision-Date: 2009-10-13 18:29+0200\n"
 "Last-Translator: Jonathan Clarke <jclarke@linagora.com>\n"
 "Language-Team: French\n"
 "MIME-Version: 1.0\n"
@@ -154,11 +154,11 @@ msgstr "La sévérité a été créée avec succès."
 msgid "Severity was successfully updated."
 msgstr "La sévérité a été mise à jour avec succès."
 
-#: app/controllers/application_controller.rb:102 app/models/notifier.rb:340
+#: app/controllers/application_controller.rb:102 app/models/notifier.rb:376
 msgid "An e-mail was sent to "
 msgstr "Un e-mail a été envoyé à "
 
-#: app/controllers/application_controller.rb:103 app/models/notifier.rb:341
+#: app/controllers/application_controller.rb:103 app/models/notifier.rb:377
 msgid "with a copy to"
 msgstr "avec en copie"
 
@@ -262,11 +262,11 @@ msgstr "Le logiciel %s a été effacé avec succès"
 msgid "Contract was successfully created."
 msgstr "Le contrat a été créé."
 
-#: app/controllers/contracts_controller.rb:149
+#: app/controllers/contracts_controller.rb:156
 msgid "Contract was successfully updated."
 msgstr "Le contrat a été mis à jour avec succès."
 
-#: app/controllers/contracts_controller.rb:249
+#: app/controllers/contracts_controller.rb:258
 msgid "Unknown rules for contract \"%s\""
 msgstr "Règles inconnu pour le contrat \"%s\""
 
@@ -1921,8 +1921,18 @@ msgstr "Vous devez spécifier un nom ou un domaine"
 msgid "You cannot specify a software and a domain."
 msgstr "Vous ne pouvez spécifier un logiciel et un domaine."
 
-#: app/models/notifier.rb:260 app/models/notifier.rb:272
-#: app/models/notifier.rb:284
+#: app/models/notifier.rb:101
+#, fuzzy
+msgid "Creation of contract: "
+msgstr "Créér un nouveau contrat"
+
+#: app/models/notifier.rb:108
+#, fuzzy
+msgid "Modification of contract: "
+msgstr "Date de modification"
+
+#: app/models/notifier.rb:296 app/models/notifier.rb:308
+#: app/models/notifier.rb:320
 msgid "Possible error in your e-mail"
 msgstr "Erreur possible dans votre adresse e-mail"
 
@@ -2020,7 +2030,7 @@ msgstr "Modifier cette contribution"
 #: app/views/account/signup.html.erb:6 app/views/account/login.html.erb:16
 #: app/views/rules/components/edit.html.erb:5
 #: app/views/rules/credits/edit.html.erb:5
-#: app/views/settings/edit.html.erb:106 app/views/archives/edit.html.erb:5
+#: app/views/settings/edit.html.erb:109 app/views/archives/edit.html.erb:5
 #: app/views/archives/new.html.erb:5 app/views/commitments/edit.html.erb:5
 #: app/views/releases/edit.html.erb:5 app/views/releases/new.html.erb:5
 #: app/views/comments/edit.html.erb:5
@@ -2508,11 +2518,11 @@ msgstr "Paramètres"
 msgid "Mail settings"
 msgstr "Paramètres de courriel"
 
-#: app/views/settings/edit.html.erb:12 app/views/settings/edit.html.erb:49
+#: app/views/settings/edit.html.erb:12 app/views/settings/edit.html.erb:52
 msgid "Server"
 msgstr "Serveur"
 
-#: app/views/settings/edit.html.erb:15 app/views/settings/edit.html.erb:52
+#: app/views/settings/edit.html.erb:15 app/views/settings/edit.html.erb:55
 msgid "Port"
 msgstr "Port"
 
@@ -2549,67 +2559,67 @@ msgstr "Paramètres Ldap"
 msgid "LDAP authentification for experts ?"
 msgstr "Authentification LDAP pour les experts ?"
 
-#: app/views/settings/edit.html.erb:55
+#: app/views/settings/edit.html.erb:58
 msgid "Filter"
 msgstr "Filtre"
 
-#: app/views/settings/edit.html.erb:58
+#: app/views/settings/edit.html.erb:61
 msgid "Binddn"
 msgstr "Binddn"
 
-#: app/views/settings/edit.html.erb:61
+#: app/views/settings/edit.html.erb:64
 msgid "Basedn"
 msgstr "Basedn"
 
-#: app/views/settings/edit.html.erb:64
+#: app/views/settings/edit.html.erb:67
 msgid "Protocol version"
 msgstr "Version du protocole"
 
-#: app/views/settings/edit.html.erb:69
+#: app/views/settings/edit.html.erb:72
 msgid "A restart will be needed"
 msgstr "Un redémarrage sera nécessaire"
 
-#: app/views/settings/edit.html.erb:72
+#: app/views/settings/edit.html.erb:75
 msgid "Company settings"
 msgstr "Paramètres de l'entreprise"
 
-#: app/views/settings/edit.html.erb:75
+#: app/views/settings/edit.html.erb:78
 msgid "Service name"
 msgstr "Nom du service"
 
-#: app/views/settings/edit.html.erb:78
+#: app/views/settings/edit.html.erb:81
 msgid "Service site"
 msgstr "Site du service"
 
-#: app/views/settings/edit.html.erb:81
+#: app/views/settings/edit.html.erb:84
 msgid "Company name"
 msgstr "Nom de l'entreprise"
 
-#: app/views/settings/edit.html.erb:84
+#: app/views/settings/edit.html.erb:87
 msgid "Company site"
 msgstr "Site de l'entreprise"
 
-#: app/views/settings/edit.html.erb:90
+#: app/views/settings/edit.html.erb:93
 msgid "Customization"
 msgstr "Personnalisation"
 
-#: app/views/settings/edit.html.erb:92
+#: app/views/settings/edit.html.erb:95
 msgid "Files storage"
 msgstr "Stockage des fichiers"
 
-#: app/views/settings/edit.html.erb:94
+#: app/views/settings/edit.html.erb:97
 msgid "Help on new issue"
 msgstr "Aide sur une nouvelle demande"
 
-#: app/views/settings/edit.html.erb:96
+#: app/views/settings/edit.html.erb:99
 msgid "Help on issues' life cycle"
 msgstr "Aide sur le cycle de vie des demandes"
 
-#: app/views/settings/edit.html.erb:98
+#: app/views/settings/edit.html.erb:101
 msgid "Help on issues' status"
 msgstr "Aide sur les statuts des demandes"
 
-#: app/views/settings/edit.html.erb:100
+#: app/views/settings/edit.html.erb:103
 msgid "Help on issues' severities"
 msgstr "Aide sur la sévérité des demandes"
 
@@ -4269,55 +4279,55 @@ msgid ""
 msgstr ""
 "Les jours ouvrés sont du Lundi au Vendredi, sauf week-ends et jours fériés."
 
-#: lib/overrides.rb:195
+#: lib/overrides.rb:182
 msgid "Immediate"
 msgstr "Immédiat"
 
-#: lib/overrides.rb:209
+#: lib/overrides.rb:196
 msgid "less than a minute"
 msgstr "moins d'une minute"
 
-#: lib/overrides.rb:211
+#: lib/overrides.rb:198
 msgid "%d minutes"
 msgstr "%d minutes"
 
-#: lib/overrides.rb:214 lib/overrides.rb:227
+#: lib/overrides.rb:201 lib/overrides.rb:214
 msgid "%d hour"
 msgid_plural "%d hours"
 msgstr[0] "%d heure"
 msgstr[1] "%d heures"
 
-#: lib/overrides.rb:216
+#: lib/overrides.rb:203
 msgid "1 half a working day"
 msgstr "1 demi jour ouvré"
 
-#: lib/overrides.rb:216
+#: lib/overrides.rb:203
 msgid "1 half day"
 msgstr "1 demie journée"
 
-#: lib/overrides.rb:220 lib/overrides.rb:225
+#: lib/overrides.rb:207 lib/overrides.rb:212
 msgid "%d working day"
 msgid_plural "%d working days"
 msgstr[0] "%d jour ouvré"
 msgstr[1] "%d jours ouvrés"
 
-#: lib/overrides.rb:221 lib/overrides.rb:226
+#: lib/overrides.rb:208 lib/overrides.rb:213
 msgid "%d day"
 msgid_plural "%d days"
 msgstr[0] "%d jour"
 msgstr[1] "%d jours"
 
-#: lib/overrides.rb:227
+#: lib/overrides.rb:214
 msgid "and"
 msgstr "et"
 
-#: lib/overrides.rb:231
+#: lib/overrides.rb:218
 msgid "%d working month"
 msgid_plural "%d working months"
 msgstr[0] "%d mois ouvré"
 msgstr[1] "%d mois ouvrés"
 
-#: lib/overrides.rb:232
+#: lib/overrides.rb:219
 msgid "%d month"
 msgid_plural "%d months"
 msgstr[0] "%d mois"
@@ -4424,42 +4434,36 @@ msgstr "rôles"
 
 #: vendor/extensions/ods_export/app/controllers/export_controller.rb:171
 #: vendor/extensions/phonecalls/app/views/phonecalls/index.html.erb:5
-#, fuzzy
 msgid "Call"
-msgstr "Intervention"
+msgstr "Appel"
 
 #: vendor/extensions/ods_export/app/controllers/export_controller.rb:172
 msgid "End of the call"
 msgstr "Fin de l'appel"
 
 #: vendor/extensions/ods_export/app/controllers/export_controller.rb:207
-#, fuzzy
 msgid "Submission date"
-msgstr "Déposer une demande"
+msgstr "Date de dépôt"
 
 #: vendor/extensions/ods_export/app/controllers/export_controller.rb:207
-#, fuzzy
 msgid "Last update"
-msgstr "Dernière page"
+msgstr "Dernière maj"
 
 #: vendor/extensions/ods_export/app/helpers/export_helper.rb:31
 msgid "Export in %s"
 msgstr "Export en %s"
 
 #: vendor/extensions/phonecalls/app/controllers/phonecalls_controller.rb:61
-#, fuzzy
 msgid "The call was successfully created."
-msgstr "L'url a bien été créée avec succès."
+msgstr "L'appel a été créée avec succès."
 
 #: vendor/extensions/phonecalls/app/controllers/phonecalls_controller.rb:88
-#, fuzzy
 msgid "The phone call has been updated."
-msgstr "La version %s a été mis à jour avec succès"
+msgstr "L'appel a été mis à jour avec succès"
 
 #: vendor/extensions/phonecalls/app/helpers/phonecalls_helper.rb:29
-#, fuzzy
 msgid "Add a phone call"
-msgstr "Ajouter un nouveau client"
+msgstr "Ajouter un appel"
 
 #: vendor/extensions/phonecalls/app/models/phonecall.rb:35
 msgid "The beginning of the call has to be before to its end."
@@ -4470,22 +4474,18 @@ msgid "recipient and client have to correspond."
 msgstr "le bénéficiaire et le client doivent correspondre."
 
 #: vendor/extensions/phonecalls/app/models/phonecall.rb:73
-#, fuzzy
 msgid "Phonecall of %s on '%s'"
-msgstr "Appels"
+msgstr "Appel de %s sur '%s'"
 
 #: vendor/extensions/phonecalls/app/models/phonecall.rb:75
-#, fuzzy
 msgid "Phonecall of %s for %s"
-msgstr "Historique du %s pour %s"
+msgstr "Appel de %s pour %s"
 
 #: vendor/extensions/phonecalls/app/views/phonecalls/_index_panel.html.erb:11
-#, fuzzy
 msgid "Add a call"
-msgstr "Ajouter un changelog"
+msgstr "Ajouter un appel"
 
 #: vendor/extensions/phonecalls/app/views/phonecalls/_index_panel.html.erb:30
-#, fuzzy
 msgid "From"
 msgstr "de"
 
@@ -4520,57 +4520,39 @@ msgid "Ended on"
 msgstr "Terminé le"
 
 #: vendor/extensions/phonecalls/app/views/phonecalls/index.html.erb:1
-#, fuzzy
 msgid "List of calls"
-msgstr "Liste des images"
+msgstr "Liste des appels"
 
 #: vendor/extensions/phonecalls/app/views/phonecalls/index.html.erb:3
-#, fuzzy
 msgid "a call"
-msgstr "Tout développer"
+msgstr "un appel"
 
 #: vendor/extensions/phonecalls/app/views/phonecalls/index.html.erb:6
 #: vendor/extensions/phonecalls/app/views/phonecalls/_form.html.erb:23
-#, fuzzy
 msgid "End of call"
-msgstr "Tout développer"
+msgstr "Fin de l'appel"
 
 #: vendor/extensions/phonecalls/app/views/phonecalls/index.html.erb:6
 #: vendor/extensions/phonecalls/app/views/issues/tabs/_phonecalls.html.erb:4
-#, fuzzy
 msgid "Duration"
-msgstr "Documentation"
+msgstr "Durée"
 
 #: vendor/extensions/phonecalls/app/views/phonecalls/_form.html.erb:6
-#, fuzzy
 msgid "Issue Id"
-msgstr "Demande"
+msgstr "Id de la demande"
 
 #: vendor/extensions/phonecalls/app/views/phonecalls/_form.html.erb:20
-#, fuzzy
 msgid "Start of call"
-msgstr "Date de début"
+msgstr "Début de l'appel"
 
 #: vendor/extensions/phonecalls/app/views/phonecalls/new.html.erb:1
-#, fuzzy
 msgid "New phone call"
-msgstr "Appels"
+msgstr "Nouvel appel"
 
 #: vendor/extensions/phonecalls/app/views/issues/tabs/_phonecalls.html.erb:3
-#, fuzzy
 msgid "Phone call"
-msgstr "Appels"
+msgstr "Appel"
 
 #: vendor/extensions/phonecalls/app/views/issues/tabs/_phonecalls.html.erb:4
-#, fuzzy
 msgid "End of phonecall"
-msgstr "Appels"
-
-#~ msgid "group"
-#~ msgstr "groupe"
-
-#~ msgid "Group was successfully created."
-#~ msgstr "Le groupe a été créé avec succès."
-
-#~ msgid "Group was successfully updated."
-#~ msgstr "Le groupe a été mis à jour avec succès."
+msgstr "Fin de l'appel"
